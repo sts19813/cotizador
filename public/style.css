@@ -1,0 +1,120 @@
+  body {
+    background-color: #F5F9FC;
+    font-family: 'Inter', sans-serif !important;
+  }
+
+
+  .navbar {
+    padding: 15px 20px;
+    background: white;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .scroll-column {
+    height: 100vh;
+    overflow-y: scroll;
+    /* Mantiene scroll funcional */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+  }
+
+  .scroll-column::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Edge */
+  }
+
+  ol li {
+    margin-bottom: 0.3rem;
+  }
+
+
+  .nav-tabs .nav-link.active {
+    border-color: #0d6efd #0d6efd #fff;
+  }
+
+  .thumbnail {
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+
+  .thumbnail.active {
+    border-color: #0d6efd;
+  }
+
+  .bottom-bar {
+    position: sticky;
+    bottom: 0;
+    background: #386ffad6;
+
+    color: white;
+    padding: 1rem;
+    z-index: 10;
+  }
+
+  .btn-regresar {
+    color: #2B458A !important;
+    border-color: #2B458A !important;
+  }
+
+  .estilo-casa.active {
+    border: 2px solid #0d6efd;
+    box-shadow: 0 0 0.5rem rgba(13, 110, 253, 0.5);
+  }
+
+  .estilo-fachada.active {
+    border: 2px solid #0d6efd;
+    box-shadow: 0 0 0.5rem rgba(13, 110, 253, 0.5);
+  }
+
+  .btn-radius {
+    border-radius: 25px;
+    font-size: 15px;
+    padding: 5px 15px;
+  }
+
+  .nav-tabs .nav-link.active {
+    background-color: #F5F9FC !important;
+  }
+
+  .nav-tabs .nav-link.active {
+    border: #0d6efd;
+  }
+
+
+  .carousel.carousel-thumbs-top {
+    padding-top: 20px;
+  }
+
+  .carousel.carousel-thumbs-top .carousel-indicators {
+    bottom: auto;
+  }
+
+
+  .estilo-casa {
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+  }
+
+  .estilo-casa:hover {
+    background-color: #e0f7fa;
+    border-color: #0d6efd;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
+  }
+
+  .carousel .carousel-indicators button {
+    width: 200px !important;
+  }
+
+  .position-relative {
+    position: relative !important;
+  }
+
+  #carouselExampleIndicatorsLeft {
+    margin-bottom: 100px;
+  }
+
+  .carousel-indicators img {
+    max-width: 200px;
+  }
