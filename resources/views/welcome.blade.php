@@ -1,498 +1,573 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Configurador de Fachada</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<x-head />
+<link rel="stylesheet" href="/assets/cotizador.css">
 
-    <link rel="stylesheet" href="style.css">
-</head>
+<body class="general-background">
 
-<body>
+    <!-- Header fijo -->
+    <x-header />
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center navbar fixed-top bg-white shadow-sm px-3 py-2 z-3">
-        <button class="btn btn-outline-secondary btn-radius btn-regresar">Regresar</button>
-        <img src="/img/logo.svg" alt="Logo" width="150px" class="img-fluid">
-        <div>
-            <button class="btn btn-outline-primary me-2 btn-radius">
-                <i class="bi bi-bookmark"></i> Guardar
-            </button>
-            <button class="btn btn-primary btn-radius">
-                Crear Cuenta <i class="bi bi-person"></i>
-            </button>
-        </div>
-    </div>
-
-    <div class="container-fluid py-3  mt-5 pt-4">
-
-
+    <!-- Contenido principal -->
+    <div class="container-fluid mt-4">
         <div class="row">
-            <!-- Imagen principal -->
-            <div class="col-md-9 scroll-column">
 
-                <!-- Navegación Tabs -->
-                <ul class="nav nav-tabs">
-                    <li class="nav-item"><a class="nav-link active" href="#">Fachada</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Pisos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Mesetas</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Addons</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Planos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Detalles</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Garantías</a></li>
-                </ul>
-                <!-- Imagen principal -->
-                <div class="container mb-4">
-                    <div class="row">
-                        <div class="col">
-                            <!-- Carousel wrapper -->
-                            <div id="carouselExampleIndicatorsLeft" class="carousel slide carousel-fade carousel-thumbs-top" data-bs-interval="false">
-
-                                <!-- Slides -->
-                                <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <img src="/img/Tulum/Fachada A/F.jpg" class="d-block w-100" alt="..." />
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="/img/Tulum/Fachada A/B.jpg" class="d-block w-100" alt="..." />
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="/img/3.jpg" class="d-block w-100" alt="..." />
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="/img/4.jpg" class="d-block w-100" alt="..." />
-                                    </div>
-                                </div>
-                                <!-- Thumbnails -->
-                                <div class="slider carousel-indicators position-relative">
-                                    <button type="button" data-bs-target="#carouselExampleIndicatorsLeft" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1">
-                                        <img class="d-block w-200"
-                                            src="/img/Tulum/Fachada A/F.jpg" class="img-fluid" />
-                                    </button>
-
-                                    <button type="button" data-bs-target="#carouselExampleIndicatorsLeft" data-bs-slide-to="1" aria-label="Slide 2">
-                                        <img class="d-block w-200"
-                                            src="/img/Tulum/Fachada A/B.jpg" class="img-fluid" />
-                                    </button>
-
-                                    <button type="button" data-bs-target="#carouselExampleIndicatorsLeft" data-bs-slide-to="2" aria-label="Slide 3">
-                                        <img class="d-block w-200"
-                                            src="/img/3.jpg" class="img-fluid" />
-                                    </button>
-                                    <button type="button" data-bs-target="#carouselExampleIndicatorsLeft" data-bs-slide-to="3" aria-label="Slide 4">
-                                        <img class="d-block w-200"
-                                            src="/img/4.jpg" class="img-fluid" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Carousel wrapper -->
-                    </div>
-                </div>
-
-                <div class="container mb-4">
-                    <div class="row">
-                        <!-- Columna izquierda: texto y listado -->
-                        <div class="col-md-4 p-4" style="background-color: #f8f9fa;">
-                            <p class="mb-4">
-                                Descubre la esencia del hogar en nuestros espacios interiores. Desde acogedoras áreas de sala hasta dormitorios acogedores, cada habitación encarna comodidad y estilo. Explora el arte de equilibrar muebles elegantes y acentos sutiles, creando un santuario que inspira.
-                            </p>
-                            <table class="table table-borderless">
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">M2</th>
-                                        <td>165</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Cochera</th>
-                                        <td>2 autos</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Pisos</th>
-                                        <td>2</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <ol class="ps-3">
-                                <li>Estacionamiento</li>
-                                <li>Cocina</li>
-                                <li>Sala</li>
-                                <li>Área de lavado</li>
-                                <li>Baño de visitas</li>
-                                <li>Recámara 1</li>
-                                <li>Baño Rec. 1</li>
-                                <li>Recámara 1</li>
-                                <li>Recámara Principal</li>
-                                <li>Closet Principal</li>
-                                <li>Baño Principal</li>
-                            </ol>
+            <!-- Columna de 8 con contenido sticky -->
+            <div class="col-md-8">
+                <div class="sticky-content">
+                    <div class="gallery-wrapper">
+                        <!-- Imagen de previsualización principal -->
+                        <div class="preview-image text-center mb-3">
+                            <img id="mainPreview" src="/img/resumen/g1.jpg" alt="Vista previa" class="img-fluid preview-img">
                         </div>
 
-                        <!-- Columna derecha: imagen de los planos -->
-                        <div class="col-md-8 p-4 text-center">
-                            <img src="/img/plantas.jpg" alt="Plano de casa" class="img-fluid w-100 shadow rounded">
+                        <!-- Carrusel de miniaturas -->
+                        <div class="owl-carousel gallery-carousel">
+                            <div class="item"><img src="/img/resumen/g1.jpg" alt="imagen 1" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g2.jpg" alt="imagen 2" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g3.jpg" alt="imagen 3" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g4.jpg" alt="imagen 4" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g5.jpg" alt="imagen 5" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g6.jpg" alt="imagen 6" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g7.jpg" alt="imagen 7" class="thumb" /></div>
                         </div>
+
+                        <div class="fade-gradient-right"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel lateral -->
-            <div class="col-md-3 scroll-column">
-                <h4 class="text-primary fw-bold precio-total">$1,450,000.00 MXN</h4>
+            <!-- Columna de 4 con mucho contenido scrollable -->
+            <div class="col-md-4 mt-100">
+                <div class="long-content">
+                    <h4 class="fw-bold precio-total azulFuerte"><img src="/img/tag.svg" alt="" srcset=""> $1,450,000.00 MXN</h4>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod... <a href="#">leer más</a></p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod... <a href="#">leer más</a></p>
 
-                <div class="accordion" id="configAccordion">
+                    <div class="accordion " id="configAccordion">
 
-                    <!-- Sección Generada Automáticamente -->
-                    <!-- Utiliza el mismo patrón para todas -->
-
-                    <!-- General -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingGeneral">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
-                                General
-                            </button>
-                        </h2>
-                        <div id="collapseGeneral" class="accordion-collapse collapse show" aria-labelledby="headingGeneral" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <p class="fw-bold mb-1">Estilo</p>
-                                <div class="row g-2" id="opciones-casas">
-                                    <div class="col-6">
-                                        <div class="border rounded text-center estilo-casa cursor-pointer"
-                                            data-precio="120500"
-                                            data-valor="Tulum"
-                                            onclick="seleccionarCasa(this)">
-                                            <img src="/img/tulum.jpg" class="img-fluid mb-1" alt="Tulum">
-                                            <small>Tulum<br><strong>$120,500.00</strong></small>
+                    
+                        <!-- General -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingGeneral">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
+                                    <span class="textAcordeon">General</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapseGeneral" class="accordion-collapse collapse show" aria-labelledby="headingGeneral">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Estilo</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="option-card" data-id="generalTulum">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Tulum">
+                                                <div class="option-title">Tulum</div>
+                                                <div class="option-price">$120,500.00</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border rounded text-center estilo-casa cursor-pointer"
-                                            data-precio="350000"
-                                            data-valor="Mexicano"
-                                            onclick="seleccionarCasa(this)">
-                                            <img src="/img/Mexicano/Fachada A/B.jpg" class="img-fluid mb-1" alt="Mexicano">
-                                            <small>Mexicano<br><strong>$350,000.00</strong></small>
+                                        <div class="col-md-6">
+                                            <div class="option-card" data-id="generalMexicano">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/Mexicano/Fachada A/B.jpg" class="img-fluid rounded" alt="Mexicano">
+                                                <div class="option-title">Mexicano</div>
+                                                <div class="option-price">$350,000.00</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border rounded text-center estilo-casa cursor-pointer"
-                                            data-valor="Minimalista"
-                                            onclick="seleccionarCasa(this)">
-                                            <img src="/img/minimalista.jpg" class="img-fluid mb-1" alt="Minimalista">
-                                            <small>Minimalista<br><strong>$220,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Fachada -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFachada">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFachada" aria-expanded="false" aria-controls="collapseFachada">
-                                Fachada
-                            </button>
-                        </h2>
-                        <div id="collapseFachada" class="accordion-collapse collapse" aria-labelledby="headingFachada" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2" id="opciones-fachada">
-                                    <div class="col-6">
-                                        <div class="border rounded text-center estilo-fachada cursor-pointer"
-                                            data-valor="Fachada A"
-                                            data-precio="95000"
-                                            onclick="seleccionarFachada(this)">
-                                            <img src="/img/Tulum/Fachada A/F.jpg" class="img-fluid mb-1" alt="Fachada 1">
-                                            <small>Opción A<br><strong>$95,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border rounded text-center estilo-fachada cursor-pointer"
-                                            data-valor="Fachada B"
-                                            data-precio="102000"
-                                            onclick="seleccionarFachada(this)">
-                                            <img src="/img/Tulum/Fachada B/B.jpg" class="img-fluid mb-1" alt="Fachada 2">
-                                            <small>Opción B<br><strong>$102,000.00</strong></small>
+                                        <div class="col-md-6">
+                                            <div class="option-card" data-id="generalMinimalista">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/minimalista.jpg" class="img-fluid rounded" alt="Minimalista">
+                                                <div class="option-title">Minimalista</div>
+                                                <div class="option-price">$220,000.00</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                    </div>
 
-                    <!-- Color -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingColor">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseColor" aria-expanded="false" aria-controls="collapseColor">
-                                Color
-                            </button>
-                        </h2>
-                        <div id="collapseColor" class="accordion-collapse collapse" aria-labelledby="headingColor" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2" id="opciones-color">
-                                    <div class="col-6">
-                                        <div class="border rounded text-center estilo-color cursor-pointer"
-                                            data-valor="Azul Turquesa"
-                                            data-precio="0"
-                                            onclick="seleccionarColor(this)">
-                                            <div style="width: 100%; height: 60px; background-color: #40E0D0;" class="mb-2 rounded"></div>
-                                            <small>Azul Turquesa<br><strong>$0.00</strong></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border rounded text-center estilo-color cursor-pointer"
-                                            data-valor="Beige"
-                                            data-precio="1000"
-                                            onclick="seleccionarColor(this)">
-                                            <div style="width: 100%; height: 60px; background-color: #F5F5DC;" class="mb-2 rounded"></div>
-                                            <small>Beige<br><strong>$1000.00</strong></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Fachada -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <div class="accordion-item hover-shadow">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                        <span class="textAcordeon">Fachada</span>
+                                        <span class="icon ms-auto">
+                                            <!-- PLUS ICON (cuando está colapsado) -->
+                                            <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                            </svg>
 
-                        </div>
-                    </div>
-
-                    <!-- Pisos -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingPisos">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePisos" aria-expanded="false" aria-controls="collapsePisos">
-                                Pisos
-                            </button>
-                        </h2>
-                        <div id="collapsePisos" class="accordion-collapse collapse" aria-labelledby="headingPisos" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2" id="opciones-piso">
-                                    <div class="col-6">
-                                        <div class="border rounded text-center estilo-piso cursor-pointer"
-                                            data-valor="Madera"
-                                            data-precio="65000"
-                                            onclick="seleccionarPiso(this)">
-                                            <img src="/img/marmol.jpg" class="img-fluid mb-1" alt="Madera">
-                                            <small>Marmol Santo Tomás<br><strong>$65,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border rounded text-center estilo-piso cursor-pointer"
-                                            data-valor="Cerámica"
-                                            data-precio="48000"
-                                            onclick="seleccionarPiso(this)">
-                                            <img src="/img/Travertino Puebla Fiorito.jpg" class="img-fluid mb-1" alt="Cerámica">
-                                            <small>Travertino Puebla Fiorito<br><strong>$48,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Mesetas -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingMesetas">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMesetas" aria-expanded="false" aria-controls="collapseMesetas">
-                                Mesetas
-                            </button>
-                        </h2>
-                        <div id="collapseMesetas" class="accordion-collapse collapse" aria-labelledby="headingMesetas" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="opcion-meseta border rounded text-center" data-precio="25000" data-nombre="Granito Blanco Itaunas">
-                                            <img src="/img/Granito Blanco Itaunas.jpg" class="img-fluid mb-1" alt="Granito">
-                                            <small>Granito Blanco Itaunas<br><strong>$25,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="opcion-meseta border rounded text-center" data-precio="35000" data-nombre="Granito San Gabriel">
-                                            <img src="/img/Granito San Gabriel.jpg" class="img-fluid mb-1" alt="Mármol">
-                                            <small>Granito San Gabriel<br><strong>$35,000.00</strong></small>
+                                            <!-- MINUS ICON (cuando está expandido) -->
+                                            <svg class="minus-icon " xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show">
+                                    <div class="accordion-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="option-card" data-id="optionA">
+                                                    <span class="info-icon">i</span>
+                                                    <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Opción A">
+                                                    <div class="option-title">Opción A</div>
+                                                    <div class="option-price">$45,000.00</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="option-card" data-id="optionB">
+                                                    <span class="info-icon">i</span>
+                                                    <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Opción B">
+                                                    <div class="option-title">Opción B</div>
+                                                    <div class="option-price">$45,000.00</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Cancelería -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingCanceleria">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCanceleria" aria-expanded="false" aria-controls="collapseCanceleria">
-                                Cancelería
-                            </button>
-                        </h2>
-                        <div id="collapseCanceleria" class="accordion-collapse collapse" aria-labelledby="headingCanceleria" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="/img/canceleria1.png" class="img-fluid mb-1" alt="Negra">
-                                            <small>Negra<br><strong>$20,000.00</strong></small>
+                        <!-- Color -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingColor">
+                                <button class="accordion-button custom-toggle"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapseColor"
+                                    aria-expanded="true"
+                                    aria-controls="collapseColor">
+                                    <span class="textAcordeon">Color</span>
+                                    <span class="icon ms-auto">
+                                        <!-- PLUS ICON -->
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+
+                                        <!-- MINUS ICON -->
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapseColor" class="accordion-collapse collapse show" aria-labelledby="headingColor">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Colores disponibles</p>
+                                    <div class="row g-3" id="opciones-color">
+                                        <div class="col-md-6">
+                                            <div class="option-card text-center estilo-color cursor-pointer"
+                                                data-valor="Azul Turquesa"
+                                                data-precio="0"
+                                                onclick="seleccionarColor(this)">
+                                                <div class="rounded mb-2" style="height: 130px; background-color: #40E0D0;"></div>
+                                                <div class="option-title">Azul Turquesa</div>
+                                                <div class="option-price">$0.00</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="option-card text-center estilo-color cursor-pointer"
+                                                data-valor="Beige"
+                                                data-precio="1000"
+                                                onclick="seleccionarColor(this)">
+                                                <div class="rounded mb-2" style="height: 130px; background-color: #F5F5DC;"></div>
+                                                <div class="option-title">Beige</div>
+                                                <div class="option-price">$1,000.00</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="/img/canceleria2.png" class="img-fluid mb-1" alt="Plata">
-                                            <small>Plata<br><strong>$22,000.00</strong></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pisos -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingPisos">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePisos" aria-expanded="true" aria-controls="collapsePisos">
+                                    <span class="textAcordeon">Pisos</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapsePisos" class="accordion-collapse collapse show" aria-labelledby="headingPisos">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Estilo de Piso</p>
+                                    <div class="row g-3" id="opciones-piso">
+                                        <div class="col-md-6">
+                                            <div class="option-card estilo-piso cursor-pointer"
+                                                data-valor="Madera"
+                                                data-precio="65000"
+                                                onclick="seleccionarPiso(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/marmol.jpg" class="img-fluid rounded" alt="Madera">
+                                                <div class="option-title">Mármol Santo Tomás</div>
+                                                <div class="option-price">$65,000.00</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="option-card estilo-piso cursor-pointer"
+                                                data-valor="Cerámica"
+                                                data-precio="48000"
+                                                onclick="seleccionarPiso(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/Travertino Puebla Fiorito.jpg" class="img-fluid rounded" alt="Cerámica">
+                                                <div class="option-title">Travertino Puebla Fiorito</div>
+                                                <div class="option-price">$48,000.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mesetas -->
+                        <div class="accordion-item hover-shadow  mb-4">
+                            <h2 class="accordion-header" id="headingMesetas">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMesetas" aria-expanded="true" aria-controls="collapseMesetas">
+                                    <span class="textAcordeon">Mesetas</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapseMesetas" class="accordion-collapse collapse show" aria-labelledby="headingMesetas">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Estilo de Meseta</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-meseta cursor-pointer"
+                                                data-nombre="Granito Blanco Itaunas"
+                                                data-precio="25000"
+                                                onclick="seleccionarMeseta(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/Granito Blanco Itaunas.jpg" class="img-fluid rounded" alt="Granito Blanco Itaunas">
+                                                <div class="option-title">Granito Blanco Itaunas</div>
+                                                <div class="option-price">$25,000.00</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-meseta cursor-pointer"
+                                                data-nombre="Granito San Gabriel"
+                                                data-precio="35000"
+                                                onclick="seleccionarMeseta(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/Granito San Gabriel.jpg" class="img-fluid rounded" alt="Granito San Gabriel">
+                                                <div class="option-title">Granito San Gabriel</div>
+                                                <div class="option-price">$35,000.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cancelería -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingCanceleria">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCanceleria" aria-expanded="true" aria-controls="collapseCanceleria">
+                                    <span class="textAcordeon">Cancelería</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapseCanceleria" class="accordion-collapse collapse show" aria-labelledby="headingCanceleria">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Estilo de Cancelería</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-canceleria cursor-pointer"
+                                                data-nombre="Negra"
+                                                data-precio="20000"
+                                                onclick="seleccionarCanceleria(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/canceleria1.png" class="img-fluid rounded" alt="Negra">
+                                                <div class="option-title">Negra</div>
+                                                <div class="option-price">$20,000.00</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-canceleria cursor-pointer"
+                                                data-nombre="Plata"
+                                                data-precio="22000"
+                                                onclick="seleccionarCanceleria(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/canceleria2.png" class="img-fluid rounded" alt="Plata">
+                                                <div class="option-title">Plata</div>
+                                                <div class="option-price">$22,000.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Puertas -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingPuertas">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePuertas" aria-expanded="true" aria-controls="collapsePuertas">
+                                    <span class="textAcordeon">Puertas</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapsePuertas" class="accordion-collapse collapse show" aria-labelledby="headingPuertas">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Estilo de Puertas</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-puerta cursor-pointer"
+                                                data-nombre="Cherry Redwood"
+                                                data-precio="45000"
+                                                onclick="seleccionarPuerta(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="img/puerta1.png" class="img-fluid rounded" alt="Cherry Redwood">
+                                                <div class="option-title">Cherry Redwood</div>
+                                                <div class="option-price">$45,000.00</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-puerta cursor-pointer"
+                                                data-nombre="Seg Basic Chocolate"
+                                                data-precio="45000"
+                                                onclick="seleccionarPuerta(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="img/puerta2.png" class="img-fluid rounded" alt="Basic Chocolate">
+                                                <div class="option-title">Seg Basic Chocolate</div>
+                                                <div class="option-price">$45,000.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Addons -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingAddons">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddons" aria-expanded="true" aria-controls="collapseAddons">
+                                    <span class="textAcordeon">Addons</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapseAddons" class="accordion-collapse collapse show" aria-labelledby="headingAddons">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Opcionales</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-addon cursor-pointer"
+                                                data-nombre="Paneles Solares"
+                                                data-precio="85000"
+                                                onclick="seleccionarAddon(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/addons1.png" class="img-fluid rounded" alt="Paneles Solares">
+                                                <div class="option-title">Paneles Solares</div>
+                                                <div class="option-price">$85,000.00</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-addon cursor-pointer"
+                                                data-nombre="Aires acondicionados"
+                                                data-precio="18000"
+                                                onclick="seleccionarAddon(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="/img/addons2.png" class="img-fluid rounded" alt="Aires Acondicionados">
+                                                <div class="option-title">Aires acondicionados</div>
+                                                <div class="option-price">$18,000.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interior -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingInterior">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInterior" aria-expanded="true" aria-controls="collapseInterior">
+                                    <span class="textAcordeon">Interior</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapseInterior" class="accordion-collapse collapse" aria-labelledby="headingInterior">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Interior</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-interior cursor-pointer"
+                                                data-nombre="Iluminación LED"
+                                                data-precio="10000"
+                                                onclick="seleccionarInterior(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="https://via.placeholder.com/100x70/ccccff" class="img-fluid rounded" alt="Iluminación LED">
+                                                <div class="option-title">Iluminación LED</div>
+                                                <div class="option-price">$10,000.00</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-interior cursor-pointer"
+                                                data-nombre="Closets"
+                                                data-precio="30000"
+                                                onclick="seleccionarInterior(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="https://via.placeholder.com/100x70/ffe4b5" class="img-fluid rounded" alt="Closets">
+                                                <div class="option-title">Closets</div>
+                                                <div class="option-price">$30,000.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exterior -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingExterior">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExterior" aria-expanded="true" aria-controls="collapseExterior">
+                                    <span class="textAcordeon">Exterior</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapseExterior" class="accordion-collapse collapse" aria-labelledby="headingExterior">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Exterior</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-exterior cursor-pointer"
+                                                data-nombre="Pasto Sintético"
+                                                data-precio="40000"
+                                                onclick="seleccionarExterior(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="https://via.placeholder.com/100x70/228B22" class="img-fluid rounded" alt="Pasto Sintético">
+                                                <div class="option-title">Pasto Sintético</div>
+                                                <div class="option-price">$40,000.00</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-exterior cursor-pointer"
+                                                data-nombre="Deck Madera"
+                                                data-precio="55000"
+                                                onclick="seleccionarExterior(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="https://via.placeholder.com/100x70/b0c4de" class="img-fluid rounded" alt="Deck Madera">
+                                                <div class="option-title">Deck Madera</div>
+                                                <div class="option-price">$55,000.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Jardines -->
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingJardines">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseJardines" aria-expanded="true" aria-controls="collapseJardines">
+                                    <span class="textAcordeon">Jardines</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapseJardines" class="accordion-collapse collapse show" aria-labelledby="headingJardines">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Jardines</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-jardines cursor-pointer"
+                                                data-nombre="Jardín Zen"
+                                                data-precio="60000"
+                                                onclick="seleccionarJardines(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="https://via.placeholder.com/100x70/8fbc8f" class="img-fluid rounded" alt="Jardín Zen">
+                                                <div class="option-title">Jardín Zen</div>
+                                                <div class="option-price">$60,000.00</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="option-card opcion-jardines cursor-pointer"
+                                                data-nombre="Jardín Tropical"
+                                                data-precio="75000"
+                                                onclick="seleccionarJardines(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="https://via.placeholder.com/100x70/9acd32" class="img-fluid rounded" alt="Jardín Tropical">
+                                                <div class="option-title">Jardín Tropical</div>
+                                                <div class="option-price">$75,000.00</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Puertas -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingPuertas">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePuertas" aria-expanded="false" aria-controls="collapsePuertas">
-                                Puertas
-                            </button>
-                        </h2>
-                        <div id="collapsePuertas" class="accordion-collapse collapse" aria-labelledby="headingPuertas" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="img/puerta1.png" class="img-fluid mb-1" alt="Cherry Redwood">
-                                            <small>Cherry Redwood<br><strong>$45,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="img/puerta2.png" class="img-fluid mb-1" alt="Basic Chocolate">
-                                            <small>Seg Basic Chocolate<br><strong>$45,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Addons -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingAddons">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddons" aria-expanded="false" aria-controls="collapseAddons">
-                                Addons
-                            </button>
-                        </h2>
-                        <div id="collapseAddons" class="accordion-collapse collapse" aria-labelledby="headingAddons" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="/img/addons1.png" class="img-fluid mb-1" alt="Paneles Solares">
-                                            <small>Paneles Solares<br><strong>$85,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="/img/addons2.png" class="img-fluid mb-1" alt="Aires Acondicionados">
-                                            <small>Aires acondicionados<br><strong>$18,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Interior -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingInterior">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInterior" aria-expanded="false" aria-controls="collapseInterior">
-                                Interior
-                            </button>
-                        </h2>
-                        <div id="collapseInterior" class="accordion-collapse collapse" aria-labelledby="headingInterior" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="https://via.placeholder.com/100x70/ccccff" class="img-fluid mb-1" alt="Iluminación LED">
-                                            <small>Iluminación LED<br><strong>$10,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="https://via.placeholder.com/100x70/ffe4b5" class="img-fluid mb-1" alt="Closets">
-                                            <small>Closets<br><strong>$30,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Exterior -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingExterior">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExterior" aria-expanded="false" aria-controls="collapseExterior">
-                                Exterior
-                            </button>
-                        </h2>
-                        <div id="collapseExterior" class="accordion-collapse collapse" aria-labelledby="headingExterior" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="https://via.placeholder.com/100x70/228B22" class="img-fluid mb-1" alt="Pasto Sintético">
-                                            <small>Pasto Sintético<br><strong>$40,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="https://via.placeholder.com/100x70/b0c4de" class="img-fluid mb-1" alt="Deck">
-                                            <small>Deck Madera<br><strong>$55,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Jardines -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingJardines">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseJardines" aria-expanded="false" aria-controls="collapseJardines">
-                                Jardines
-                            </button>
-                        </h2>
-                        <div id="collapseJardines" class="accordion-collapse collapse" aria-labelledby="headingJardines" data-bs-parent="#configAccordion">
-                            <div class="accordion-body">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="https://via.placeholder.com/100x70/8fbc8f" class="img-fluid mb-1" alt="Jardín Zen">
-                                            <small>Jardín Zen<br><strong>$60,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border p-2 rounded text-center">
-                                            <img src="https://via.placeholder.com/100x70/9acd32" class="img-fluid mb-1" alt="Jardín Tropical">
-                                            <small>Jardín Tropical<br><strong>$75,000.00</strong></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- Bottom bar -->
+
+
     <div class="bottom-bar d-flex justify-content-between align-items-center">
         <div class="d-flex gap-3">
             <button class="btn text-light p-10">
@@ -511,12 +586,66 @@
 
         <div>
             <strong class="precio-total">$1,450,000.00 MXN</strong>
-            <a href="#" class="btn btn-light ms-3">Ver Resumen ></a>
+            <a href="/resumen" class="btn btn-light ms-3">Ver Resumen ></a>
         </div>
     </div>
+    <x-footer />
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <x-scripts />
+
+    <script>
+        $(document).ready(function() {
+            $('.gallery-carousel').owlCarousel({
+                items: 6,
+                margin: 10,
+                loop: true,
+                nav: true,
+                navText: [
+                    '<img src="/img/Vector.svg" alt="prev" style="width:24px;transform: rotate(180deg);">',
+                    '<img src="/img/Vector.svg" alt="next" style="width:24px; ">'
+                ]
+            });
+
+            $('.gallery-carousel .thumb').on('click', function() {
+                const newSrc = $(this).attr('src');
+                const $preview = $('#mainPreview');
+
+                $preview.addClass('fade-out');
+
+                setTimeout(function() {
+                    $preview.attr('src', newSrc);
+                    $preview.removeClass('fade-out');
+                }, 300);
+
+
+                $('.gallery-carousel .thumb').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+
+        const selections = {};
+
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const group = this.closest('.accordion-collapse');
+                const groupId = group.id;
+                const cardId = this.getAttribute('data-id');
+
+                // Si ya está seleccionada, deselecciona
+                if (this.classList.contains('selected')) {
+                    this.classList.remove('selected');
+                    selections[groupId] = null;
+                } else {
+                    // Deseleccionar otros del grupo
+                    group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selections[groupId] = cardId;
+                }
+
+                console.log(selections); // Aquí puedes usar o enviar los datos
+            });
+        });
+    </script>
 </body>
 
 </html>

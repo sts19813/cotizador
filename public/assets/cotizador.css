@@ -1,0 +1,122 @@
+.accordion-button {
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.option-card {
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.option-card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border-color: #007bff;
+}
+
+.info-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #f1f1f1;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.option-title {
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.option-price {
+    color: #333;
+}
+
+
+.accordion-button::after {
+    display: none !important;
+    /* Oculta la flecha por defecto */
+}
+
+.accordion-item {
+    border: 0px solid white !important;
+    border-radius: 25px !important;
+}
+
+.custom-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.custom-toggle .icon svg {
+    transition: opacity 0.2s ease;
+}
+
+.accordion-button.collapsed .plus-icon {
+    display: inline;
+}
+
+.accordion-button:not(.collapsed) .plus-icon {
+    display: none;
+}
+
+.accordion-button.collapsed .minus-icon {
+    display: none;
+}
+
+.accordion-button:not(.collapsed) .minus-icon {
+    display: inline;
+}
+
+.accordion-button {
+    background-color: white !important;
+    border-radius: 25px !important;
+    box-shadow: none !important;
+    outline: none !important;
+    color: #000;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: white !important;
+    color: #000;
+    box-shadow: none !important;
+}
+
+.accordion-button:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.textAcordeon {
+    font-size: 24px;
+    color: #0B1234;
+}
+
+/***/
+.sticky-content {
+    position: sticky;
+    top: 100px;
+    /* debajo del header fijo */
+}
+
+.option-card:hover {
+    border: 2px solid #007BFF;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Borde azul al estar seleccionado (clic) */
+.option-card.selected {
+    border: 2px solid #007BFF;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}

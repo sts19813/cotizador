@@ -1,0 +1,193 @@
+.seccion-casa {
+    position: relative;
+    text-align: center;
+    padding: 20px;
+}
+
+.texto-fondo {
+    font-size: 128px;
+    font-weight: 700;
+    color: #8FA6F0;
+    position: absolute;
+    font-family: 'Geologica', sans-serif;
+    top: 200px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    white-space: nowrap;
+}
+
+.subtitulo {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    font-family: 'Geologica', sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    transform: translateX(-50%);
+    z-index: 1;
+    color: #333;
+}
+
+.imagen-casa {
+    position: relative;
+    z-index: 2;
+    max-width: 1000px;
+    height: auto;
+    margin-top: 55px;
+}
+
+
+.title-sub {
+    font-family: 'Geologica', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: black;
+}
+
+.custom-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.label {
+    font-weight: 600;
+    color: #555;
+    margin-right: 10px;
+}
+
+.features-list {
+    list-style: decimal inside;
+    padding-left: 0;
+    margin: 0;
+}
+
+.features-list li {
+    margin-bottom: 6px;
+}
+
+.gallery-carousel .item {
+    margin: 5px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.gallery-carousel .item img {
+    display: block;
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.owl-nav button {
+    background: white !important;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    width: 35px;
+    height: 35px;
+}
+
+.owl-next {
+    position: absolute;
+    right: 25px;
+    top: 46px;
+}
+
+.owl-prev {
+    display: none;
+}
+
+.gallery-wrapper {
+    position: relative;
+}
+
+
+
+.fade-gradient-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    /* Ajusta el ancho según qué tan sutil quieres el difuminado */
+    height: 100%;
+    pointer-events: none;
+    /* para que no bloquee los clics en flechas o imágenes */
+    background: linear-gradient(to left, white, transparent);
+    z-index: 2;
+}
+
+/**tabla */
+.options-table th {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.options-table td {
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+.option-image {
+    width: 113px;
+    height: 80px;
+    border-radius: 0.5rem;
+    object-fit: cover;
+}
+
+.color-box {
+    width: 113px;
+    height: 80px;
+    border-radius: 0.5rem;
+    display: inline-block;
+}
+
+.btn-edit {
+    color: #000;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.table td,
+.table th {
+    border-top: none;
+}
+
+.table tbody tr {
+    border-top: 1px solid #dee2e6;
+}
+
+
+.options-table th:nth-child(1),
+.options-table td:nth-child(1) {
+    width: 20%;
+}
+
+.options-table th:nth-child(2),
+.options-table td:nth-child(2) {
+    width: 40%;
+}
+
+.options-table th:nth-child(3),
+.options-table td:nth-child(3) {
+    width: 20%;
+}
+
+.options-table th:nth-child(4),
+.options-table td:nth-child(4) {
+    width: 20%;
+}

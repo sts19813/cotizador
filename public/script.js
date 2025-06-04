@@ -86,8 +86,8 @@ function seleccionarFachada(elemento) {
 
 function seleccionarColor(elemento) {
   const tarjetas = document.querySelectorAll('#opciones-color .estilo-color');
-  tarjetas.forEach(t => t.classList.remove('active', 'bg-primary', 'text-white'));
-  elemento.classList.add('active', 'bg-primary', 'text-white');
+  tarjetas.forEach(t => t.classList.remove('active'));
+  elemento.classList.add('active');
 
   precioColor = parseFloat(elemento.dataset.precio || 0);
   actualizarPrecioTotal();
@@ -95,8 +95,8 @@ function seleccionarColor(elemento) {
 
 function seleccionarPiso(elemento) {
   const tarjetas = document.querySelectorAll('#opciones-piso .estilo-piso');
-  tarjetas.forEach(t => t.classList.remove('active', 'bg-primary', 'text-white'));
-  elemento.classList.add('active', 'bg-primary', 'text-white');
+  tarjetas.forEach(t => t.classList.remove('active'));
+  elemento.classList.add('active');
 
   precioPiso = parseFloat(elemento.dataset.precio || 0);
   actualizarPrecioTotal();
