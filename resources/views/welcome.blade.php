@@ -31,6 +31,9 @@
                             <div class="item"><img src="/img/resumen/g5.jpg" alt="imagen 5" class="thumb" /></div>
                             <div class="item"><img src="/img/resumen/g6.jpg" alt="imagen 6" class="thumb" /></div>
                             <div class="item"><img src="/img/resumen/g7.jpg" alt="imagen 7" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g2.jpg" alt="imagen 8" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g3.jpg" alt="imagen 9" class="thumb" /></div>
+
                         </div>
 
                         <div class="fade-gradient-right"></div>
@@ -47,7 +50,6 @@
 
                     <div class="accordion " id="configAccordion">
 
-                    
                         <!-- General -->
                         <div class="accordion-item hover-shadow mb-4">
                             <h2 class="accordion-header" id="headingGeneral">
@@ -101,7 +103,7 @@
                         <div class="accordion-item hover-shadow mb-4">
                             <div class="accordion-item hover-shadow">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                    <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFachada">
                                         <span class="textAcordeon">Fachada</span>
                                         <span class="icon ms-auto">
                                             <!-- PLUS ICON (cuando está colapsado) -->
@@ -116,7 +118,7 @@
                                         </span>
                                     </button>
                                 </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show">
+                                <div id="collapseFachada" class="accordion-collapse collapse show">
                                     <div class="accordion-body">
                                         <div class="row g-3">
                                             <div class="col-md-6">
@@ -594,35 +596,7 @@
     <x-scripts />
 
     <script>
-        $(document).ready(function() {
-            $('.gallery-carousel').owlCarousel({
-                items: 6,
-                margin: 10,
-                loop: true,
-                nav: true,
-                navText: [
-                    '<img src="/img/Vector.svg" alt="prev" style="width:24px;transform: rotate(180deg);">',
-                    '<img src="/img/Vector.svg" alt="next" style="width:24px; ">'
-                ]
-            });
-
-            $('.gallery-carousel .thumb').on('click', function() {
-                const newSrc = $(this).attr('src');
-                const $preview = $('#mainPreview');
-
-                $preview.addClass('fade-out');
-
-                setTimeout(function() {
-                    $preview.attr('src', newSrc);
-                    $preview.removeClass('fade-out');
-                }, 300);
-
-
-                $('.gallery-carousel .thumb').removeClass('active');
-                $(this).addClass('active');
-            });
-        });
-
+      
         const selections = {};
 
         document.querySelectorAll('.option-card').forEach(card => {
