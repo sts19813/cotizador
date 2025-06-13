@@ -1,0 +1,83 @@
+.formLogin {
+    width: 390px;
+}
+
+.form-section {
+    max-width: 500px;
+    margin: auto;
+    padding: 30px 30px;
+}
+
+.btn-primary {
+    background-color: #2962FF;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0039cb;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #2962FF;
+}
+
+.img-section {
+    background: url('/img/login/login.jpg') no-repeat center center;
+    background-size: cover;
+    height: 93vh;
+    border-radius: 25px;
+}
+
+.logo {
+    width: 200px;
+}
+
+.brand {
+    font-weight: bold;
+    font-size: 1.8rem;
+    color: #2962FF;
+}
+
+.containerimg {
+    padding: 30px;
+}
+
+.form-label {
+    font-weight: 400;
+    color: #A1A1A1 !important;
+    margin-bottom: 0px !important;
+}
+
+.btn-registrar {
+    border-radius: 25px;
+    padding: 15px;
+}
+
+.werlcomeTexr {
+    font-size: 36px;
+    font-weight: 500 !important;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #1C1F1C;
+}
+
+.subtitle-login {
+    color: #7B7B7B !important;
+    font-size: 14px;
+    font-weight: 400 !important;
+}
+
+.form-control {
+    border-radius: 16px !important;
+    padding: 9px;
+}
+
+.mb-4-login {
+    margin-bottom: 5px !important;
+}
+
+.btn-login-google {
+    border-radius: 16px;
+    border-color: #DFDFDF;
+    padding: 10px;
+}

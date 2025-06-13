@@ -16,6 +16,16 @@
     border-color: #007bff;
 }
 
+.dark-blue {
+    border-color: #2B458A !important;
+    color: #2B458A !important;
+
+}
+
+.dark-blue:hover {
+    color: #fff !important;
+}
+
 .info-icon {
     position: absolute;
     top: 8px;

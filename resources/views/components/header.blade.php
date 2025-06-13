@@ -6,11 +6,11 @@
     <img src="/img/logo.svg" alt="Logo" width="210px" class="position-absolute top-50 start-50 translate-middle">
 
     <div>
-        <button class="btn btn-outline-primary me-2 btn-radius">
+        <button  class="btn btn-outline-primary me-2 btn-radius dark-blue" onclick="saveConfiguration()">
             Guardar <i class="bi bi-bookmark"></i>
         </button>
-        <button class="btn btn-primary btn-radius">
+        <a href="/registro" class="btn btn-primary btn-radius">
             Crear Cuenta <i class="bi bi-person"></i>
-        </button>
+        </a>
     </div>
 </div>

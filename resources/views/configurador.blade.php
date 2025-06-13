@@ -3,6 +3,29 @@
 
 <x-head />
 <link rel="stylesheet" href="/assets/cotizador.css">
+<style>
+    .thumb {
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border 0.3s ease;
+        height: 80px;
+        object-fit: cover;
+    }
+
+    .thumb-selected {
+        border: 2px solid #007bff;
+        /* Azul o el color que prefieras */
+    }
+
+    .preview-img.fade-out {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .preview-img {
+        transition: opacity 0.3s ease;
+    }
+</style>
 
 <body class="general-background">
 
@@ -19,23 +42,25 @@
                     <div class="gallery-wrapper">
                         <!-- Imagen de previsualización principal -->
                         <div class="preview-image text-center mb-3">
-                            <img id="mainPreview" src="/img/resumen/g1.jpg" alt="Vista previa" class="img-fluid preview-img">
+                            <img id="mainPreview" src="/img/Tulum/Fachada A/F.jpg" alt="Vista previa" class="img-fluid preview-img">
                         </div>
 
                         <!-- Carrusel de miniaturas -->
-                        <div class="owl-carousel gallery-carousel">
-                            <div class="item"><img src="/img/resumen/g1.jpg" alt="imagen 1" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g2.jpg" alt="imagen 2" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g3.jpg" alt="imagen 3" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g4.jpg" alt="imagen 4" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g5.jpg" alt="imagen 5" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g6.jpg" alt="imagen 6" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g7.jpg" alt="imagen 7" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g2.jpg" alt="imagen 8" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g3.jpg" alt="imagen 9" class="thumb" /></div>
+                        <div id="owl-demo" class="owl-carousel gallery-carousel">
+                            <div class="item"><img src="/img/Tulum/Fachada A/F.jpg" alt="imagen 1" class="thumb" /></div>
+                            <div class="item"><img src="/img/1. IMG/Casas/3. Minimalista/Fachada A/B.jpg" alt="imagen 2" class="thumb" /></div>
+                            <div class="item"><img src="/img/1. IMG/Casas/3. Minimalista/Fachada B/B.jpg" alt="imagen 3" class="thumb" /></div>
+                            <div class="item"><img src="/img/1. IMG/Casas/4. Generales aplica en todas/Cocina/K_60x60-GrisB.jpg" alt="imagen 4" class="thumb" /></div>
+                            <div class="item"><img src="/img/1. IMG/Casas/4. Generales aplica en todas/Cocina/ArenaB.jpg" alt="imagen 3" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g3.jpg" alt="imagen 5" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g4.jpg" alt="imagen 6" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g5.jpg" alt="imagen 7" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g6.jpg" alt="imagen 8" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g7.jpg" alt="imagen 9" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g2.jpg" alt="imagen 10" class="thumb" /></div>
+                            <div class="item"><img src="/img/resumen/g3.jpg" alt="imagen 11" class="thumb" /></div>
 
                         </div>
-
                         <div class="fade-gradient-right"></div>
                     </div>
                 </div>
@@ -53,7 +78,7 @@
                         <!-- General -->
                         <div class="accordion-item hover-shadow mb-4">
                             <h2 class="accordion-header" id="headingGeneral">
-                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#opciones-casas" aria-expanded="true" aria-controls="opciones-casas">
                                     <span class="textAcordeon">General</span>
                                     <span class="icon ms-auto">
                                         <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -65,7 +90,7 @@
                                     </span>
                                 </button>
                             </h2>
-                            <div id="collapseGeneral" class="accordion-collapse collapse show" aria-labelledby="headingGeneral">
+                            <div id="opciones-casas" class="accordion-collapse collapse show" aria-labelledby="headingGeneral">
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Estilo</p>
                                     <div class="row g-3">
@@ -103,7 +128,7 @@
                         <div class="accordion-item hover-shadow mb-4">
                             <div class="accordion-item hover-shadow">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFachada">
+                                    <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#opciones-fachada">
                                         <span class="textAcordeon">Fachada</span>
                                         <span class="icon ms-auto">
                                             <!-- PLUS ICON (cuando está colapsado) -->
@@ -118,7 +143,7 @@
                                         </span>
                                     </button>
                                 </h2>
-                                <div id="collapseFachada" class="accordion-collapse collapse show">
+                                <div id="opciones-fachada" class="accordion-collapse collapse show">
                                     <div class="accordion-body">
                                         <div class="row g-3">
                                             <div class="col-md-6">
@@ -126,7 +151,7 @@
                                                     <span class="info-icon">i</span>
                                                     <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Opción A">
                                                     <div class="option-title">Opción A</div>
-                                                    <div class="option-price">$45,000.00</div>
+                                                    <div class="option-price">$85,000.00</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -149,9 +174,9 @@
                                 <button class="accordion-button custom-toggle"
                                     type="button"
                                     data-bs-toggle="collapse"
-                                    data-bs-target="#collapseColor"
+                                    data-bs-target="#Color"
                                     aria-expanded="true"
-                                    aria-controls="collapseColor">
+                                    aria-controls="Color">
                                     <span class="textAcordeon">Color</span>
                                     <span class="icon ms-auto">
                                         <!-- PLUS ICON -->
@@ -166,12 +191,12 @@
                                     </span>
                                 </button>
                             </h2>
-                            <div id="collapseColor" class="accordion-collapse collapse show" aria-labelledby="headingColor">
+                            <div id="Color" class="accordion-collapse collapse show" aria-labelledby="headingColor">
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Colores disponibles</p>
                                     <div class="row g-3" id="opciones-color">
                                         <div class="col-md-6">
-                                            <div class="option-card text-center estilo-color cursor-pointer"
+                                            <div class="option-card text-center estilo-color cursor-pointer" data-id="Azul Turquesa"
                                                 data-valor="Azul Turquesa"
                                                 data-precio="0"
                                                 onclick="seleccionarColor(this)">
@@ -181,7 +206,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="option-card text-center estilo-color cursor-pointer"
+                                            <div class="option-card text-center estilo-color cursor-pointer" data-id="Beige"
                                                 data-valor="Beige"
                                                 data-precio="1000"
                                                 onclick="seleccionarColor(this)">
@@ -198,7 +223,7 @@
                         <!-- Pisos -->
                         <div class="accordion-item hover-shadow mb-4">
                             <h2 class="accordion-header" id="headingPisos">
-                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePisos" aria-expanded="true" aria-controls="collapsePisos">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#Pisos" aria-expanded="true" aria-controls="Pisos">
                                     <span class="textAcordeon">Pisos</span>
                                     <span class="icon ms-auto">
                                         <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -210,13 +235,13 @@
                                     </span>
                                 </button>
                             </h2>
-                            <div id="collapsePisos" class="accordion-collapse collapse show" aria-labelledby="headingPisos">
+                            <div id="Pisos" class="accordion-collapse collapse show" aria-labelledby="headingPisos">
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Estilo de Piso</p>
                                     <div class="row g-3" id="opciones-piso">
                                         <div class="col-md-6">
-                                            <div class="option-card estilo-piso cursor-pointer"
-                                                data-valor="Madera"
+                                            <div class="option-card estilo-piso cursor-pointer" data-id="Mármol Santo Tomás"
+                                                data-valor="Mármol Santo Tomás"
                                                 data-precio="65000"
                                                 onclick="seleccionarPiso(this)">
                                                 <span class="info-icon">i</span>
@@ -226,8 +251,8 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="option-card estilo-piso cursor-pointer"
-                                                data-valor="Cerámica"
+                                            <div class="option-card estilo-piso cursor-pointer" data-id="Travertino Puebla Fiorito"
+                                                data-valor="Travertino Puebla Fiorito"
                                                 data-precio="48000"
                                                 onclick="seleccionarPiso(this)">
                                                 <span class="info-icon">i</span>
@@ -244,7 +269,7 @@
                         <!-- Mesetas -->
                         <div class="accordion-item hover-shadow  mb-4">
                             <h2 class="accordion-header" id="headingMesetas">
-                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMesetas" aria-expanded="true" aria-controls="collapseMesetas">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#Mesetas" aria-expanded="true" aria-controls="Mesetas">
                                     <span class="textAcordeon">Mesetas</span>
                                     <span class="icon ms-auto">
                                         <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -256,12 +281,12 @@
                                     </span>
                                 </button>
                             </h2>
-                            <div id="collapseMesetas" class="accordion-collapse collapse show" aria-labelledby="headingMesetas">
+                            <div id="Mesetas" class="accordion-collapse collapse show" aria-labelledby="headingMesetas">
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Estilo de Meseta</p>
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <div class="option-card opcion-meseta cursor-pointer"
+                                            <div class="option-card opcion-meseta cursor-pointer" data-id="Granito Blanco Itaunas"
                                                 data-nombre="Granito Blanco Itaunas"
                                                 data-precio="25000"
                                                 onclick="seleccionarMeseta(this)">
@@ -272,7 +297,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="option-card opcion-meseta cursor-pointer"
+                                            <div class="option-card opcion-meseta cursor-pointer" data-id="Granito San Gabriel"
                                                 data-nombre="Granito San Gabriel"
                                                 data-precio="35000"
                                                 onclick="seleccionarMeseta(this)">
@@ -290,7 +315,7 @@
                         <!-- Cancelería -->
                         <div class="accordion-item hover-shadow mb-4">
                             <h2 class="accordion-header" id="headingCanceleria">
-                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCanceleria" aria-expanded="true" aria-controls="collapseCanceleria">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#Canceleria" aria-expanded="true" aria-controls="Canceleria">
                                     <span class="textAcordeon">Cancelería</span>
                                     <span class="icon ms-auto">
                                         <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -302,12 +327,12 @@
                                     </span>
                                 </button>
                             </h2>
-                            <div id="collapseCanceleria" class="accordion-collapse collapse show" aria-labelledby="headingCanceleria">
+                            <div id="Canceleria" class="accordion-collapse collapse show" aria-labelledby="headingCanceleria">
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Estilo de Cancelería</p>
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <div class="option-card opcion-canceleria cursor-pointer"
+                                            <div class="option-card opcion-canceleria cursor-pointer" data-id="Negra"
                                                 data-nombre="Negra"
                                                 data-precio="20000"
                                                 onclick="seleccionarCanceleria(this)">
@@ -318,7 +343,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="option-card opcion-canceleria cursor-pointer"
+                                            <div class="option-card opcion-canceleria cursor-pointer" data-id="Plata"
                                                 data-nombre="Plata"
                                                 data-precio="22000"
                                                 onclick="seleccionarCanceleria(this)">
@@ -336,7 +361,7 @@
                         <!-- Puertas -->
                         <div class="accordion-item hover-shadow mb-4">
                             <h2 class="accordion-header" id="headingPuertas">
-                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePuertas" aria-expanded="true" aria-controls="collapsePuertas">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#Puertas" aria-expanded="true" aria-controls="Puertas">
                                     <span class="textAcordeon">Puertas</span>
                                     <span class="icon ms-auto">
                                         <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -348,12 +373,12 @@
                                     </span>
                                 </button>
                             </h2>
-                            <div id="collapsePuertas" class="accordion-collapse collapse show" aria-labelledby="headingPuertas">
+                            <div id="Puertas" class="accordion-collapse collapse show" aria-labelledby="headingPuertas">
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Estilo de Puertas</p>
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <div class="option-card opcion-puerta cursor-pointer"
+                                            <div class="option-card opcion-puerta cursor-pointer" data-id="Cherry Redwood"
                                                 data-nombre="Cherry Redwood"
                                                 data-precio="45000"
                                                 onclick="seleccionarPuerta(this)">
@@ -364,7 +389,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="option-card opcion-puerta cursor-pointer"
+                                            <div class="option-card opcion-puerta cursor-pointer" data-id="Seg Basic Chocolate"
                                                 data-nombre="Seg Basic Chocolate"
                                                 data-precio="45000"
                                                 onclick="seleccionarPuerta(this)">
@@ -382,7 +407,7 @@
                         <!-- Addons -->
                         <div class="accordion-item hover-shadow mb-4">
                             <h2 class="accordion-header" id="headingAddons">
-                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddons" aria-expanded="true" aria-controls="collapseAddons">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#Addons" aria-expanded="true" aria-controls="Addons">
                                     <span class="textAcordeon">Addons</span>
                                     <span class="icon ms-auto">
                                         <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -394,12 +419,12 @@
                                     </span>
                                 </button>
                             </h2>
-                            <div id="collapseAddons" class="accordion-collapse collapse show" aria-labelledby="headingAddons">
+                            <div id="Addons" class="accordion-collapse collapse show" aria-labelledby="headingAddons">
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Opcionales</p>
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <div class="option-card opcion-addon cursor-pointer"
+                                            <div class="option-card opcion-addon cursor-pointer" data-id="Paneles Solares"
                                                 data-nombre="Paneles Solares"
                                                 data-precio="85000"
                                                 onclick="seleccionarAddon(this)">
@@ -410,7 +435,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="option-card opcion-addon cursor-pointer"
+                                            <div class="option-card opcion-addon cursor-pointer" data-id="Aires acondicionados"
                                                 data-nombre="Aires acondicionados"
                                                 data-precio="18000"
                                                 onclick="seleccionarAddon(this)">
@@ -450,7 +475,7 @@
                                                 data-precio="10000"
                                                 onclick="seleccionarInterior(this)">
                                                 <span class="info-icon">i</span>
-                                                <img src="https://via.placeholder.com/100x70/ccccff" class="img-fluid rounded" alt="Iluminación LED">
+                                                <img src="#" class="img-fluid rounded" alt="Iluminación LED">
                                                 <div class="option-title">Iluminación LED</div>
                                                 <div class="option-price">$10,000.00</div>
                                             </div>
@@ -461,7 +486,7 @@
                                                 data-precio="30000"
                                                 onclick="seleccionarInterior(this)">
                                                 <span class="info-icon">i</span>
-                                                <img src="https://via.placeholder.com/100x70/ffe4b5" class="img-fluid rounded" alt="Closets">
+                                                <img src="#" class="img-fluid rounded" alt="Closets">
                                                 <div class="option-title">Closets</div>
                                                 <div class="option-price">$30,000.00</div>
                                             </div>
@@ -496,7 +521,7 @@
                                                 data-precio="40000"
                                                 onclick="seleccionarExterior(this)">
                                                 <span class="info-icon">i</span>
-                                                <img src="https://via.placeholder.com/100x70/228B22" class="img-fluid rounded" alt="Pasto Sintético">
+                                                <img src="#" class="img-fluid rounded" alt="Pasto Sintético">
                                                 <div class="option-title">Pasto Sintético</div>
                                                 <div class="option-price">$40,000.00</div>
                                             </div>
@@ -507,7 +532,7 @@
                                                 data-precio="55000"
                                                 onclick="seleccionarExterior(this)">
                                                 <span class="info-icon">i</span>
-                                                <img src="https://via.placeholder.com/100x70/b0c4de" class="img-fluid rounded" alt="Deck Madera">
+                                                <img src="#" class="img-fluid rounded" alt="Deck Madera">
                                                 <div class="option-title">Deck Madera</div>
                                                 <div class="option-price">$55,000.00</div>
                                             </div>
@@ -542,7 +567,7 @@
                                                 data-precio="60000"
                                                 onclick="seleccionarJardines(this)">
                                                 <span class="info-icon">i</span>
-                                                <img src="https://via.placeholder.com/100x70/8fbc8f" class="img-fluid rounded" alt="Jardín Zen">
+                                                <img src="#" class="img-fluid rounded" alt="Jardín Zen">
                                                 <div class="option-title">Jardín Zen</div>
                                                 <div class="option-price">$60,000.00</div>
                                             </div>
@@ -553,7 +578,7 @@
                                                 data-precio="75000"
                                                 onclick="seleccionarJardines(this)">
                                                 <span class="info-icon">i</span>
-                                                <img src="https://via.placeholder.com/100x70/9acd32" class="img-fluid rounded" alt="Jardín Tropical">
+                                                <img src="#" class="img-fluid rounded" alt="Jardín Tropical">
                                                 <div class="option-title">Jardín Tropical</div>
                                                 <div class="option-price">$75,000.00</div>
                                             </div>
@@ -595,31 +620,6 @@
 
     <x-scripts />
 
-    <script>
-      
-        const selections = {};
-
-        document.querySelectorAll('.option-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const group = this.closest('.accordion-collapse');
-                const groupId = group.id;
-                const cardId = this.getAttribute('data-id');
-
-                // Si ya está seleccionada, deselecciona
-                if (this.classList.contains('selected')) {
-                    this.classList.remove('selected');
-                    selections[groupId] = null;
-                } else {
-                    // Deseleccionar otros del grupo
-                    group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-                    this.classList.add('selected');
-                    selections[groupId] = cardId;
-                }
-
-                console.log(selections); // Aquí puedes usar o enviar los datos
-            });
-        });
-    </script>
 </body>
 
 </html>

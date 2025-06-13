@@ -1,111 +1,81 @@
+const selections = {};
+
 $(document).ready(function () {
-  var $carousel = $('.gallery-carousel');
-  var $preview = $('#mainPreview');
+  const $carousel = $('.gallery-carousel');
+  const $preview = $('#mainPreview');
 
   $carousel.owlCarousel({
     items: 6,
     margin: 10,
-    loop: true,
     nav: true,
-    slideBy: 1, // para que next/prev se muevan 1 item y no 6, para controlar bien el slide actual
+    dots: false,
     navText: [
       '<img src="/img/Vector.svg" alt="prev" style="width:24px;transform: rotate(180deg);">',
       '<img src="/img/Vector.svg" alt="next" style="width:24px;">'
-    ]
-  });
-
-  // Cambiar imagen principal y miniatura activa al hacer click en una miniatura
-  $('.gallery-carousel .thumb').on('click', function () {
-    const newSrc = $(this).attr('src');
-    var index = $(this).closest('.owl-item').index();
-
-    $preview.addClass('fade-out');
-    setTimeout(function () {
-      $preview.attr('src', newSrc);
-      $preview.removeClass('fade-out');
-    }, 300);
-
-    $('.gallery-carousel .thumb').removeClass('active');
-    $(this).addClass('active');
-
-    // Mover carrusel a la miniatura clickeada
-    $carousel.trigger('to.owl.carousel', [index, 300]);
-  });
-
-  // Al cambiar el slide (por next/prev o swipe), actualizar imagen principal y miniatura activa
-  $carousel.on('changed.owl.carousel', function (event) {
-    var currentIndex = event.item.index; // índice del item actual dentro de owl
-    // En loop=true, owl tiene clones, ajustamos índice real
-    var realIndex = event.page.index * event.page.size;
-
-    // Tomamos la imagen en el índice real para que coincida con la miniatura visible
-    var $currentThumb = $carousel.find('.owl-item').eq(currentIndex).find('img.thumb');
-
-    if ($currentThumb.length) {
-      var newSrc = $currentThumb.attr('src');
-
-      $preview.addClass('fade-out');
-      setTimeout(function () {
-        $preview.attr('src', newSrc);
-        $preview.removeClass('fade-out');
-      }, 300);
-
-      $('.gallery-carousel .thumb').removeClass('active');
-      $currentThumb.addClass('active');
+    ],
+    responsive: {
+      0: { items: 3 },
+      600: { items: 4 },
+      1000: { items: 6 }
     }
   });
 
-  // Función para cambiar imagen y mover carrusel a la miniatura deseada (por scroll)
-  function cambiarImagenCarousel(index) {
-    $carousel.trigger('to.owl.carousel', [index, 300]); // mueve carrusel al slide índice (0-based)
+  // ✅ Cambiar imagen principal y activar miniatura
+  function cambiarImagen(index) {
+    $carousel.trigger('to.owl.carousel', [index, 300]);
 
-    var $thumb = $carousel.find('.owl-item').eq(index).find('img.thumb');
+    const $thumb = $carousel.find('.owl-item').eq(index).find('img.thumb');
     if ($thumb.length) {
-      var newSrc = $thumb.attr('src');
+      const newSrc = $thumb.attr('src');
+
       $preview.addClass('fade-out');
-      setTimeout(function () {
-        $preview.attr('src', newSrc);
-        $preview.removeClass('fade-out');
+      setTimeout(() => {
+        $preview.attr('src', newSrc).removeClass('fade-out');
       }, 300);
 
-      $('.gallery-carousel .thumb').removeClass('active');
-      $thumb.addClass('active');
+      $('.gallery-carousel .thumb').removeClass('thumb-selected');
+      $thumb.addClass('thumb-selected');
     }
   }
 
-  // IntersectionObserver para cambiar miniatura según sección en pantalla
-  let observerOptions = {
+  // ✅ Click en miniatura
+  $carousel.on('click', '.thumb', function () {
+    const index = $(this).closest('.owl-item').index();
+    cambiarImagen(index);
+  });
+
+  // ✅ Inicializar seleccionando la primera imagen
+  cambiarImagen(0);
+
+  // ✅ IntersectionObserver para secciones
+  const observerOptions = {
     root: null,
     rootMargin: '-40% 0px -40% 0px',
     threshold: 0.5
   };
 
-  let secciones = [
-    { id: '#collapseGeneral', carouselIndex: 2 },
-    { id: '#collapseFachada', carouselIndex: 4 },
-    { id: '#collapseColor', carouselIndex: 5 },
-    { id: '#collapsePisos', carouselIndex: 6 },
-    { id: '#collapseMesetas', carouselIndex: 1 }
+  const secciones = [
+    { id: '#opciones-casas', carouselIndex: 2 },
+    { id: '#opciones-fachada', carouselIndex: 4 },
+    { id: '#Color', carouselIndex: 5 },
+    { id: '#Pisos', carouselIndex: 6 },
+    { id: '#Mesetas', carouselIndex: 3 }
   ];
 
-  let observer = new IntersectionObserver(function (entries) {
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        let seccion = secciones.find(s => s.id === '#' + entry.target.id);
+        const seccion = secciones.find(s => s.id === '#' + entry.target.id);
         if (seccion) {
-          cambiarImagenCarousel(seccion.carouselIndex);
-          console.log(seccion.carouselIndex);
-
+          cambiarImagen(seccion.carouselIndex);
         }
       }
     });
   }, observerOptions);
 
   secciones.forEach(s => {
-    let element = document.querySelector(s.id);
-    if (element) {
-      observer.observe(element);
-    }
+    const el = document.querySelector(s.id);
+    if (el) observer.observe(el);
   });
 });
 
@@ -116,32 +86,32 @@ const imagenesPorEstilo = {
   Minimalista: ["/img/Minimalista/Fachada A/R.jpg", "/img/Minimalista/Fachada A/B.jpg", "/img/Minimalista/Fachada A/F.jpg", "/img/Minimalista/Fachada A/L.jpg"]
 };
 
-
 let precioEstilo = 0;
 let precioFachada = 0;
 let precioColor = 0;
 let precioPiso = 0;
 let precioMeseta = 0;
-
-
+let precioCanceleria = 0;
+let precioPuerta = 0;
+let precioAddon = 0;
+let precioInterior = 0;
+let precioExterior = 0;
+let precioJardin = 0;
 
 function cambiarImagenes(estilo) {
   const nuevasImagenes = imagenesPorEstilo[estilo];
   const carouselInner = document.querySelector('#carouselExampleIndicatorsLeft .carousel-inner');
   const thumbnails = document.querySelector('.carousel-indicators');
 
-  // Limpiar carrusel y thumbnails
   carouselInner.innerHTML = '';
   thumbnails.innerHTML = '';
 
   nuevasImagenes.forEach((imgSrc, index) => {
-    // Slide principal
     const item = document.createElement('div');
     item.className = 'carousel-item' + (index === 0 ? ' active' : '');
     item.innerHTML = `<img src="${imgSrc}" class="d-block w-100" alt="...">`;
     carouselInner.appendChild(item);
 
-    // Miniatura
     const thumb = document.createElement('button');
     thumb.type = 'button';
     thumb.setAttribute('data-bs-target', '#carouselExampleIndicatorsLeft');
@@ -156,52 +126,35 @@ function cambiarImagenes(estilo) {
   });
 }
 
-
-document.querySelectorAll('.opcion-meseta').forEach(el => {
-  el.addEventListener('click', function () {
-    // Quitar selección anterior
-    document.querySelectorAll('.opcion-meseta').forEach(item => item.classList.remove('border-primary'));
-
-    // Marcar como seleccionado
-    this.classList.add('border-primary');
-
-    // Obtener precio
-    precioMeseta = parseFloat(this.dataset.precio);
-
-    actualizarPrecioTotal(); // Llama a tu función que actualiza el total
-  });
-});
-
 function seleccionarCasa(elemento) {
-  // Quitar 'active' de todas las tarjetas
-  const tarjetas = document.querySelectorAll('#opciones-casas .estilo-casa');
-  tarjetas.forEach(t => t.classList.remove('active', 'bg-primary', 'text-white'));
+  const tarjetas = document.querySelectorAll('#opciones-casas .option-card');
+  tarjetas.forEach(t => t.classList.remove('active'));
+  elemento.classList.add('active');
 
-  // Agregar clase activa a la seleccionada
-  elemento.classList.add('active', 'bg-primary', 'text-white');
+  const valor = elemento.dataset.id.replace('general', '').toLowerCase();
+  //cambiarImagenes(valor);
 
-  // Ejecutar lógica adicional si lo necesitas
-  const valor = elemento.dataset.valor;
-  cambiarImagenes(valor);
-  precioEstilo = parseFloat(elemento.dataset.precio || 0);
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioEstilo = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
   actualizarPrecioTotal();
 }
 
 function seleccionarFachada(elemento) {
-  const tarjetas = document.querySelectorAll('#opciones-fachada .estilo-fachada');
-  tarjetas.forEach(t => t.classList.remove('active', 'bg-primary', 'text-white'));
-  elemento.classList.add('active', 'bg-primary', 'text-white');
+  const tarjetas = document.querySelectorAll('#opciones-fachada .option-card');
+  tarjetas.forEach(t => t.classList.remove('active'));
+  elemento.classList.add('active');
 
-  precioFachada = parseFloat(elemento.dataset.precio || 0);
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioFachada = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
   actualizarPrecioTotal();
 }
 
 function seleccionarColor(elemento) {
-  const tarjetas = document.querySelectorAll('#opciones-color .estilo-color');
-  tarjetas.forEach(t => t.classList.remove('active'));
-  elemento.classList.add('active');
-
-  precioColor = parseFloat(elemento.dataset.precio || 0);
+  document.querySelectorAll('#opciones-color .option-card').forEach(item => {
+    item.classList.remove('active', 'border-primary');
+  });
+  elemento.classList.add('active', 'border-primary');
+  precioColor = parseFloat(elemento.dataset.precio) || 0;
   actualizarPrecioTotal();
 }
 
@@ -210,15 +163,175 @@ function seleccionarPiso(elemento) {
   tarjetas.forEach(t => t.classList.remove('active'));
   elemento.classList.add('active');
 
-  precioPiso = parseFloat(elemento.dataset.precio || 0);
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioPiso = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
+  actualizarPrecioTotal();
+}
+
+function seleccionarMeseta(elemento) {
+  document.querySelectorAll('.opcion-meseta').forEach(item => item.classList.remove('border-primary'));
+  elemento.classList.add('border-primary');
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioMeseta = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
+  actualizarPrecioTotal();
+}
+
+function seleccionarCanceleria(elemento) {
+  document.querySelectorAll('.opcion-canceleria').forEach(item => item.classList.remove('border-primary'));
+  elemento.classList.add('border-primary');
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioCanceleria = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
+  actualizarPrecioTotal();
+}
+
+function seleccionarPuerta(elemento) {
+  document.querySelectorAll('.opcion-puerta').forEach(item => item.classList.remove('border-primary'));
+  elemento.classList.add('border-primary');
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioPuerta = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
+  actualizarPrecioTotal();
+}
+
+function seleccionarAddon(elemento) {
+  document.querySelectorAll('.opcion-addon').forEach(item => item.classList.remove('border-primary'));
+  elemento.classList.add('border-primary');
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioAddon = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
+  actualizarPrecioTotal();
+}
+
+function seleccionarInterior(elemento) {
+  document.querySelectorAll('.opcion-interior').forEach(item => item.classList.remove('border-primary'));
+  elemento.classList.add('border-primary');
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioInterior = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
+  actualizarPrecioTotal();
+}
+
+function seleccionarExterior(elemento) {
+  document.querySelectorAll('.opcion-exterior').forEach(item => item.classList.remove('border-primary'));
+  elemento.classList.add('border-primary');
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioExterior = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
+  actualizarPrecioTotal();
+}
+
+function seleccionarJardines(elemento) {
+  document.querySelectorAll('.opcion-jardines').forEach(item => item.classList.remove('border-primary'));
+  elemento.classList.add('border-primary');
+  const precioTexto = elemento.querySelector('.option-price').textContent;
+  precioJardin = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
   actualizarPrecioTotal();
 }
 
 function actualizarPrecioTotal() {
-  const total = precioEstilo + precioFachada + precioColor + precioPiso + precioMeseta;
-  const formato = total.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+
+  let precioBase = 1500000;
+
+  const total = precioBase + precioEstilo + precioFachada + precioColor + precioPiso + precioMeseta +
+    precioCanceleria + precioPuerta + precioAddon + precioInterior +
+    precioExterior + precioJardin;
+
+  const formato = total.toLocaleString('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 
   document.querySelectorAll('.precio-total').forEach(el => {
     el.textContent = formato;
   });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+
+
+  document.querySelectorAll('#opciones-casas .option-card').forEach(el => {
+    el.addEventListener('click', function () {
+      seleccionarCasa(this);
+    });
+  });
+
+  document.querySelectorAll('#opciones-fachada .option-card').forEach(el => {
+    el.addEventListener('click', function () {
+      seleccionarFachada(this);
+    });
+  });
+
+  const primeraOpcionCasa = document.querySelector('#opciones-casas .option-card');
+  if (primeraOpcionCasa) {
+    seleccionarCasa(primeraOpcionCasa);
+  }
+
+  document.querySelectorAll('#opciones-color .option-card').forEach(el => {
+    el.addEventListener('click', function () {
+      seleccionarColor(this);
+    });
+  });
+
+  const primerColor = document.querySelector('#opciones-color .option-card');
+  if (primerColor) {
+    seleccionarColor(primerColor);
+  }
+});
+
+document.querySelectorAll('.option-card').forEach(card => {
+  card.addEventListener('click', function () {
+    const group = this.closest('.accordion-collapse');
+    const groupId = group.id;
+    const cardId = this.getAttribute('data-id');
+
+    if (this.classList.contains('selected')) {
+      this.classList.remove('selected');
+      selections[groupId] = null;
+    } else {
+      group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      this.classList.add('selected');
+      selections[groupId] = cardId;
+    }
+
+    console.log(selections);
+    localStorage.setItem('selections', JSON.stringify(selections));
+
+
+  });
+});
+
+// Función para enviar configuración al backend
+async function saveConfiguration() {
+  try {
+    // Obtener el token CSRF del meta tag
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Enviar la petición POST con fetch
+    const response = await fetch('/house-configurations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': token,
+        'Accept': 'application/json'
+      },
+      credentials: 'include',  // Esto asegura enviar cookies de sesión (para autenticación)
+      body: JSON.stringify({
+        configuration: selections
+      })
+    });
+
+    // Verificar si la respuesta fue exitosa
+    if (!response.ok) {
+      debugger
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error desconocido al guardar');
+    }
+
+    // Obtener la respuesta JSON
+    const responseData = await response.json();
+
+    alert("Guardado con éxito: " + (responseData.message || ''));
+
+  } catch (error) {
+    debugger
+    alert("Error al guardar: " + error.message);
+  }
 }
