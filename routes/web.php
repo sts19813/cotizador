@@ -1,31 +1,38 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
-
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HouseConfigurationController;
-
-Route::get('/', function () {
-    return view('configurador');
-});
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\HouseConfigurationController;
+use App\Http\Controllers\AdminController; 
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\LeadController;
 
 
-Route::get('/registro', function () {
-    return view('register');
-});
+/*
+|--------------------------------------------------------------------------
+| Rutas públicas
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/inicio-sesion', function () {
-    return view('login');
-});
+Route::view('/', 'configurador');
+Route::view('/registro', 'register');
+Route::view('/inicio-sesion', 'login');
+
+/*
+|--------------------------------------------------------------------------
+| Login con Google
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/google-auth/redirect', function () {
     return Socialite::driver('google')->redirect();
 });
 
 Route::get('/google-auth/callback', function () {
-
     $user_google = Socialite::driver('google')->stateless()->setHttpClient(new \GuzzleHttp\Client(['verify' => false]))->user();
 
     $user = User::updateOrCreate([
@@ -37,23 +44,47 @@ Route::get('/google-auth/callback', function () {
 
     Auth::login($user);
 
-    return redirect('/');
+    return redirect()->intended('/dashboard');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+/*
+|--------------------------------------------------------------------------
+| Rutas para usuarios autenticados normales
+|--------------------------------------------------------------------------
+*/
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/house-configurations', [HouseConfigurationController::class, 'store'])
-    ->middleware(['auth', 'verified']); // Asegura que esté autenticado
+
+    Route::post('/house-configurations', [HouseConfigurationController::class, 'store']);
 });
 
+/*
+|--------------------------------------------------------------------------
+| Rutas para administradores
+|--------------------------------------------------------------------------
+*/
 
+Route::middleware(['auth', AdminMiddleware::class])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard'); 
+        Route::resource('products', ProductController::class)->names('products');
+        Route::resource('leads', LeadController::class)->names('leads');
+        Route::get('/casas-creadas', [HouseConfigurationController::class, 'index'])->name('admin.houses.index');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Rutas de autenticación generadas por Laravel Breeze/Fortify/etc.
+|--------------------------------------------------------------------------
+*/
 
 require __DIR__ . '/auth.php';
-
-

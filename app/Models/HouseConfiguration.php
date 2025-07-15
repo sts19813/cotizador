@@ -13,7 +13,7 @@ class HouseConfiguration extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'id', 'user_id', 'configuration'
+        'id', 'user_id', 'configuration', 'status',
     ];
 
     protected $casts = [

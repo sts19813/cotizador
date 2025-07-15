@@ -1,13 +1,30 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\HouseConfiguration;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Http\Request;
+
 
 class HouseConfigurationController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+
+        if (!$user || !$user->isAdmin()) {
+            abort(403);
+        }
+
+        $configurations = HouseConfiguration::with('user')->latest()->get();
+
+        return view('admin.houses.index', compact('configurations'));
+    }
+
     public function store(Request $request)
     {
         $user = Auth::user();
