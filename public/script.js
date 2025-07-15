@@ -1,4 +1,4 @@
-const selections = {};
+let selections = {};
 
 $(document).ready(function () {
   const $carousel = $('.gallery-carousel');
@@ -55,9 +55,9 @@ $(document).ready(function () {
   };
 
   const secciones = [
-    { id: '#opciones-casas', carouselIndex: 2 },
-    { id: '#opciones-fachada', carouselIndex: 4 },
-    { id: '#Color', carouselIndex: 5 },
+    { id: '#opciones-casas', carouselIndex: 0 },
+    { id: '#opciones-fachada', carouselIndex: 1 },
+    { id: '#Color', carouselIndex: 2 },
     { id: '#Pisos', carouselIndex: 6 },
     { id: '#Mesetas', carouselIndex: 3 }
   ];
@@ -68,6 +68,7 @@ $(document).ready(function () {
         const seccion = secciones.find(s => s.id === '#' + entry.target.id);
         if (seccion) {
           cambiarImagen(seccion.carouselIndex);
+          console.log(seccion.carouselIndex);
         }
       }
     });
@@ -97,6 +98,8 @@ let precioAddon = 0;
 let precioInterior = 0;
 let precioExterior = 0;
 let precioJardin = 0;
+let precioHabitaciones = 0;
+
 
 function cambiarImagenes(estilo) {
   const nuevasImagenes = imagenesPorEstilo[estilo];
@@ -136,6 +139,19 @@ function seleccionarCasa(elemento) {
 
   const precioTexto = elemento.querySelector('.option-price').textContent;
   precioEstilo = parseFloat(precioTexto.replace(/[^0-9.-]+/g, ""));
+  actualizarPrecioTotal();
+}
+
+function seleccionarHabitacion(elemento) {
+  document.querySelectorAll('#opciones-habitaciones .option-card').forEach(item => {
+    item.classList.remove('active', 'border-primary');
+  });
+
+  elemento.classList.add('active', 'border-primary');
+
+  const precio = parseFloat(elemento.dataset.precio) || 0;
+  precioHabitaciones = precio;
+
   actualizarPrecioTotal();
 }
 
@@ -230,7 +246,7 @@ function actualizarPrecioTotal() {
 
   const total = precioBase + precioEstilo + precioFachada + precioColor + precioPiso + precioMeseta +
     precioCanceleria + precioPuerta + precioAddon + precioInterior +
-    precioExterior + precioJardin;
+    precioExterior + precioJardin + precioHabitaciones;
 
   const formato = total.toLocaleString('es-MX', {
     style: 'currency',

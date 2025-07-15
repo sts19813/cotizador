@@ -7,7 +7,7 @@
     border: 2px solid transparent;
     border-radius: 10px;
     padding: 10px;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     position: relative;
 }
 
@@ -121,12 +121,12 @@
 .option-card:hover {
     border: 2px solid #007BFF;
     border-radius: 0.5rem;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    cursor: pointer;
 }
 
 /* Borde azul al estar seleccionado (clic) */
 .option-card.selected {
     border: 2px solid #007BFF;
     border-radius: 0.5rem;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
 }

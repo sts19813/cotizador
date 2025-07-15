@@ -44,7 +44,7 @@ Route::get('/google-auth/callback', function () {
 
     Auth::login($user);
 
-    return redirect()->intended('/dashboard');
+    return redirect()->intended('admin/dashboard');
 });
 
 /*

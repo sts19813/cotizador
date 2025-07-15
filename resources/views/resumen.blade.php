@@ -23,7 +23,7 @@
 
 
         <hr>
-
+        <div id="selecciones"></div>
     </div>
     <div class="container mt-4">
         <div class="row">
@@ -296,6 +296,15 @@
                 }
             }
         });
+/*
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recupera y parsea la información desde localStorage
+            let selections = JSON.parse(localStorage.getItem('selections')) || {};
+
+            // Mostrar en pantalla
+            const contenedor = document.getElementById('selecciones');
+            contenedor.innerText = JSON.stringify(selections, null, 2); // formateado
+        });*/
     </script>
 </body>
 
