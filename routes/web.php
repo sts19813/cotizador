@@ -10,7 +10,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\LeadController;
-
+use App\Http\Controllers\Admin\BasePriceController;
+use App\Http\Controllers\Admin\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,8 +78,15 @@ Route::middleware(['auth', AdminMiddleware::class])
     ->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard'); 
         Route::resource('products', ProductController::class)->names('products');
+        Route::resource('categories', CategoryController::class)->names('categories');
+        
+
         Route::resource('leads', LeadController::class)->names('leads');
         Route::get('/casas-creadas', [HouseConfigurationController::class, 'index'])->name('admin.houses.index');
+        Route::resource('/precios-base', BasePriceController::class)
+                ->parameters(['precios-base' => 'basePrice'])
+                ->except(['create', 'show', 'edit']);
+
     });
 
 /*
