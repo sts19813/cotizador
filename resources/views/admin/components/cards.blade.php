@@ -3,7 +3,7 @@
         <div class="card text-center shadow-sm">
             <div class="card-body">
                 <h5>Total Leads</h5>
-                <p>3 <small class="text-muted">(1 nuevos, 1 asistencia, 1 apartado)</small></p>
+                <p>({{ $leads->count() }})<small class="text-muted">(1 nuevos)</small></p>
             </div>
         </div>
     </div>
@@ -11,7 +11,7 @@
         <div class="card text-center shadow-sm">
             <div class="card-body">
                 <h5>Productos</h5>
-                <p>6 <small class="text-muted">disponibles para personalización</small></p>
+                <p>({{ $products->count() }}) <small class="text-muted">disponibles para personalización</small></p>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
         <div class="card text-center shadow-sm">
             <div class="card-body">
                 <h5>Casas Creadas</h5>
-                <p>2 <small class="text-muted">(1 guardada, 1 solicitada)</small></p>
+                <p>({{ $Houses->count() }}) <small class="text-muted">({{ $Houses->count() }} guardada, 0 solicitada)</small></p>
             </div>
         </div>
     </div>

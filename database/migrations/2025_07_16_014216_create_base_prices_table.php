@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('base_prices', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->integer('orden')->default(0);
-            $table->boolean('is_active')->default(true);
+            $table->string('style')->unique(); // Ej: 'Minimalista', 'Tulum', 'Mexicano'
+            $table->decimal('price', 12, 2);   // Precio base
+            $table->string('image_url')->nullable(); // URL del ícono o imagen
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('base_prices');
     }
 };

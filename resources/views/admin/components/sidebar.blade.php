@@ -22,8 +22,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
+            <a class="nav-link d-flex align-items-center gap-2" href="/admin/precios-base">
                 <i class="bi bi-currency-dollar"></i> Precios
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="/admin/categories">
+                <i class="bi bi-tags"></i> Categorías
             </a>
         </li>
     </ul>
