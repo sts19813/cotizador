@@ -16,6 +16,16 @@ class CategoryController extends Controller
         return view('admin.categories.index', compact('categories'));
     }
 
+    public function configurador()
+    {
+        $categories = Category::with('products')
+            ->where('is_active', true)
+            ->orderBy('orden')
+            ->get();
+
+        return view('test', compact('categories'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([

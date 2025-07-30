@@ -32,7 +32,7 @@
                         <td>{{ $product->variant_code }}</td>
                         <td><span class="badge bg-dark">{{ $product->category->name }}</span></td>
                         <td><span class="badge bg-secondary">{{ $product->style }}</span></td>
-                        <td>{{ Str::limit($product->description, 30, '...') }}</td>
+                        <td>{{ $product->description }}</td>
                         <td>{{ $product->brand }}</td>
                         <td>${{ number_format($product->base_price, 2) }}</td>
                         <td>
@@ -70,20 +70,27 @@
 @endsection
 
 @push('scripts')
-
-    
     <script>
         $(document).ready(function() {
             $('#productsTable').DataTable({
+                autoWidth: false,
+                columnDefs: [{
+                        width: '360px',
+                        targets: 4
+                    },
+                    {
+                        width: '100px',
+                        targets: 7
+                    }
+                ],
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                    url: '//cdn.datatables.net/plug-ins/2.3.2/i18n/es-MX.json'
                 },
                 responsive: true
             });
         });
     </script>
     <script>
-        
         $(document).on('click', '.btn-edit-product', function() {
             debugger
             const button = $(this);

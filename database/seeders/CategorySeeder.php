@@ -18,7 +18,7 @@ class CategorySeeder extends Seeder
             'Pisos Interiores',
             'Pisos Regaderas',
             'Meseta Cocina',
-            'Meseta Baños',
+            'Mesetas Baños',
             'Muros Regaderas',
             'Muros Interiores Base',
             'Muros Interiores Acento',
