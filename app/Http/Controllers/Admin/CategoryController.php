@@ -16,14 +16,21 @@ class CategoryController extends Controller
         return view('admin.categories.index', compact('categories'));
     }
 
-    public function configurador()
+    public function configurador($style = 'Minimalista')
     {
+        $allowedStyles = ['Minimalista', 'Tulum', 'Mexicano'];
+
+        if (!in_array($style, $allowedStyles)) {
+            abort(404); // o redirecciona, o usa 'Minimalista'
+        }
+        
         $categories = Category::with('products')
             ->where('is_active', true)
+            ->where('style', $style)
             ->orderBy('orden')
             ->get();
-
-        return view('test', compact('categories'));
+    
+        return view('test', compact('categories', 'style'));
     }
 
     public function store(Request $request)

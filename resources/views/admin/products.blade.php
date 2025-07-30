@@ -118,6 +118,7 @@
             form.find('[name="two_bedroom_price"]').val(button.data('two_bedroom_price'));
             form.find('[name="three_bedroom_price"]').val(button.data('three_bedroom_price'));
             form.find('[name="four_bedroom_price"]').val(button.data('four_bedroom_price'));
+            form.find('#productImagePreview').attr('src', button.data('image_url'));
 
             // Cambiamos texto del botón por claridad
             form.find('button[type="submit"]').text('Actualizar Producto');

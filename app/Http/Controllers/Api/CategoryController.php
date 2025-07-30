@@ -14,6 +14,7 @@ class CategoryController extends Controller
         // Cargar categorías activas con sus productos
         $categories = Category::with('products')
             ->where('is_active', true)
+            ->where('style', 'Minimalista')
             ->orderBy('orden')
             ->get();
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ProductSeeder extends Seeder
+class ProductSeederTulum extends Seeder
 {
     /**
      * Run the database seeds.
@@ -803,7 +803,10 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            $categoryId = DB::table('categories')->where('name', $product['category_name'])->value('id');
+            $categoryId = DB::table('categories')
+            ->where('name', $product['category_name'])
+            ->where('style', 'Tulum')
+            ->value('id');
 
             if ($categoryId) {
                 DB::table('products')->insert([

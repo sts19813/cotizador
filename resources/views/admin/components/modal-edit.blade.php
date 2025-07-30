@@ -5,7 +5,7 @@
           <h5 class="modal-title" id="createProductLabel">Editar Producto</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <form id="editForm" method="POST">
+        <form id="editForm" method="POST" enctype="multipart/form-data">
           @csrf
           @method('PUT')
           <div class="modal-body row g-3">
@@ -49,13 +49,19 @@
               <label>Precio Base*</label>
               <input type="number" step="0.01" name="base_price" class="form-control" required>
             </div>
+
+            <img id="productImagePreview" src="" class="img-fluid mb-2" style="max-height: 150px;">
+
+            <!-- Para subir archivo -->
             <div class="col-md-6">
-              <label>URL de Imagen</label>
-              <input type="text" name="image_url" class="form-control">
+              <label>Imagen del Producto*</label>
+              <input type="file" name="image_file" class="form-control">
             </div>
+
+            <!-- Para subir un archivo adicional (si `product_url` también es archivo, como un PDF o imagen) -->
             <div class="col-md-6">
-              <label>Link del Producto</label>
-              <input type="text" name="product_url" class="form-control">
+              <label>Archivo o Link del Producto</label>
+              <input type="file" name="product_file" class="form-control">
             </div>
   
             <div class="col-12">

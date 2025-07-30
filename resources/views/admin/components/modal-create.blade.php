@@ -50,11 +50,11 @@
             </div>
             <div class="col-md-6">
               <label>URL de Imagen</label>
-              <input type="url" name="image_url" class="form-control">
+              <input type="text" name="image_url" class="form-control">
             </div>
             <div class="col-md-6">
               <label>Link del Producto</label>
-              <input type="url" name="product_url" class="form-control">
+              <input type="text" name="product_url" class="form-control">
             </div>
   
             <div class="col-12">

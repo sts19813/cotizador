@@ -33,6 +33,42 @@
     .bg-habitaciones span {
         color: white;
     }
+
+    .preview-image {
+        position: relative;
+        width: 100%;
+        /* Ocupa todo el ancho disponible */
+        max-width: 100%;
+        /* Para evitar que crezca más allá del padre */
+        padding: 0;
+        margin: 0 auto;
+        /* Centrar si el contenedor padre es más ancho */
+        display: block;
+        /* Ocupa todo el ancho disponible */
+    }
+
+    #mainPreview,
+    #overlayMain {
+        width: 100%;
+        /* Ocupa todo el ancho del contenedor */
+        height: auto;
+        /* Mantiene la proporción */
+        display: block;
+        margin: 0;
+        padding: 0;
+        border: none;
+        object-fit: contain;
+        /* Contiene la imagen sin recortar */
+        vertical-align: top;
+    }
+
+    #overlayMain {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        user-select: none;
+    }
 </style>
 
 <body class="general-background">
@@ -49,37 +85,43 @@
                 <div class="sticky-content">
                     <div class="gallery-wrapper">
                         <!-- Imagen de previsualización principal -->
-                        <div class="preview-image text-center">
-                            <img id="mainPreview" src="/img/Tulum/Fachada A/F.jpg" alt="Vista previa"
-                                class="img-fluid preview-img">
+                        <div class="preview-image text-center" style="position: relative;">
+                          <img id="mainPreview" src="/img/Tulum/Fachada A/F.jpg" alt="Vista previa"
+                               class="img-fluid preview-img">
+                          <img id="overlayMain" src="" alt="Overlay"
+                               style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none;">
                         </div>
-
+                      
                         <!-- Carrusel de miniaturas -->
                         <div id="owl-demo" class="owl-carousel gallery-carousel">
-                            <div class="item"><img src="/img/Tulum/Fachada A/F.jpg" alt="imagen 1" class="thumb" />
-                            </div>
-                            <div class="item"><img src="/img/1. IMG/Casas/3. Minimalista/Fachada A/B.jpg"
-                                    alt="imagen 2" class="thumb" /></div>
-                            <div class="item"><img src="/img/1. IMG/Casas/3. Minimalista/Fachada B/B.jpg"
-                                    alt="imagen 3" class="thumb" /></div>
-                            <div class="item"><img
-                                    src="/img/1. IMG/Casas/4. Generales aplica en todas/Cocina/K_60x60-GrisB.jpg"
-                                    alt="imagen 4" class="thumb" /></div>
-                            <div class="item"><img
-                                    src="/img/1. IMG/Casas/4. Generales aplica en todas/Cocina/ArenaB.jpg"
-                                    alt="imagen 3" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g4.jpg" alt="imagen 6" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g6.jpg" alt="imagen 8" class="thumb" /></div>
-                            <div class="item"><img src="/img/resumen/g7.jpg" alt="imagen 9" class="thumb" /></div>
-                            <div class="item"><img
-                                    src="/img/1. IMG/Casas/4. Generales aplica en todas/Baños/B_60X60-ArenaB.jpg"
-                                    alt="imagen 3" class="thumb" /></div>
-                            <div class="item"><img
-                                    src="/img/1. IMG/Casas/4. Generales aplica en todas/Baños/B_60x60-ArenaN.jpg"
-                                    alt="imagen 3" class="thumb" /></div>
+                          <div class="item">
+                            <img src="/baseMinimalista/fachadaA/01-F.jpg" alt="imagen 1" class="thumb" />
+                          </div>
+                          <div class="item">
+                            <img src="/baseMinimalista/fachadaA/02-R.jpg" alt="imagen 2" class="thumb" />
+                          </div>
+                          <div class="item">
+                            <img src="/baseMinimalista/fachadaA/03L.jpg" alt="imagen 3" class="thumb" />
+                          </div>
+                          <div class="item">
+                            <img src="/baseMinimalista/fachadaA/04-B.jpg" alt="imagen 4" class="thumb" />
+                          </div>
+                          <div class="item">
+                            <img src="/baseMinimalista/MINIMALISTA-COCINA-BASE.jpg" alt="imagen 5" class="thumb"
+                                 data-overlay="/baseMinimalista/PISOS/Cocina/COCINA-M01.png" />
+                          </div>
+                          <div class="item">
+                            <img src="/baseMinimalista/MINIMALISTA-RECAMARA-BASE.jpg" alt="imagen 6" class="thumb"
+                                 data-overlay="/baseMinimalista/PISOS/Recamara/CUARTO-M01.png" />
+                          </div>
+                          <div class="item">
+                            <img src="/baseMinimalista/MINIMALISTA-SALA-BASE.jpg" alt="imagen 7" class="thumb"
+                                 data-overlay="/baseMinimalista/PISOS/Sala/SALA-M01.png" />
+                          </div>
                         </div>
+                      
                         <div class="fade-gradient-right"></div>
-                    </div>
+                      </div>
                 </div>
             </div>
             <!-- Columna de 4 con mucho contenido scrollable -->

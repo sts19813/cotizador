@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
+            $table->enum('style', ['Minimalista', 'Tulum', 'Mexicano']);
             $table->integer('orden')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

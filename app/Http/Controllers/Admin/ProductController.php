@@ -49,8 +49,8 @@ class ProductController extends Controller
             'description' => 'required',
             'brand' => 'required',
             'base_price' => 'required|numeric',
-            'image_url' => 'nullable|url',
-            'product_url' => 'nullable|url',
+            'image_url' => 'nullable',
+            'product_url' => 'nullable',
             'one_bedroom_price' => 'required|numeric',
             'two_bedroom_price' => 'required|numeric',
             'three_bedroom_price' => 'required|numeric',
@@ -99,16 +99,30 @@ class ProductController extends Controller
             'description' => 'required',
             'brand' => 'required',
             'base_price' => 'required|numeric',
-            'image_url' => 'nullable',
-            'product_url' => 'nullable',
             'one_bedroom_price' => 'required|numeric',
             'two_bedroom_price' => 'required|numeric',
             'three_bedroom_price' => 'required|numeric',
             'four_bedroom_price' => 'required|numeric',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'product_file' => 'nullable|file|max:4096', // puedes ajustar según tipo
         ]);
-    
-        $product->update($request->all());
-    
+
+        $data = $request->all();
+
+        if ($request->hasFile('image_file')) {
+            $filename = time() . '_' . $request->file('image_file')->getClientOriginalName();
+            $request->file('image_file')->move(public_path('producto'), $filename);
+            $data['image_url'] = '/producto/' . $filename;
+        }
+
+        if ($request->hasFile('product_file')) {
+            $filename = time() . '_' . $request->file('product_file')->getClientOriginalName();
+            $request->file('product_file')->move(public_path('producto'), $filename);
+            $data['product_url'] = '/producto/' . $filename;
+        }
+
+        $product->update($data);
+
         return redirect()->route('admin.products.index')->with('success', 'Producto actualizado correctamente.');
     }
 

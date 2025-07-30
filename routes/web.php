@@ -20,7 +20,7 @@ use App\Http\Controllers\Admin\CategoryController;
 */
 
 Route::view('/', 'configurador');
-Route::get('/test', [CategoryController::class, 'configurador']);
+Route::get('/test/{style?}', [CategoryController::class, 'configurador']);
 Route::view('/registro', 'register');
 Route::view('/inicio-sesion', 'login');
 

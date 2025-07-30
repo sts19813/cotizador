@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -41,6 +40,22 @@ class CategorySeeder extends Seeder
                 'name' => $name,
                 'orden' => $index + 1,
                 'is_active' => true,
+                'style' => 'Tulum',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $categories = [
+            'Fachada',
+            'Pisos Interiores',
+        ];
+        foreach ($categories as $index => $name) {
+            DB::table('categories')->insert([
+                'name' => $name,
+                'orden' => $index + 1,
+                'is_active' => true,
+                'style' => 'Minimalista',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
