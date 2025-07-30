@@ -134,6 +134,16 @@ function cambiarImagenes(estilo) {
 }
 
 function seleccionarCasa(elemento) {
+  debugger
+
+  if(elemento.dataset.id === "generalTulum"){
+    window.location.href = "/test/Tulum";
+  }
+
+  if(elemento.dataset.id === "generalMinimalista"){
+    window.location.href = "/test";
+  }
+
   const tarjetas = document.querySelectorAll('#opciones-casas .option-card');
   tarjetas.forEach(t => t.classList.remove('active'));
   elemento.classList.add('active');
@@ -281,10 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  const primeraOpcionCasa = document.querySelector('#opciones-casas .option-card');
-  if (primeraOpcionCasa) {
-    seleccionarCasa(primeraOpcionCasa);
-  }
+
 
   document.querySelectorAll('#opciones-color .option-card').forEach(el => {
     el.addEventListener('click', function () {
