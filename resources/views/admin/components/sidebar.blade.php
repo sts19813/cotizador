@@ -26,6 +26,11 @@
                 <i class="bi bi-currency-dollar"></i> Precios
             </a>
         </li>
+         <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="/admin/renders">
+                <i class="bi bi-currency-dollar"></i> Render
+            </a>
+        </li>
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center gap-2" href="/admin/categories">
                 <i class="bi bi-tags"></i> Categorías

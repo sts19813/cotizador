@@ -15,6 +15,7 @@ class Product extends Model
         'pre_code',
         'variant_code',
         'version',
+        'title',
         'description',
         'brand',
         'base_price',
@@ -37,5 +38,10 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function renders()
+    {
+        return $this->hasOne(ProductRender::class);
     }
 }

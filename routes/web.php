@@ -9,20 +9,22 @@ use App\Http\Controllers\Admin\HouseConfigurationController;
 use App\Http\Controllers\AdminController; 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\RenderController;
 use App\Http\Controllers\Admin\LeadController;
 use App\Http\Controllers\Admin\BasePriceController;
 use App\Http\Controllers\Admin\CategoryController;
+use Illuminate\Foundation\Exceptions\Renderer\Renderer;
 
 /*
 |--------------------------------------------------------------------------
 | Rutas públicas
 |--------------------------------------------------------------------------
 */
-
-Route::view('/', 'configurador');
-Route::get('/test/{style?}', [CategoryController::class, 'configurador']);
 Route::view('/registro', 'register');
 Route::view('/inicio-sesion', 'login');
+Route::view('/test/{style?}', 'configurador');
+Route::get('/{style?}', [CategoryController::class, 'configurador']);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +81,8 @@ Route::middleware(['auth', AdminMiddleware::class])
     ->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard'); 
         Route::resource('products', ProductController::class)->names('products');
+        Route::resource('renders', RenderController::class)->names('renders');
+
         Route::resource('categories', CategoryController::class)->names('categories');
         
 

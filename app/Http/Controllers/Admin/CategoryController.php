@@ -21,15 +21,15 @@ class CategoryController extends Controller
         $allowedStyles = ['Minimalista', 'Tulum', 'Mexicano'];
 
         if (!in_array($style, $allowedStyles)) {
-            abort(404); // o redirecciona, o usa 'Minimalista'
+            abort(404);
         }
-        
-        $categories = Category::with('products')
+
+        $categories = Category::with('products.renders')
             ->where('is_active', true)
             ->where('style', $style)
             ->orderBy('orden')
             ->get();
-    
+            
         return view('test', compact('categories', 'style'));
     }
 

@@ -86,42 +86,56 @@
                     <div class="gallery-wrapper">
                         <!-- Imagen de previsualización principal -->
                         <div class="preview-image text-center" style="position: relative;">
-                          <img id="mainPreview" src="/img/Tulum/Fachada A/F.jpg" alt="Vista previa"
-                               class="img-fluid preview-img">
-                          <img id="overlayMain" src="" alt="Overlay"
-                               style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none;">
+                            <img id="mainPreview" src="/img/Tulum/Fachada A/F.jpg" alt="Vista previa"
+                                class="img-fluid preview-img">
+                            <img id="overlayMain" src="" alt="Overlay"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none;">
                         </div>
-                      
+
                         <!-- Carrusel de miniaturas -->
                         <div id="owl-demo" class="owl-carousel gallery-carousel">
-                          <div class="item">
-                            <img src="/baseMinimalista/fachadaA/01-F.jpg" alt="imagen 1" class="thumb" />
-                          </div>
-                          <div class="item">
-                            <img src="/baseMinimalista/fachadaA/02-R.jpg" alt="imagen 2" class="thumb" />
-                          </div>
-                          <div class="item">
-                            <img src="/baseMinimalista/fachadaA/03L.jpg" alt="imagen 3" class="thumb" />
-                          </div>
-                          <div class="item">
-                            <img src="/baseMinimalista/fachadaA/04-B.jpg" alt="imagen 4" class="thumb" />
-                          </div>
-                          <div class="item">
-                            <img src="/baseMinimalista/MINIMALISTA-COCINA-BASE.jpg" alt="imagen 5" class="thumb"
-                                 data-overlay="/baseMinimalista/PISOS/Cocina/COCINA-M01.png" />
-                          </div>
-                          <div class="item">
-                            <img src="/baseMinimalista/MINIMALISTA-RECAMARA-BASE.jpg" alt="imagen 6" class="thumb"
-                                 data-overlay="/baseMinimalista/PISOS/Recamara/CUARTO-M01.png" />
-                          </div>
-                          <div class="item">
-                            <img src="/baseMinimalista/MINIMALISTA-SALA-BASE.jpg" alt="imagen 7" class="thumb"
-                                 data-overlay="/baseMinimalista/PISOS/Sala/SALA-M01.png" />
-                          </div>
+                            <div class="item">
+                                <img src="/baseMinimalista/fachadaA/01-F.jpg" alt="imagen 1" class="thumb" />
+                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+
+                            </div>
+                            <div class="item">
+                                <img src="/baseMinimalista/fachadaA/02-R.jpg" alt="imagen 2" class="thumb" />
+                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+
+                            </div>
+                            <div class="item">
+                                <img src="/baseMinimalista/fachadaA/03L.jpg" alt="imagen 3" class="thumb" />
+                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+
+                            </div>
+                            <div class="item">
+                                <img src="/baseMinimalista/fachadaA/04-B.jpg" alt="imagen 4" class="thumb" />
+                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+
+                            </div>
+                            <div class="item">
+                                <img src="/baseMinimalista/MINIMALISTA-SALA-BASE.jpg" alt="imagen 5" class="thumb"
+                                    data-overlay="/baseMinimalista/PISOS/Cocina/COCINA-M01.png" />
+                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+
+                            </div>
+                            <div class="item">
+                                <img src="/baseMinimalista/MINIMALISTA-COCINA-BASE.jpg" alt="imagen 6" class="thumb"
+                                    data-overlay="/baseMinimalista/PISOS/Recamara/CUARTO-M01.png" />
+                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+
+                            </div>
+                            <div class="item">
+                                <img src="/baseMinimalista/MINIMALISTA-RECAMARA-BASE.jpg" alt="imagen 7" class="thumb"
+                                    data-overlay="/baseMinimalista/PISOS/Sala/SALA-M01.png" />
+                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+
+                            </div>
                         </div>
-                      
+
                         <div class="fade-gradient-right"></div>
-                      </div>
+                    </div>
                 </div>
             </div>
             <!-- Columna de 4 con mucho contenido scrollable -->
@@ -274,53 +288,58 @@
 
 
                         @foreach ($categories as $category)
-                            <div class="accordion-item hover-shadow mb-4">
-                                <h2 class="accordion-header" id="heading-{{ $category->id }}">
-                                    <button class="accordion-button custom-toggle" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#collapse-{{ $category->id }}"
-                                        aria-expanded="false" aria-controls="collapse-{{ $category->id }}">
-                                        <span class="textAcordeon">{{ $category->name }}</span>
-                                        <span class="icon ms-auto">
-                                            <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                                height="20" fill="currentColor" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
-                                            </svg>
-                                            <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                                height="20" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
-                                            </svg>
-                                        </span>
-                                    </button>
-                                </h2>
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="heading-{{ $category->id }}">
+                                <button class="accordion-button custom-toggle" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $category->id }}"
+                                    aria-expanded="false" aria-controls="collapse-{{ $category->id }}">
+                                    <span class="textAcordeon">{{ $category->name }}</span>
+                                    <span class="icon ms-auto">
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
+                                            height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path
+                                                d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
+                                            height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
 
-                                <div id="collapse-{{ $category->id }}" class="accordion-collapse collapse"
-                                    aria-labelledby="heading-{{ $category->id }}">
-                                    <div class="accordion-body">
-                                        <p class="fw-bold mb-1">Opciones de {{ $category->name }}</p>
-                                        <div class="row g-3" id="opciones-{{ Str::slug($category->name) }}">
-                                            @foreach ($category->products as $product)
-                                                <div class="col-md-6">
-                                                    <div class="option-card estilo-{{ Str::slug($category->name) }} cursor-pointer"
-                                                        data-id="{{ $product->id }}"
-                                                        data-valor="{{ $product->description }}"
-                                                        data-precio="{{ $product->base_price }}"
-                                                        data-categoria="{{ Str::slug($category->name) }}"
-                                                        onclick="seleccionarOpcion(this)">
-                                                        <span class="info-icon">i</span>
-                                                        <img src="{{ $product->image_url ?? 'https://via.placeholder.com/400x300' }}"
-                                                            class="img-fluid rounded"
-                                                            alt="{{ $product->description }}" width="350px">
-                                                        <div class="option-title">{{ $product->description }}</div>
-                                                        <div class="option-price">
-                                                            ${{ number_format($product->base_price, 2) }}</div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                            <div id="collapse-{{ $category->id }}" class="accordion-collapse collapse"
+                                aria-labelledby="heading-{{ $category->id }}">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Opciones de {{ $category->name }}</p>
+                                    <div class="row g-3" id="opciones-{{ Str::slug($category->name) }}">
+                                        @foreach ($category->products as $product)
+                                        <div class="col-md-6">
+                                            <div class="option-card estilo-{{ Str::slug($category->name) }} cursor-pointer"
+                                                data-categoria="{{ Str::slug($category->name) }}"
+                                                data-id="{{ $product->id }}"
+                                                data-renders='@json($product->renders)'
+
+                                                data-valor="{{ $product->title }}"
+                                                data-precio="{{ $product->base_price }}"
+                                                data-categoria="{{ Str::slug($category->name) }}"
+                                                onclick="seleccionarOpcion(this)">
+                                                <span class="info-icon">i</span>
+                                                <img src="/{{ $product->image_url ?? 'https://via.placeholder.com/400x300' }}"
+                                                    class="img-fluid rounded"
+                                                    alt="" width="350px">
+                                                <div class="option-title">{{ $product->title }}</div>
+                                                <div class="option-description">{{ $product->description }}</div>
+
+                                                <div class="option-price">
+                                                    ${{ number_format($product->base_price, 2) }}</div>
+                                            </div>
                                         </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         @endforeach
                     </div>
                 </div>
@@ -329,7 +348,7 @@
     </div>
 
 
-
+<!-- Barra inferior con botones 
     <div class="bottom-bar d-flex justify-content-between align-items-center">
         <div class="d-flex gap-3">
             <button class="btn text-light p-10">
@@ -351,9 +370,11 @@
             <a href="/resumen" class="btn btn-light ms-3">Ver Resumen ></a>
         </div>
     </div>
+    -->
     <x-footer />
 
-    <x-scripts />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/Minimalista.js"></script>
 
 </body>
 

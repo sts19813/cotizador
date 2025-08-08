@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('pre_code');       // ej. PIN01
             $table->string('variant_code');   // ej. T01
             $table->string('version');
-            $table->text('description');
+            $table->text('title');
+            $table->text('description')->nullable();
             $table->string('brand');
             $table->decimal('base_price', 10, 2);
             $table->string('image_url')->nullable();

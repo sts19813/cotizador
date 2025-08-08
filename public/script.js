@@ -1,5 +1,5 @@
 let selections = {};
-let globalindex = 0;
+
 $(document).ready(function () {
   const $carousel = $('.gallery-carousel');
   const $preview = $('#mainPreview');
@@ -22,12 +22,8 @@ $(document).ready(function () {
 
   // ✅ Cambiar imagen principal y activar miniatura
   function cambiarImagen(index) {
-    globalindex = index;
     $carousel.trigger('to.owl.carousel', [index, 300]);
-    const overlayMain = document.getElementById('overlayMain');
-    if (overlayMain) {
-      overlayMain.style.display = 'none';
-    }
+
     const $thumb = $carousel.find('.owl-item').eq(index).find('img.thumb');
     if ($thumb.length) {
       const newSrc = $thumb.attr('src');
@@ -134,16 +130,6 @@ function cambiarImagenes(estilo) {
 }
 
 function seleccionarCasa(elemento) {
-  debugger
-
-  if(elemento.dataset.id === "generalTulum"){
-    window.location.href = "/test/Tulum";
-  }
-
-  if(elemento.dataset.id === "generalMinimalista"){
-    window.location.href = "/test";
-  }
-
   const tarjetas = document.querySelectorAll('#opciones-casas .option-card');
   tarjetas.forEach(t => t.classList.remove('active'));
   elemento.classList.add('active');
@@ -254,8 +240,6 @@ function seleccionarJardines(elemento) {
   actualizarPrecioTotal();
 }
 
-
-
 function actualizarPrecioTotal() {
 
   let precioBase = 1500000;
@@ -291,7 +275,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-
+  const primeraOpcionCasa = document.querySelector('#opciones-casas .option-card');
+  if (primeraOpcionCasa) {
+    seleccionarCasa(primeraOpcionCasa);
+  }
 
   document.querySelectorAll('#opciones-color .option-card').forEach(el => {
     el.addEventListener('click', function () {
@@ -363,179 +350,4 @@ async function saveConfiguration() {
     debugger
     alert("Error al guardar: " + error.message);
   }
-}
-
-
-
-/*******opciones  */
-
-function setOverlays(container, overlayImageUrls) {
-  // Limpia overlays previos
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
-  // Inserta overlays
-  overlayImageUrls.forEach(url => {
-    const img = document.createElement('img');
-    img.src = url;
-    img.style.position = 'absolute';
-    img.style.top = '0';
-    img.style.left = '0';
-    img.style.width = '100%';
-    img.style.height = '100%';
-    img.style.pointerEvents = 'none';
-    img.style.userSelect = 'none';
-    // Opcional: agrega opacidad o mezcla, p.ej. img.style.opacity = '0.7';
-    container.appendChild(img);
-  });
-}
-
-function seleccionarOpcion(elemento) {
-  
-  const categoria = elemento.getAttribute('data-categoria');
-  const valor = elemento.getAttribute('data-valor');
-  const mainPreview = document.getElementById('mainPreview');
-  const id = elemento.getAttribute('data-id');
-
-  // Para overlays en principal
-  const mainOverlaysContainer = document.getElementById('mainOverlays');
-
-  // Carrusel y sus items
-  const carrusel = document.getElementById('owl-demo');
-
-  // Limpiar overlays generales primero (si existen)
-  if (mainOverlaysContainer) setOverlays(mainOverlaysContainer, []);
-  if (carrusel) {
-    const items = carrusel.querySelectorAll('.item');
-    items.forEach(item => {
-      const overlayContainer = item.querySelector('.overlay-container');
-      if (overlayContainer) setOverlays(overlayContainer, []);
-    });
-  }
-
-  // --- Lógica Fachada A / B ---
-  if (categoria === 'fachada' && (valor === 'Opción A' || valor === 'Opción B')) {
-    if (carrusel) {
-      const items = carrusel.querySelectorAll('.item img.thumb');
-      if (items.length >= 4) {
-        if (valor === 'Opción B') {
-          items[0].src = '/baseMinimalista/fachadaB/01-F.jpg';
-          items[1].src = '/baseMinimalista/fachadaB/02-R.jpg';
-          items[2].src = '/baseMinimalista/fachadaB/03-L.jpg';
-          items[3].src = '/baseMinimalista/fachadaB/04-B.jpg';
-        } else {
-          items[0].src = '/baseMinimalista/fachadaA/01-F.jpg';
-          items[1].src = '/baseMinimalista/fachadaA/02-R.jpg';
-          items[2].src = '/baseMinimalista/fachadaA/03L.jpg';
-          items[3].src = '/baseMinimalista/fachadaA/04-B.jpg';
-        }
-      }
-    }
-    if (mainPreview) {
-      if (valor === 'Opción B') {
-        mainPreview.src = '/baseMinimalista/fachadaB/01-F.jpg';
-      } else {
-        mainPreview.src = '/baseMinimalista/fachadaA/01-F.jpg';
-      }
-    }
-    return; // Salir aquí para no hacer más cambios
-  }
-
-  // --- Lógica Pisos Interiores id 79 con overlays ---
-  if (categoria === 'pisos-interiores' && id === '79') {
-
-    const overlayImages = [
-      '/baseMinimalista/PISOS/Cocina/COCINA-M01.png', // para índice 4
-      '/baseMinimalista/PISOS/Recamara/CUARTO-M01.png', // para índice 5
-      '/baseMinimalista/PISOS/Sala/SALA-M01.png'  // para índice 6
-    ];
-
-
-    // 1) Cambiar imagen principal base si quieres
-
-    // Mostrar y cambiar overlayMain
-    const overlayMain = document.getElementById('overlayMain');
-    if (overlayMain && globalindex >= 4 && globalindex <= 6) {
-      overlayMain.src = overlayImages[globalindex - 4];
-      overlayMain.style.display = 'block';
-    } else if (overlayMain) {
-      debugger
-      overlayMain.style.display = 'none'; // Oculta si el índice no tiene overlay
-    }
-
-    // Ahora overlays para miniaturas 5,6,7 (índices 4,5,6)
-    if (carrusel) {
-      const items = carrusel.querySelectorAll('.item');
-      [4, 5, 6].forEach((i, idx) => {
-        const item = items[i];
-        if (item) {
-          let overlayContainer = item.querySelector('.overlay-container');
-          if (!overlayContainer) {
-            overlayContainer = document.createElement('div');
-            overlayContainer.classList.add('overlay-container');
-            overlayContainer.style.position = 'absolute';
-            overlayContainer.style.top = '0';
-            overlayContainer.style.left = '0';
-            overlayContainer.style.width = '100%';
-            overlayContainer.style.height = '100%';
-            overlayContainer.style.pointerEvents = 'none';
-            overlayContainer.style.userSelect = 'none';
-            item.style.position = 'relative';
-            item.appendChild(overlayContainer);
-          }
-
-          // Asignar overlay específico por índice
-          setOverlays(overlayContainer, [overlayImages[idx]]);
-        }
-      });
-    }
-
-
-
-    return; // Salir para evitar más cambios
-  }
-  if (categoria === 'pisos-interiores' && id === '80') {
-
-    const overlayImages = [
-      '/baseMinimalista/PISOS/Cocina/COCINA-M02.png',   // Índice 4
-      '/baseMinimalista/PISOS/Recamara/CUARTO-M02.png', // Índice 5
-      '/baseMinimalista/PISOS/Sala/SALA-M02.png'        // Índice 6
-    ];
-    
-    // Mostrar y cambiar overlay principal
-    const overlayMain = document.getElementById('overlayMain');
-    if (overlayMain && globalindex >= 4 && globalindex <= 6) {
-      overlayMain.src = overlayImages[globalindex - 4];
-      overlayMain.style.display = 'block';
-    } else if (overlayMain) {
-      overlayMain.style.display = 'none'; // Oculta si el índice no es 4-6
-    }
-    // Aplicar overlays en los elementos del carrusel
-    if (carrusel) {
-      const items = carrusel.querySelectorAll('.item');
-      [4, 5, 6].forEach((i, idx) => {
-        const item = items[i];
-        if (item) {
-          let overlayContainer = item.querySelector('.overlay-container');
-          if (!overlayContainer) {
-            overlayContainer = document.createElement('div');
-            overlayContainer.classList.add('overlay-container');
-            overlayContainer.style.position = 'absolute';
-            overlayContainer.style.top = '0';
-            overlayContainer.style.left = '0';
-            overlayContainer.style.width = '100%';
-            overlayContainer.style.height = '100%';
-            overlayContainer.style.pointerEvents = 'none';
-            overlayContainer.style.userSelect = 'none';
-            item.style.position = 'relative';
-            item.appendChild(overlayContainer);
-          }
-
-          // Asignar overlay específico por índice
-          setOverlays(overlayContainer, [overlayImages[idx]]);
-        }
-      });
-    }
-  }
-
 }
