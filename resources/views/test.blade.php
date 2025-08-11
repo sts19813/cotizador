@@ -12,9 +12,12 @@
         object-fit: cover;
     }
 
-    .thumb-selected {
+    .thumb-wrapper.thumb-selected {
         border: 2px solid #007bff;
-        /* Azul o el color que prefieras */
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+        box-sizing: border-box;
     }
 
     .preview-img.fade-out {
@@ -35,39 +38,55 @@
     }
 
     .preview-image {
-        position: relative;
-        width: 100%;
-        /* Ocupa todo el ancho disponible */
-        max-width: 100%;
-        /* Para evitar que crezca más allá del padre */
-        padding: 0;
+        max-width: 1600px;
         margin: 0 auto;
-        /* Centrar si el contenedor padre es más ancho */
-        display: block;
-        /* Ocupa todo el ancho disponible */
+        position: relative;
     }
+
+    .preview-image img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    
 
     #mainPreview,
     #overlayMain {
         width: 100%;
-        /* Ocupa todo el ancho del contenedor */
         height: auto;
-        /* Mantiene la proporción */
         display: block;
         margin: 0;
         padding: 0;
         border: none;
         object-fit: contain;
-        /* Contiene la imagen sin recortar */
         vertical-align: top;
     }
 
     #overlayMain {
-        position: absolute;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-        user-select: none;
+        object-fit: contain;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    @media only screen and (max-width: 600px) {
+        #mainPreview {
+            margin-top: 70px;
+        }
+
+        .sticky-content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index:9;
+            padding: 10px;
+            background: white
+        }
+
+        
+        .btn-radius{
+            display: none
+        }
     }
 </style>
 
@@ -96,54 +115,65 @@
                         <div id="owl-demo" class="owl-carousel gallery-carousel">
                             <div class="item">
                                 <img src="/baseMinimalista/fachadaA/01-F.jpg" alt="imagen 1" class="thumb" />
-                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                                <div class="overlay-container"
+                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                                </div>
 
                             </div>
                             <div class="item">
                                 <img src="/baseMinimalista/fachadaA/02-R.jpg" alt="imagen 2" class="thumb" />
-                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                                <div class="overlay-container"
+                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                                </div>
 
                             </div>
                             <div class="item">
                                 <img src="/baseMinimalista/fachadaA/03L.jpg" alt="imagen 3" class="thumb" />
-                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                                <div class="overlay-container"
+                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                                </div>
 
                             </div>
                             <div class="item">
                                 <img src="/baseMinimalista/fachadaA/04-B.jpg" alt="imagen 4" class="thumb" />
-                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                                <div class="overlay-container"
+                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                                </div>
 
                             </div>
                             <div class="item">
                                 <img src="/baseMinimalista/MINIMALISTA-SALA-BASE.jpg" alt="imagen 5" class="thumb"
                                     data-overlay="/baseMinimalista/PISOS/Cocina/COCINA-M01.png" />
-                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                                <div class="overlay-container"
+                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                                </div>
 
                             </div>
                             <div class="item">
                                 <img src="/baseMinimalista/MINIMALISTA-COCINA-BASE.jpg" alt="imagen 6" class="thumb"
                                     data-overlay="/baseMinimalista/PISOS/Recamara/CUARTO-M01.png" />
-                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                                <div class="overlay-container"
+                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                                </div>
 
                             </div>
                             <div class="item">
                                 <img src="/baseMinimalista/MINIMALISTA-RECAMARA-BASE.jpg" alt="imagen 7" class="thumb"
                                     data-overlay="/baseMinimalista/PISOS/Sala/SALA-M01.png" />
-                                <div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                                <div class="overlay-container"
+                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                                </div>
 
                             </div>
                         </div>
 
-                        <div class="fade-gradient-right"></div>
                     </div>
                 </div>
             </div>
             <!-- Columna de 4 con mucho contenido scrollable -->
             <div class="col-md-4 mt-100">
                 <div class="long-content">
-                    <h4 class="fw-bold precio-total azulFuerte"><img src="/img/tag.svg" alt="" srcset="">
-                        $1,450,000.00 MXN</h4>
-
+                  
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod Lorem ipsum dolor sit
                         amet, consectetur adipiscing elit, sed do eiusmod Lorem ipsum dolor sit amet, consectetur
                         adipiscing elit, sed do eiusmod... <a href="#">leer más</a></p>
@@ -156,7 +186,7 @@
                                 <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#opciones-casas" aria-expanded="true"
                                     aria-controls="opciones-casas">
-                                    <span class="textAcordeon">General</span>
+                                    <span class="textAcordeon">Estilo</span>
                                     <span class="icon ms-auto">
                                         <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
                                             height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -175,26 +205,23 @@
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Estilo</p>
                                     <div class="row g-3">
-                                        <div class="col-md-6">
+                                        <div class="col-6 col-md-6">
                                             <div class="option-card" data-id="generalTulum">
-                                                <span class="info-icon">i</span>
                                                 <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Tulum">
                                                 <div class="option-title">Tulum</div>
                                                 <div class="option-price">$120,500.00</div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-6 col-md-6">
                                             <div class="option-card" data-id="generalMexicano">
-                                                <span class="info-icon">i</span>
                                                 <img src="/img/Mexicano/Fachada A/B.jpg" class="img-fluid rounded"
                                                     alt="Mexicano">
                                                 <div class="option-title">Mexicano</div>
                                                 <div class="option-price">$350,000.00</div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-6 col-md-6">
                                             <div class="option-card" data-id="generalMinimalista">
-                                                <span class="info-icon">i</span>
                                                 <img src="/img/minimalista.jpg" class="img-fluid rounded"
                                                     alt="Minimalista">
                                                 <div class="option-title">Minimalista</div>
@@ -233,7 +260,7 @@
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Elige el número de habitaciones</p>
                                     <div class="row g-3" id="opciones-habitaciones">
-                                        <div class="col-md-6">
+                                        <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="1Habitacion"
                                                 data-valor="1 habitación" data-precio="0"
                                                 onclick="seleccionarHabitacion(this)">
@@ -245,7 +272,7 @@
                                                 <div class="option-price">$0.00</div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer"
                                                 data-id="2Habitaciones" data-valor="2 habitaciones"
                                                 data-precio="25000" onclick="seleccionarHabitacion(this)">
@@ -257,7 +284,7 @@
                                                 <div class="option-price">$25,000.00</div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer"
                                                 data-id="3Habitaciones" data-valor="3 habitaciones"
                                                 data-precio="40000" onclick="seleccionarHabitacion(this)">
@@ -269,7 +296,7 @@
                                                 <div class="option-price">$40,000.00</div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer"
                                                 data-id="4Habitaciones" data-valor="4 habitaciones"
                                                 data-precio="60000" onclick="seleccionarHabitacion(this)">
@@ -288,58 +315,57 @@
 
 
                         @foreach ($categories as $category)
-                        <div class="accordion-item hover-shadow mb-4">
-                            <h2 class="accordion-header" id="heading-{{ $category->id }}">
-                                <button class="accordion-button custom-toggle" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $category->id }}"
-                                    aria-expanded="false" aria-controls="collapse-{{ $category->id }}">
-                                    <span class="textAcordeon">{{ $category->name }}</span>
-                                    <span class="icon ms-auto">
-                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            height="20" fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
-                                        </svg>
-                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            height="20" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
-                                        </svg>
-                                    </span>
-                                </button>
-                            </h2>
+                            <div class="accordion-item hover-shadow mb-4">
+                                <h2 class="accordion-header" id="heading-{{ $category->id }}">
+                                    <button class="accordion-button custom-toggle" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapse-{{ $category->id }}"
+                                        aria-expanded="false" aria-controls="collapse-{{ $category->id }}">
+                                        <span class="textAcordeon">{{ $category->name }}</span>
+                                        <span class="icon ms-auto">
+                                            <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
+                                                height="20" fill="currentColor" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                            </svg>
+                                            <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
+                                                height="20" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </h2>
 
-                            <div id="collapse-{{ $category->id }}" class="accordion-collapse collapse"
-                                aria-labelledby="heading-{{ $category->id }}">
-                                <div class="accordion-body">
-                                    <p class="fw-bold mb-1">Opciones de {{ $category->name }}</p>
-                                    <div class="row g-3" id="opciones-{{ Str::slug($category->name) }}">
-                                        @foreach ($category->products as $product)
-                                        <div class="col-md-6">
-                                            <div class="option-card estilo-{{ Str::slug($category->name) }} cursor-pointer"
-                                                data-categoria="{{ Str::slug($category->name) }}"
-                                                data-id="{{ $product->id }}"
-                                                data-renders='@json($product->renders)'
+                                <div id="collapse-{{ $category->id }}" class="accordion-collapse collapse"
+                                    aria-labelledby="heading-{{ $category->id }}">
+                                    <div class="accordion-body">
+                                        <p class="fw-bold mb-1">Opciones de {{ $category->name }}</p>
+                                        <div class="row g-3" id="opciones-{{ Str::slug($category->name) }}">
+                                            @foreach ($category->products as $product)
+                                                <div class="col-6 col-md-6">
+                                                    <div class="option-card estilo-{{ Str::slug($category->name) }} cursor-pointer"
+                                                        data-categoria="{{ Str::slug($category->name) }}"
+                                                        data-id="{{ $product->id }}"
+                                                        data-renders='@json($product->renders)'
+                                                        data-valor="{{ $product->title }}"
+                                                        data-precio="{{ $product->base_price }}"
+                                                        data-categoria="{{ Str::slug($category->name) }}"
+                                                        onclick="seleccionarOpcion(this)">
+                                                        <img src="/{{ $product->image_url ?? 'https://via.placeholder.com/400x300' }}"
+                                                            class="img-fluid rounded" alt="" width="350px">
+                                                        <div class="option-title">{{ $product->title }}</div>
+                                                        <div class="option-description">{{ $product->description }}
+                                                        </div>
 
-                                                data-valor="{{ $product->title }}"
-                                                data-precio="{{ $product->base_price }}"
-                                                data-categoria="{{ Str::slug($category->name) }}"
-                                                onclick="seleccionarOpcion(this)">
-                                                <span class="info-icon">i</span>
-                                                <img src="/{{ $product->image_url ?? 'https://via.placeholder.com/400x300' }}"
-                                                    class="img-fluid rounded"
-                                                    alt="" width="350px">
-                                                <div class="option-title">{{ $product->title }}</div>
-                                                <div class="option-description">{{ $product->description }}</div>
 
-                                                <div class="option-price">
-                                                    ${{ number_format($product->base_price, 2) }}</div>
-                                            </div>
+                                                        <!-- div class="option-price">
+                                                            ${{ number_format($product->base_price, 2) }}</div-->
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                        @endforeach
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         @endforeach
                     </div>
                 </div>
@@ -348,29 +374,7 @@
     </div>
 
 
-<!-- Barra inferior con botones 
-    <div class="bottom-bar d-flex justify-content-between align-items-center">
-        <div class="d-flex gap-3">
-            <button class="btn text-light p-10">
-                <i class="bi bi-bookmark me-1"></i> Guardar
-            </button>
-            <button class="btn text-light p-10">
-                <i class="bi bi-arrow-counterclockwise me-1"></i> Volver a empezar
-            </button>
-            <button class="btn text-light p-10">
-                <i class="bi bi-chat-dots me-1"></i> Solicitar Asesoría
-            </button>
-            <button class="btn text-light p-10">
-                <i class="bi bi-download me-1"></i> Descargar
-            </button>
-        </div>
 
-        <div>
-            <strong class="precio-total">$1,450,000.00 MXN</strong>
-            <a href="/resumen" class="btn btn-light ms-3">Ver Resumen ></a>
-        </div>
-    </div>
-    -->
     <x-footer />
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
