@@ -7,7 +7,7 @@ $(document).ready(function () {
   const $preview = $('#mainPreview');
 
   $carousel.owlCarousel({
-    items: 6,
+    items: 10,
     margin: 10,
     nav: true,
     dots: false,
@@ -18,7 +18,7 @@ $(document).ready(function () {
     responsive: {
       0: { items: 3 },
       600: { items: 4 },
-      1000: { items: 6 }
+      1000: { items: 7 }
     }
   });
 
@@ -40,8 +40,8 @@ $(document).ready(function () {
         updateMainPreview(index); // <-- Actualiza overlays aquí
       }, 300);
 
-      $('.gallery-carousel .thumb').removeClass('thumb-selected');
-      $thumb.addClass('thumb-selected');
+      $('.gallery-carousel .thumb-wrapper').removeClass('thumb-selected');
+      $thumb.closest('.thumb-wrapper').addClass('thumb-selected');
     }
   }
 
