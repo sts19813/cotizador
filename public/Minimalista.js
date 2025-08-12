@@ -1,6 +1,14 @@
 let selections = {};
 let globalindex = 0;
 let activeOverlays = {};
+// Loader helpers y token global
+let currentLoadToken = 0;
+function showLoader() {
+  $('#imageLoader').show();
+}
+function hideLoader() {
+  $('#imageLoader').fadeOut(120);
+}
 
 $(document).ready(function () {
   const $carousel = $('.gallery-carousel');
@@ -33,12 +41,23 @@ $(document).ready(function () {
     const $thumb = $carousel.find('.owl-item').eq(index).find('img.thumb');
     if ($thumb.length) {
       const newSrc = $thumb.attr('src');
-
-      $preview.addClass('fade-out');
-      setTimeout(() => {
-        $preview.attr('src', newSrc).removeClass('fade-out');
-        updateMainPreview(index); // <-- Actualiza overlays aquí
-      }, 300);
+      const token = ++currentLoadToken;
+      showLoader();
+      const img = new window.Image();
+      img.onload = function () {
+        if (token !== currentLoadToken) return;
+        $preview.addClass('fade-out');
+        setTimeout(() => {
+          $preview.attr('src', newSrc).removeClass('fade-out');
+          updateMainPreview(index);
+          hideLoader();
+        }, 180);
+      };
+      img.onerror = function () {
+        if (token !== currentLoadToken) return;
+        hideLoader();
+      };
+      img.src = newSrc;
 
       $('.gallery-carousel .thumb-wrapper').removeClass('thumb-selected');
       $thumb.closest('.thumb-wrapper').addClass('thumb-selected');
@@ -85,8 +104,9 @@ $(document).ready(function () {
     const el = document.querySelector(s.id);
     if (el) observer.observe(el);
   });
-});
 
+  prepararMiniaturas();
+});
 
 const imagenesPorEstilo = {
   Tulum: ["/img/Tulum/Fachada A/F.jpg", "/img/Tulum/Fachada A/B.jpg", "/img/Tulum/Fachada A/L.jpg", "/img/Tulum/Fachada A/R.jpg"],
@@ -106,7 +126,6 @@ let precioInterior = 0;
 let precioExterior = 0;
 let precioJardin = 0;
 let precioHabitaciones = 0;
-
 
 function cambiarImagenes(estilo) {
   const nuevasImagenes = imagenesPorEstilo[estilo];
@@ -135,8 +154,6 @@ function cambiarImagenes(estilo) {
     thumbnails.appendChild(thumb);
   });
 }
-
-
 
 // ✅ Inicializar thumb wrappers en el carrusel
 function prepararMiniaturas() {
@@ -264,13 +281,10 @@ function seleccionarOpcion(elemento) {
   updateMainPreview(globalindex);
 }
 
-
 // ✅ Ejecutar al cargar la página
 $(document).ready(function () {
   prepararMiniaturas();
 });
-
-
 
 document.querySelectorAll('.option-card').forEach(card => {
   card.addEventListener('click', function () {
@@ -289,8 +303,6 @@ document.querySelectorAll('.option-card').forEach(card => {
 
     console.log(selections);
     localStorage.setItem('selections', JSON.stringify(selections));
-
-
   });
 });
 
