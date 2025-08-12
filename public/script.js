@@ -13,11 +13,8 @@ $(document).ready(function () {
       '<img src="/img/Vector.svg" alt="prev" style="width:24px;transform: rotate(180deg);">',
       '<img src="/img/Vector.svg" alt="next" style="width:24px;">'
     ],
-    responsive: {
-      0: { items: 3 },
-      600: { items: 4 },
-      1000: { items: 6 }
-    }
+        autoWidth: true, // <<--- en lugar de items
+
   });
 
   // ✅ Cambiar imagen principal y activar miniatura

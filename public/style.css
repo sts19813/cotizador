@@ -65,7 +65,6 @@ hr {
 
 .preview-img {
     width: 100%;
-    max-height: 75vh;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     object-position: center;
@@ -74,6 +73,9 @@ hr {
     margin: 0 auto;
 }
 
+.overlayMainContainer img {
+  border-radius: 25px !important;
+}
 .active img {
   border-radius: 10px;
 }
@@ -94,7 +96,7 @@ hr {
 }
 
 .gallery-carousel .item {
-  margin: 5px;
+  padding-right: 15px;
   border-radius: 10px;
   overflow: hidden;
 }
@@ -104,7 +106,7 @@ hr {
   width: 100%;
   height: 85px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 10px !important;
 }
 
 /* Owl Carousel Navigation */
@@ -248,4 +250,20 @@ ol li {
 
 .animar-subida {
   animation: fadeUp 1s ease-out forwards;
+}
+
+.gallery-carousel .item {
+  width: 166px !important;
+}
+
+.owl-carousel .owl-item {
+  margin-top: 10px;
+  margin-right: 10px; /* se asegura del margen */
+}
+
+#overlayMainContainer  {
+  border-radius: 25px !important;
+}
+#overlayMainContainer img  {
+  border-radius: 25px !important;
 }

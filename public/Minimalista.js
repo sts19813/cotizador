@@ -10,6 +10,16 @@ function hideLoader() {
   $('#imageLoader').fadeOut(120);
 }
 
+
+$(document).on('click', '.accordion-button', function () {
+  const section = $(this).closest('.accordion-item').find('.row');
+  const index = section.data('carousel-index');
+  if (index !== undefined) {
+    cambiarImagen(index);
+  }
+});
+
+
 $(document).ready(function () {
   const $carousel = $('.gallery-carousel');
   const $preview = $('#mainPreview');
@@ -23,11 +33,7 @@ $(document).ready(function () {
       '<img src="/img/Vector.svg" alt="prev" style="width:24px;transform: rotate(180deg);">',
       '<img src="/img/Vector.svg" alt="next" style="width:24px;">'
     ],
-    responsive: {
-      0: { items: 3 },
-      600: { items: 4 },
-      1000: { items: 7 }
-    }
+    autoWidth: true, // <<--- en lugar de items
   });
 
   // ✅ Cambiar imagen principal y activar miniatura
@@ -81,24 +87,36 @@ $(document).ready(function () {
   };
 
   const secciones = [
-    { id: '#opciones-casas', carouselIndex: 0 },
-    { id: '#opciones-fachada', carouselIndex: 1 },
-    { id: '#Color', carouselIndex: 2 },
-    { id: '#Pisos', carouselIndex: 6 },
-    { id: '#Mesetas', carouselIndex: 3 }
+    { id: '#opciones-fachada', carouselIndex: 0 },
+    { id: '#heading-22', carouselIndex: 4 },
+    { id: '#heading-27', carouselIndex: 4 },
+    { id: '#heading-28', carouselIndex: 4 },
+    { id: '#heading-32', carouselIndex: 4 },
+    { id: '#heading-24', carouselIndex: 5 },
+    { id: '#heading-33', carouselIndex: 6 },
+    { id: '#heading-38', carouselIndex: 6 },
+    { id: '#heading-35', carouselIndex: 6 },
+    { id: '#heading-39', carouselIndex: 6 },
+    { id: '#heading-23', carouselIndex: 7 },
+    { id: '#heading-25', carouselIndex: 7 },
+    { id: '#heading-26', carouselIndex: 7 },
+    { id: '#heading-36', carouselIndex: 7 },
+    { id: '#heading-37', carouselIndex: 5 },
+
+
   ];
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const seccion = secciones.find(s => s.id === '#' + entry.target.id);
-        if (seccion) {
-          cambiarImagen(seccion.carouselIndex);
-          console.log(seccion.carouselIndex);
-        }
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const seccion = secciones.find(s => s.id === '#' + entry.target.id);
+      if (seccion && seccion.carouselIndex !== globalindex) {
+        cambiarImagen(seccion.carouselIndex);
+        console.log(seccion.carouselIndex);
       }
-    });
-  }, observerOptions);
+    }
+  });
+}, observerOptions);
 
   secciones.forEach(s => {
     const el = document.querySelector(s.id);
@@ -368,4 +386,14 @@ function setOverlays(container, overlayImageUrls) {
     container.appendChild(img);
   });
 }
+document.addEventListener('DOMContentLoaded', function () {
+  // Simula clic en la primera opción de estilo
+  const primerEstilo = document.querySelector('#opciones-casas .option-card');
+  if (primerEstilo) {
+    primerEstilo.click();
+  }
 
+  document.querySelector('[data-id="1Habitacion"]').click();
+  document.querySelector('#opciones-fachada [data-id="1"]').click();
+
+});
