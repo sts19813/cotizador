@@ -8,8 +8,8 @@
     <div class="d-flex align-items-center gap-2">
         @auth
             <!-- Botón Guardar para usuarios autenticados -->
-            <button class="btn btn-outline-primary btn-radius dark-blue" onclick="saveConfiguration()">
-                Guardar <i class="bi bi-bookmark"></i>
+            <button class="btn btn-outline-primary btn-radius dark-blue" id="capturar">
+                Ver Resumen <i class="bi bi-bookmark"></i>
             </button>
 
             <!-- Dropdown con nombre de usuario -->

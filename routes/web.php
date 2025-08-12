@@ -20,12 +20,12 @@ use Illuminate\Foundation\Exceptions\Renderer\Renderer;
 | Rutas públicas
 |--------------------------------------------------------------------------
 */
+
+Route::get('/resumen', [CategoryController::class, 'resumen']);
 Route::view('/registro', 'register');
 Route::view('/inicio-sesion', 'login');
 Route::view('/test/{style?}', 'configurador');
 Route::get('/{style?}', [CategoryController::class, 'configurador']);
-
-
 /*
 |--------------------------------------------------------------------------
 | Login con Google

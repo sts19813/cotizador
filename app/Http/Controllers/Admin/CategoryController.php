@@ -33,6 +33,12 @@ class CategoryController extends Controller
         return view('test', compact('categories', 'style'));
     }
 
+     public function resumen()
+    {
+
+        return view('resumen');
+    }
+
     public function store(Request $request)
     {
         $request->validate([

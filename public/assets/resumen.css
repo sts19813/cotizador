@@ -34,7 +34,7 @@
     z-index: 2;
     max-width: 1000px;
     height: auto;
-    margin-top: 55px;
+    margin-top: 200px;
 }
 
 
@@ -190,4 +190,20 @@
 .options-table th:nth-child(4),
 .options-table td:nth-child(4) {
     width: 20%;
+}
+
+.info-box {
+    max-width: 400px;   /* Ancho máximo reducido */
+    margin: 0 auto;     /* Centrar horizontalmente */
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between; /* Etiqueta a la izquierda, valor a la derecha */
+    padding: 14px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.label {
+    font-weight: bold;
 }

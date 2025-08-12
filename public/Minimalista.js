@@ -316,21 +316,36 @@ document.querySelectorAll('.option-card').forEach(card => {
     } else {
       group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
       this.classList.add('selected');
-      selections[groupId] = cardId;
+
+      // Aquí guardamos un objeto con más info
+      selections[groupId] = {
+        id: cardId,
+        valor: this.getAttribute('data-valor'),
+        categoria: this.getAttribute('data-categoria'),
+        precio: parseFloat(this.getAttribute('data-precio')) || 0
+      };
     }
 
     console.log(selections);
     localStorage.setItem('selections', JSON.stringify(selections));
   });
 });
-
 // Función para enviar configuración al backend
 async function saveConfiguration() {
   try {
-    // Obtener el token CSRF del meta tag
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    // Enviar la petición POST con fetch
+    // Calcula el precio total sumando los precios de cada selección
+    const totalPrice = Object.values(selections).reduce((sum, sel) => {
+      return sel && sel.precio ? sum + sel.precio : sum;
+    }, 0);
+
+    const dataToSave = {
+      configuration: selections,
+      precioTotal: totalPrice,
+      fecha: new Date().toISOString(),
+    };
+
     const response = await fetch('/house-configurations', {
       method: 'POST',
       headers: {
@@ -338,31 +353,31 @@ async function saveConfiguration() {
         'X-CSRF-TOKEN': token,
         'Accept': 'application/json'
       },
-      credentials: 'include',  // Esto asegura enviar cookies de sesión (para autenticación)
-      body: JSON.stringify({
-        configuration: selections
-      })
+      credentials: 'include',
+      body: JSON.stringify(dataToSave)
     });
 
-    // Verificar si la respuesta fue exitosa
     if (!response.ok) {
-      debugger
       const errorData = await response.json();
       throw new Error(errorData.message || 'Error desconocido al guardar');
     }
 
-    // Obtener la respuesta JSON
     const responseData = await response.json();
-
     alert("Guardado con éxito: " + (responseData.message || ''));
 
   } catch (error) {
-    debugger
     alert("Error al guardar: " + error.message);
   }
 }
+document.querySelector('#capturar').addEventListener('click', () => {
+    const elemento = document.querySelector('#owl-demo');
 
-
+    html2canvas(elemento).then(canvas => {
+        const dataURL = canvas.toDataURL('image/png');
+        localStorage.setItem('imagenResumen', dataURL);
+        window.location.href = '/resumen'; // redirigir a la vista resumen
+    });
+});
 
 /*******opciones  */
 
@@ -393,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function () {
     primerEstilo.click();
   }
 
-  document.querySelector('[data-id="1Habitacion"]').click();
   document.querySelector('#opciones-fachada [data-id="1"]').click();
+  document.querySelector(' [data-id="1Recamara"]').click();
 
 });

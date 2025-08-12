@@ -273,8 +273,8 @@
                                     <p class="fw-bold mb-1">Elige el número de habitaciones</p>
                                     <div class="row g-3" id="opciones-habitaciones">
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card estilo-color cursor-pointer" data-id="1Habitacion"
-                                                data-valor="1 habitación" data-precio="0"
+                                            <div class="option-card estilo-color cursor-pointer" data-id="1Recamara"
+                                                data-valor="1 Recámara" data-precio="0"
                                                 onclick="seleccionarHabitacion(this)">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
@@ -284,9 +284,9 @@
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card estilo-color cursor-pointer"
-                                                data-id="2Habitaciones" data-valor="2 habitaciones"
-                                                data-precio="25000" onclick="seleccionarHabitacion(this)">
+                                            <div class="option-card estilo-color cursor-pointer" data-id="2Recamaras"
+                                                data-valor="2 Recámaras" data-precio="25000"
+                                                onclick="seleccionarHabitacion(this)">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">02</span>
@@ -295,9 +295,9 @@
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card estilo-color cursor-pointer"
-                                                data-id="3Habitaciones" data-valor="3 habitaciones"
-                                                data-precio="40000" onclick="seleccionarHabitacion(this)">
+                                            <div class="option-card estilo-color cursor-pointer" data-id="3Recamaras"
+                                                data-valor="3 Recámaras" data-precio="40000"
+                                                onclick="seleccionarHabitacion(this)">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">03</span>
@@ -306,9 +306,9 @@
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card estilo-color cursor-pointer"
-                                                data-id="4Habitaciones" data-valor="4 habitaciones"
-                                                data-precio="60000" onclick="seleccionarHabitacion(this)">
+                                            <div class="option-card estilo-color cursor-pointer" data-id="4Recamaras"
+                                                data-valor="4 Recámaras" data-precio="60000"
+                                                onclick="seleccionarHabitacion(this)">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">04</span>
@@ -332,8 +332,7 @@
                                         <span class="icon ms-auto">
                                             <!-- Ícono + (más), se muestra cuando está colapsado -->
                                             <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                                height="20" fill="currentColor" viewBox="0 0 16 16"
-                                                >
+                                                height="20" fill="currentColor" viewBox="0 0 16 16">
                                                 <path
                                                     d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
                                             </svg>
@@ -383,10 +382,21 @@
 
 
     <x-footer />
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/Minimalista.js"></script>
+    <script>
+        document.querySelector('#capturar').addEventListener('click', () => {
+            const elemento = document.querySelector('#seccionA');
 
+            html2canvas(elemento).then(canvas => {
+                const dataURL = canvas.toDataURL('image/png');
+                localStorage.setItem('imagenResumen', dataURL);
+                window.location.href = 'paginaB.html'; // redirigir a la vista resumen
+            });
+        });
+    </script>
 </body>
 
 </html>
