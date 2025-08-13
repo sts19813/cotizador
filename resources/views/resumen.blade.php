@@ -19,7 +19,7 @@
     <div class="container mt-4 white-background">
 
         <h2 class="text-center fw-bold">Resumen</h2>
-        <p class="text-center text-muted">#01201931059</p>
+        <p class="text-center text-muted">#000</p>
 
 
         <hr>
@@ -95,7 +95,7 @@
                     <th>Categoría</th>
                     <th>Opción</th>
                     <th>Código</th>
-                    <th>Precio</th>
+                    <th>Imagen</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -111,6 +111,24 @@
 
     <script>
         const savedSelections = JSON.parse(localStorage.getItem('selections')) || {};
+        const imagenes = JSON.parse(localStorage.getItem('imagenesCarrusel'));
+
+         const secciones = [
+    { id: '#opciones-fachada', carouselIndex: 0 },
+    { id: '#heading-22', carouselIndex: 4 },
+    { id: '#heading-27', carouselIndex: 4 },
+    { id: '#heading-28', carouselIndex: 4 },
+    { id: '#heading-32', carouselIndex: 4 },
+    { id: '#heading-24', carouselIndex: 5 },
+    { id: '#heading-33', carouselIndex: 6 },
+    { id: '#heading-38', carouselIndex: 6 },
+    { id: '#heading-35', carouselIndex: 6 },
+    { id: '#heading-39', carouselIndex: 6 },
+    { id: '#heading-23', carouselIndex: 7 },
+    { id: '#heading-25', carouselIndex: 7 },
+    { id: '#heading-26', carouselIndex: 7 },
+    { id: '#heading-36', carouselIndex: 7 },
+  ];
 
         document.addEventListener('DOMContentLoaded', () => {
             const dataURL = localStorage.getItem('imagenResumen');
@@ -123,7 +141,8 @@
         imagenGuardada
         tbody.innerHTML = '';
 
-        Object.values(savedSelections).forEach(item => {
+        Object.values(savedSelections).forEach((item, index) => {
+            const imagenSrc = imagenes[index] ?? item.imagen ?? ''; // prioridad: array -> item.imagen -> vacío
             const row = `
         <tr>
             <td>${item.categoria ?? ''}</td>
@@ -133,10 +152,7 @@
                 ${item.variant_code ? 'Var: ' + item.variant_code : ''}
             </td>
             <td class="text-nowrap">
-                $${(item.precio ?? 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}
-                <a href="#" class="ms-2 d-inline-flex align-items-center text-decoration-none text-dark">
-                    <i class="bi bi-pencil me-1"></i> Cambiar
-                </a>
+                ${imagenSrc ? `<img src="${imagenSrc}" alt="" width="100px" class="img-fluid rounded">` : ''}
             </td>
         </tr>
     `;

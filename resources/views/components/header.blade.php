@@ -2,7 +2,7 @@
 <div class="d-flex justify-content-between align-items-center navbar fixed-top bg-white shadow-sm px-3 py-2 z-3">
     <div class="d-flex align-items-center gap-2">
         <a href="/" class="btn btn-outline-primary btn-radius dark-blue">Regresar</a>
-        <button class="btn btn-outline-primary btn-radius dark-blue">Volver a empezar</button>
+        <a href="/" class="btn btn-outline-primary btn-radius dark-blue">Volver a empezar</a>
     </div>
 
     <!-- Logo centrado absolutamente -->

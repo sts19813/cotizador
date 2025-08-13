@@ -240,7 +240,7 @@ function updateMainPreview(index) {
   }
 }
 function seleccionarOpcion(elemento) {
-  debugger
+  
   const categoria = elemento.getAttribute('data-categoria');
   const valor = elemento.getAttribute('data-valor');
   const mainPreview = document.getElementById('mainPreview');
@@ -323,12 +323,18 @@ document.querySelectorAll('.option-card').forEach(card => {
       this.classList.add('selected');
 
       // Aquí guardamos un objeto con más info
-      selections[groupId] = {
-        id: cardId,
-        valor: this.getAttribute('data-valor'),
-        categoria: this.getAttribute('data-categoria'),
-        precio: parseFloat(this.getAttribute('data-precio')) || 0
-      };
+      const data = {};
+      Array.from(this.attributes).forEach(attr => {
+        if (attr.name.startsWith('data-')) {
+          // Convierte data-pre_code a pre_code, data-valor a valor, etc.
+          const key = attr.name.replace('data-', '').replace(/-/g, '_');
+          data[key] = attr.value;
+        }
+      });
+      // Convierte precio a número si existe
+      if (data.precio) data.precio = parseFloat(data.precio) || 0;
+
+      selections[groupId] = data;
     }
 
     console.log(selections);
@@ -375,15 +381,34 @@ async function saveConfiguration() {
   }
 }
 document.querySelector('#capturar').addEventListener('click', () => {
-  const elemento = document.querySelector('#owl-demo');
+    const wrappers = document.querySelectorAll('.thumb-wrapper');
+    const imagenesBase64 = [];
+    let procesadas = 0;
 
-  debugger
-  html2canvas(elemento).then(canvas => {
-    debugger
-    const dataURL = canvas.toDataURL('image/png');
-    localStorage.setItem('imagenResumen', dataURL);
-    window.location.href = '/resumen'; // redirigir a la vista resumen
-  });
+    wrappers.forEach((wrapper, index) => {
+        html2canvas(wrapper, {
+            backgroundColor: null, // mantiene transparencia si la hay
+            useCORS: true // por si hay imágenes externas
+        }).then(canvas => {
+            imagenesBase64[index] = canvas.toDataURL('image/png');
+            procesadas++;
+
+            // Cuando se procesen todas las imágenes individuales
+            if (procesadas === wrappers.length) {
+                localStorage.setItem('imagenesCarrusel', JSON.stringify(imagenesBase64));
+
+                // Capturamos el resumen completo como ya hacías
+                const elemento = document.querySelector('#owl-demo');
+                html2canvas(elemento, { useCORS: true }).then(canvas => {
+                    const resumenBase64 = canvas.toDataURL('image/png');
+                    localStorage.setItem('imagenResumen', resumenBase64);
+
+                    // Redirigir a la vista resumen
+                    window.location.href = '/resumen';
+                });
+            }
+        });
+    });
 });
 
 /*******opciones  */
