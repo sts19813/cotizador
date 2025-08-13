@@ -107,16 +107,16 @@ $(document).ready(function () {
   ];
 
   const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const seccion = secciones.find(s => s.id === '#' + entry.target.id);
-      if (seccion && seccion.carouselIndex !== globalindex) {
-        cambiarImagen(seccion.carouselIndex);
-        console.log(seccion.carouselIndex);
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const seccion = secciones.find(s => s.id === '#' + entry.target.id);
+        if (seccion && seccion.carouselIndex !== globalindex) {
+          cambiarImagen(seccion.carouselIndex);
+          console.log(seccion.carouselIndex);
+        }
       }
-    }
-  });
-}, observerOptions);
+    });
+  }, observerOptions);
 
   secciones.forEach(s => {
     const el = document.querySelector(s.id);
@@ -242,13 +242,14 @@ function updateMainPreview(index) {
   }
 }
 function seleccionarOpcion(elemento) {
+  debugger
   const categoria = elemento.getAttribute('data-categoria');
   const valor = elemento.getAttribute('data-valor');
   const mainPreview = document.getElementById('mainPreview');
   const carrusel = document.getElementById('owl-demo');
 
   // Manejo especial para Fachada
-  if (categoria === 'fachada' && (valor === 'Fachada A' || valor === 'Fachada B')) {
+  if (categoria === 'Fachada' && (valor === 'Fachada A' || valor === 'Fachada B')) {
     if (carrusel) {
       const items = carrusel.querySelectorAll('.item img.thumb');
       if (items.length >= 4) {
@@ -272,6 +273,16 @@ function seleccionarOpcion(elemento) {
         mainPreview.src = '/baseMinimalista/fachadaA/01-F.jpg';
       }
     }
+
+    // Limpiar overlays de la imagen principal y miniaturas
+    Object.keys(activeOverlays).forEach(idx => {
+      activeOverlays[idx] = [];
+      updateThumbnailOverlay(idx);
+    });
+    // Limpiar overlays de la imagen principal
+    const overlayMainContainer = document.getElementById('overlayMainContainer');
+    if (overlayMainContainer) overlayMainContainer.innerHTML = '';
+
     return; // Salir para que no aplique la lógica de overlays
   }
 
@@ -285,13 +296,15 @@ function seleccionarOpcion(elemento) {
   });
 
   // 2. Agregar nuevos overlays
-  for (let i = 1; i <= 9; i++) {
-    const imgPath = renders[`image_${i}`];
-    if (imgPath) {
-      const index = i - 1;
-      if (!activeOverlays[index]) activeOverlays[index] = [];
-      activeOverlays[index].push({ categoria, url: imgPath });
-      updateThumbnailOverlay(index);
+  if (renders) {
+    for (let i = 1; i <= 9; i++) {
+      const imgPath = renders[`image_${i}`];
+      if (imgPath) {
+        const index = i - 1;
+        if (!activeOverlays[index]) activeOverlays[index] = [];
+        activeOverlays[index].push({ categoria, url: imgPath });
+        updateThumbnailOverlay(index);
+      }
     }
   }
 
@@ -370,13 +383,15 @@ async function saveConfiguration() {
   }
 }
 document.querySelector('#capturar').addEventListener('click', () => {
-    const elemento = document.querySelector('#owl-demo');
+  const elemento = document.querySelector('#owl-demo');
 
-    html2canvas(elemento).then(canvas => {
-        const dataURL = canvas.toDataURL('image/png');
-        localStorage.setItem('imagenResumen', dataURL);
-        window.location.href = '/resumen'; // redirigir a la vista resumen
-    });
+  debugger
+  html2canvas(elemento).then(canvas => {
+    debugger
+    const dataURL = canvas.toDataURL('image/png');
+    localStorage.setItem('imagenResumen', dataURL);
+    window.location.href = '/resumen'; // redirigir a la vista resumen
+  });
 });
 
 /*******opciones  */
@@ -401,13 +416,18 @@ function setOverlays(container, overlayImageUrls) {
     container.appendChild(img);
   });
 }
-document.addEventListener('DOMContentLoaded', function () {
-  // Simula clic en la primera opción de estilo
-  const primerEstilo = document.querySelector('#opciones-casas .option-card');
-  if (primerEstilo) {
-    primerEstilo.click();
-  }
 
-  document.querySelector('#opciones-fachada [data-id="1"]').click();
-  document.querySelector(' [data-id="1Recamara"]').click();
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Selecciona la primera opción de cada categoría dinámica
+  document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
+    const firstOption = row.querySelector('.option-card');
+    if (firstOption) firstOption.click();
+  });
+
+  // Si necesitas seleccionar específicamente la recámara, hazlo solo si no está seleccionada
+  setTimeout(() => {
+    const recamara = document.querySelector('#Habitaciones [data-id="1Recamara"]');
+    if (recamara && !recamara.classList.contains('selected')) recamara.click();
+  }, 100);
 });

@@ -1,6 +1,9 @@
 <!-- Header -->
 <div class="d-flex justify-content-between align-items-center navbar fixed-top bg-white shadow-sm px-3 py-2 z-3">
-    <button class="btn btn-outline-secondary btn-radius btn-regresar">Regresar</button>
+    <div class="d-flex align-items-center gap-2">
+        <a href="/" class="btn btn-outline-secondary btn-radius btn-regresar">Regresar</a>
+        <button class="btn btn-outline-secondary btn-radius btn-regresar">Volver a empezar</button>
+    </div>
 
     <!-- Logo centrado absolutamente -->
     <img src="/img/logo.svg" alt="Logo" width="210px" class="position-absolute top-50 start-50 translate-middle">
@@ -19,7 +22,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li>
-                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                        <a class="dropdown-item" href="/house-configurations/list">
                             <i class="bi bi-person-circle me-1"></i> Perfil
                         </a>
                     </li>

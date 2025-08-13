@@ -51,7 +51,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(255, 255, 255, 0.55);
+        background: rgb(255, 255, 255);
         backdrop-filter: blur(2px);
         z-index: 10;
     }
@@ -216,25 +216,28 @@
                                     </span>
                                 </button>
                             </h2>
-                            <div id="opciones-casas" class="accordion-collapse collapse show"
+                            <div id="Estilos"  class="accordion-collapse collapse show"
                                 aria-labelledby="headingGeneral">
-                                <div class="accordion-body">
-                                    <div class="row g-3">
+                                <div  class="accordion-body">
+                                    <div class="row g-3" id="opciones-casas">
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card" data-id="generalMinimalista" data-valor="Minimalista">
+                                            <div class="option-card" data-id="generalMinimalista" data-categoria="Estilo"
+                                                data-valor="Minimalista">
                                                 <img src="/img/minimalista.jpg" class="img-fluid rounded"
                                                     alt="Minimalista">
                                                 <div class="option-title">Minimalista</div>
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card" data-id="generalTulum" data-valor="Tulum">
+                                            <div class="option-card" data-id="generalTulum" data-categoria="Estilo"
+                                                data-valor="Tulum">
                                                 <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Tulum">
                                                 <div class="option-title">Tulum</div>
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card" data-id="generalMexicano" data-valor="Mexicano">
+                                            <div class="option-card" data-id="generalMexicano" data-categoria="Estilo"
+                                                data-valor="Mexicano">
                                                 <img src="/img/Mexicano/Fachada A/B.jpg" class="img-fluid rounded"
                                                     alt="Mexicano">
                                                 <div class="option-title">Mexicano</div>
@@ -273,9 +276,8 @@
                                     <p class="fw-bold mb-1">Elige el número de habitaciones</p>
                                     <div class="row g-3" id="opciones-habitaciones">
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card estilo-color cursor-pointer" data-id="1Recamara"
-                                                data-valor="1 Recámara" data-precio="0"
-                                                onclick="seleccionarHabitacion(this)">
+                                            <div class="option-card estilo-color cursor-pointer" data-id="1Recamara" data-categoria="Habitaciones"
+                                                data-valor="1 Recámara" data-precio="0">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">01</span>
@@ -285,8 +287,7 @@
                                         </div>
                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="2Recamaras"
-                                                data-valor="2 Recámaras" data-precio="25000"
-                                                onclick="seleccionarHabitacion(this)">
+                                                data-valor="2 Recámaras" data-precio="25000" data-categoria="Habitaciones">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">02</span>
@@ -295,9 +296,8 @@
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card estilo-color cursor-pointer" data-id="3Recamaras"
-                                                data-valor="3 Recámaras" data-precio="40000"
-                                                onclick="seleccionarHabitacion(this)">
+                                            <div class="option-card estilo-color cursor-pointer" data-id="3Recamaras" data-categoria="Habitaciones"
+                                                data-valor="3 Recámaras" data-precio="40000">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">03</span>
@@ -307,8 +307,7 @@
                                         </div>
                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="4Recamaras"
-                                                data-valor="4 Recámaras" data-precio="60000"
-                                                onclick="seleccionarHabitacion(this)">
+                                                data-valor="4 Recámaras" data-precio="60000" data-categoria="Habitaciones">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">04</span>
@@ -353,17 +352,19 @@
                                             @foreach ($category->products as $product)
                                                 <div class="col-6 col-md-6">
                                                     <div class="option-card estilo-{{ Str::slug($category->name) }} cursor-pointer"
-                                                        data-categoria="{{ Str::slug($category->name) }}"
+                                                        data-categoria="{{ $category->name }}"
                                                         data-id="{{ $product->id }}"
                                                         data-renders='@json($product->renders)'
                                                         data-valor="{{ $product->title }}"
                                                         data-precio="{{ $product->base_price }}"
+                                                        data-pre_code="{{ $product->pre_code }}"
+                                                        data-variant_code="{{ $product->variant_code }}"
                                                         onclick="seleccionarOpcion(this)">
                                                         <img src="/{{ $product->image_url ?? 'https://via.placeholder.com/400x300' }}"
                                                             class="img-fluid rounded" alt="" width="350px">
                                                         <div class="option-title">{{ $product->title }}</div>
                                                         <div class="option-description">{{ $product->description }}
-                                                        </div>
+                                                        </div>                                                      
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -372,7 +373,6 @@
                                 </div>
                             </div>
                         @endforeach
-
                     </div>
                 </div>
             </div>

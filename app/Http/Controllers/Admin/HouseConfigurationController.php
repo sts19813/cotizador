@@ -47,4 +47,12 @@ class HouseConfigurationController extends Controller
 
         return response()->json(['message' => 'Configuración guardada correctamente']);
     }
+
+     public function list()
+    {
+        $user = Auth::user();
+
+        $configurations = HouseConfiguration::with('user')->where('user_id', $user->id)->latest()->get();
+        return view('list', compact('configurations'));
+    }
 }

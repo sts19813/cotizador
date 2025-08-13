@@ -21,11 +21,7 @@ use Illuminate\Foundation\Exceptions\Renderer\Renderer;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/resumen', [CategoryController::class, 'resumen']);
-Route::view('/registro', 'register');
-Route::view('/inicio-sesion', 'login');
-Route::view('/test/{style?}', 'configurador');
-Route::get('/{style?}', [CategoryController::class, 'configurador']);
+
 /*
 |--------------------------------------------------------------------------
 | Login con Google
@@ -48,7 +44,7 @@ Route::get('/google-auth/callback', function () {
 
     Auth::login($user);
 
-    return redirect()->intended('admin/dashboard');
+    return redirect()->intended('/');
 });
 
 /*
@@ -67,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/house-configurations', [HouseConfigurationController::class, 'store']);
+    Route::get('/house-configurations/list', [HouseConfigurationController::class, 'list'])->name('house-configurations.list');
 });
 
 /*
@@ -99,5 +96,12 @@ Route::middleware(['auth', AdminMiddleware::class])
 | Rutas de autenticación generadas por Laravel Breeze/Fortify/etc.
 |--------------------------------------------------------------------------
 */
+
+
+Route::get('/resumen', [CategoryController::class, 'resumen']);
+Route::view('/registro', 'register');
+Route::view('/inicio-sesion', 'login');
+Route::view('/test/{style?}', 'configurador');
+Route::get('/{style?}', [CategoryController::class, 'configurador']);
 
 require __DIR__ . '/auth.php';
