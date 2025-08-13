@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registro - UONDR</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/assets/login.css">
 </head>
 
@@ -28,9 +29,10 @@
                         <!-- Correo -->
                         <div class="mb-3">
                             <label for="email" class="form-label subtitle-login mb-4-login">Correo</label>
-                            <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus>
+                            <input type="email" class="form-control" id="email" name="email"
+                                value="{{ old('email') }}" required autofocus>
                             @error('email')
-                            <small class="text-danger">{{ $message }}</small>
+                                <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
 
@@ -39,7 +41,7 @@
                             <label for="password" class="form-label subtitle-login mb-4-login">Contraseña</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                             @error('password')
-                            <small class="text-danger">{{ $message }}</small>
+                                <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
 
@@ -51,11 +53,11 @@
 
                         <!-- Enlace para recuperar contraseña -->
                         @if (Route::has('password.request'))
-                        <div class="mb-3 text-end">
-                            <a class="text-decoration-none text-muted" href="{{ route('password.request') }}">
-                                ¿Olvidaste tu contraseña?
-                            </a>
-                        </div>
+                            <div class="mb-3 text-end">
+                                <a class="text-decoration-none text-muted" href="{{ route('password.request') }}">
+                                    ¿Olvidaste tu contraseña?
+                                </a>
+                            </div>
                         @endif
 
                         <!-- Botón de login -->
@@ -67,9 +69,11 @@
                         <a href="/google-auth/redirect" class="btn btn-outline-secondary w-100 btn-login-google">
                             <img src="https://img.icons8.com/color/16/000000/google-logo.png" /> Google
                         </a>
+                        <!--
                         <a class="btn btn-outline-secondary w-100 btn-login-google">
                             <img src="https://img.icons8.com/ios-filled/16/000000/mac-os.png" /> Apple
                         </a>
+                        -->
                     </div>
 
                     <p class="text-center text-muted">¿No tienes cuenta aún?

@@ -76,9 +76,11 @@
                         <a href="/google-auth/redirect" class="btn btn-outline-secondary w-100 btn-login-google">
                             <img src="https://img.icons8.com/color/16/000000/google-logo.png" /> Google
                         </a>
+                        <!--
                         <a class="btn btn-outline-secondary w-100 btn-login-google">
                             <img src="https://img.icons8.com/ios-filled/16/000000/mac-os.png" /> Apple
                         </a>
+                        -->
                     </div>
 
                     <p class="text-center text-muted">¿Ya tienes cuenta?

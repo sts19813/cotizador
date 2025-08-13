@@ -81,6 +81,10 @@
         .btn-radius {
             display: none
         }
+
+        .long-content {
+            margin-top: 320px;
+        }
     }
 
     .accordion-button .minus-icon {
@@ -111,7 +115,7 @@
                     <div class="gallery-wrapper">
                         <!-- Imagen de previsualización principal -->
                         <div class="preview-image text-center" style="position: relative;">
-                            <img id="mainPreview" src="/img/Tulum/Fachada A/F.jpg" alt="Vista previa"
+                            <img id="mainPreview" src="/baseMinimalista/fachadaA/01-F.jpg" alt="Vista previa"
                                 class="img-fluid preview-img">
                             <div id="imageLoader" class="image-loader" style="display:none;">
                                 <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem;">
@@ -238,7 +242,7 @@
                                         <div class="col-6 col-md-6">
                                             <div class="option-card" data-id="generalMexicano" data-categoria="Estilo"
                                                 data-valor="Mexicano">
-                                                <img src="/img/Mexicano/Fachada A/B.jpg" class="img-fluid rounded"
+                                                <img src="/img/mexicano.jpg" class="img-fluid rounded"
                                                     alt="Mexicano">
                                                 <div class="option-title">Mexicano</div>
                                             </div>

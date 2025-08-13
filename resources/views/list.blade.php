@@ -9,7 +9,10 @@
 
 
     <div class="container py-5">
-        <h2 class="fw-bold text-center mb-5">Hola, Guillermo</h2>
+
+        <br><br><br><br>
+
+        <h2 class="fw-bold text-center mb-5">Hola,  {{ Auth::user()->name }}</h2>
 
         <div class="row g-4">
             @foreach ($configurations as $index => $config)

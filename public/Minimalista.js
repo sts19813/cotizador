@@ -101,9 +101,6 @@ $(document).ready(function () {
     { id: '#heading-25', carouselIndex: 7 },
     { id: '#heading-26', carouselIndex: 7 },
     { id: '#heading-36', carouselIndex: 7 },
-    { id: '#heading-37', carouselIndex: 5 },
-
-
   ];
 
   const observer = new IntersectionObserver((entries) => {
@@ -179,7 +176,7 @@ function prepararMiniaturas() {
     const img = $(this).find('img.thumb');
     if (!img.parent().hasClass('thumb-wrapper')) {
       img.wrap('<div class="thumb-wrapper" style="position:relative;"></div>');
-      img.after('<div class="overlay-container" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>');
+      img.after('<div class="overlay-container" class="thumb" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>');
     }
   });
 }
@@ -192,6 +189,7 @@ function updateThumbnailOverlay(index) {
     activeOverlays[index].forEach(ov => {
       const img = document.createElement('img');
       img.src = ov.url;
+      img.classList.add('thumb');
       img.style.width = '100%';
       img.style.height = '100%';
       img.style.position = 'absolute';
@@ -264,16 +262,10 @@ function seleccionarOpcion(elemento) {
           items[2].src = '/baseMinimalista/fachadaA/03L.jpg';
           items[3].src = '/baseMinimalista/fachadaA/04-B.jpg';
         }
+        // Simular clic en la primera miniatura
+        items[0].dispatchEvent(new Event('click', { bubbles: true }));
       }
     }
-    if (mainPreview) {
-      if (valor === 'Fachada B') {
-        mainPreview.src = '/baseMinimalista/fachadaB/01-F.jpg';
-      } else {
-        mainPreview.src = '/baseMinimalista/fachadaA/01-F.jpg';
-      }
-    }
-
     // Limpiar overlays de la imagen principal y miniaturas
     Object.keys(activeOverlays).forEach(idx => {
       activeOverlays[idx] = [];

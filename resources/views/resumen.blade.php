@@ -88,7 +88,7 @@
         </div>
 
         <br><br>
-        <h2 style="text-align:center;">Exterior</h2>
+        <h2 style="text-align:center;">Configuración</h2>
         <table id="tablaResumen" class="table options-table">
             <thead>
                 <tr>
