@@ -35,10 +35,9 @@
             </div>
         @else
             <!-- Botón Guardar para visitantes, redirige a login -->
-            <button class="btn btn-outline-primary btn-radius dark-blue" onclick="window.location.href='/inicio-sesion'">
-                Guardar <i class="bi bi-bookmark"></i>
+             <button class="btn btn-outline-primary btn-radius dark-blue" id="capturar">
+                Ver Resumen <i class="bi bi-bookmark"></i>
             </button>
-
             <!-- Botón Crear cuenta -->
             <a href="/registro" class="btn btn-primary btn-radius">
                 Crear Cuenta <i class="bi bi-person"></i>

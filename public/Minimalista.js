@@ -410,5 +410,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.querySelector('#opciones-fachada [data-id="1"]').click();
   document.querySelector(' [data-id="1Recamara"]').click();
-
 });

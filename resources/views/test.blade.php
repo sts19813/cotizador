@@ -221,20 +221,20 @@
                                 <div class="accordion-body">
                                     <div class="row g-3">
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card" data-id="generalMinimalista">
+                                            <div class="option-card" data-id="generalMinimalista" data-valor="Minimalista">
                                                 <img src="/img/minimalista.jpg" class="img-fluid rounded"
                                                     alt="Minimalista">
                                                 <div class="option-title">Minimalista</div>
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card" data-id="generalTulum">
+                                            <div class="option-card" data-id="generalTulum" data-valor="Tulum">
                                                 <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Tulum">
                                                 <div class="option-title">Tulum</div>
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card" data-id="generalMexicano">
+                                            <div class="option-card" data-id="generalMexicano" data-valor="Mexicano">
                                                 <img src="/img/Mexicano/Fachada A/B.jpg" class="img-fluid rounded"
                                                     alt="Mexicano">
                                                 <div class="option-title">Mexicano</div>
