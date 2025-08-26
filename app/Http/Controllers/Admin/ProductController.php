@@ -90,7 +90,7 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product)
-    {
+    {    
         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'style' => 'required|in:Minimalista,Tulum,Mexicano',
@@ -99,7 +99,6 @@ class ProductController extends Controller
             'version' => 'required',
             'title' => 'required',
             'description' => 'nullable',
-            'brand' => 'required',
             'base_price' => 'required|numeric',
             'one_bedroom_price' => 'required|numeric',
             'two_bedroom_price' => 'required|numeric',
@@ -111,16 +110,18 @@ class ProductController extends Controller
 
         $data = $request->all();
 
+        $data['brand'] = $data['brand'] ?? '';
+
         if ($request->hasFile('image_file')) {
             $filename = time() . '_' . $request->file('image_file')->getClientOriginalName();
             $request->file('image_file')->move(public_path('producto'), $filename);
-            $data['image_url'] = '/producto/' . $filename;
+            $data['image_url'] = 'producto/' . $filename;
         }
 
         if ($request->hasFile('product_file')) {
             $filename = time() . '_' . $request->file('product_file')->getClientOriginalName();
             $request->file('product_file')->move(public_path('producto'), $filename);
-            $data['product_url'] = '/producto/' . $filename;
+            $data['product_url'] = 'producto/' . $filename;
         }
 
         $product->update($data);

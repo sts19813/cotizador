@@ -133,5 +133,6 @@
             $(this).find('.modal-title').text('Editar Producto');
             form.find('button[type="submit"]').text('Crear Producto');
         });
+
     </script>
 @endpush

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('version');
             $table->text('title');
             $table->text('description')->nullable();
-            $table->string('brand');
+            $table->string('brand')->nullable();
             $table->decimal('base_price', 10, 2);
             $table->string('image_url')->nullable();
             $table->string('product_url')->nullable();
