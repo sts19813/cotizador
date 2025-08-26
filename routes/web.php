@@ -78,8 +78,11 @@ Route::middleware(['auth', AdminMiddleware::class])
     ->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard'); 
         Route::resource('products', ProductController::class)->names('products');
-        Route::resource('renders', RenderController::class)->names('renders');
+        Route::get('renders/{style?}', [RenderController::class, 'index'])
+            ->name('renders.index');
 
+        Route::put('renders/{id}', [RenderController::class, 'update'])->name('renders.update');
+    
         Route::resource('categories', CategoryController::class)->names('categories');
         
 

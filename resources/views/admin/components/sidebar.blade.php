@@ -27,8 +27,13 @@
             </a>
         </li>
          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="/admin/renders">
-                <i class="bi bi-currency-dollar"></i> Render
+            <a class="nav-link d-flex align-items-center gap-2" href="/admin/renders/Minimalista">
+                <i class="bi bi-currency-dollar"></i> Render Minimalista
+            </a>
+        </li>
+         <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="/admin/renders/Tulum">
+                <i class="bi bi-currency-dollar"></i> Render Tulum
             </a>
         </li>
         <li class="nav-item">

@@ -232,13 +232,17 @@
                                                 <div class="option-title">Minimalista</div>
                                             </div>
                                         </div>
+                                        
                                         <div class="col-6 col-md-6">
+                                            <a href="/Tulum">
                                             <div class="option-card" data-id="generalTulum" data-categoria="Estilo"
                                                 data-valor="Tulum">
                                                 <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Tulum">
                                                 <div class="option-title">Tulum</div>
                                             </div>
+                                            </a>
                                         </div>
+                                        
                                         <div class="col-6 col-md-6">
                                             <div class="option-card" data-id="generalMexicano" data-categoria="Estilo"
                                                 data-valor="Mexicano">

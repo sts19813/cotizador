@@ -13,18 +13,34 @@ class RenderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+    public function index($style = 'Minimalista')
     {
+        $allowedStyles = ['Minimalista', 'Tulum', 'Mexicano'];
+
+        if (!in_array($style, $allowedStyles)) {
+            abort(404);
+        }
+
         $user = Auth::user();
 
         if (!$user || !$user->isAdmin()) {
             abort(403, 'No tienes permisos para acceder a esta página.');
         }
 
-        $products = Product::with('category')->latest()->get();
-        $categories = Category::all();
+        // Filtrar productos y categorías por estilo
+        $products = Product::with('category')
+            ->where('style', $style)
+            ->latest()
+            ->get();
 
-        return view('admin.render', compact('products', 'categories'));
+        $categories = Category::whereHas('products', function ($query) use ($style) {
+            $query->where('style', $style);
+        })
+        ->orderBy('orden')
+        ->get();
+
+        return view('admin.render', compact('products', 'categories', 'style'));
     }
 
     public function update(Request $request, $id)
