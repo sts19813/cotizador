@@ -13,25 +13,25 @@
                     <input type="hidden" name="product_id" id="renderProductId">
 
                   @foreach($baseImages as $index => $baseImage)
-                        <div class="col-md-4">
-                            <label>Render {{ $index + 1 }}</label>
+                    <div class="col-md-4">
+                        <label>Render {{ $index + 1 }}</label>
 
-                            {{-- Imagen base --}}
-                            @if($baseImage)
-                                <img src="{{ asset($baseImage) }}" 
-                                    alt="Base Render {{ $index + 1 }}" 
-                                    class="img-fluid mb-1" 
-                                    style="max-height: 100px;">
-                            @endif
+                        {{-- Imagen base --}}
+                        @if($baseImage)
+                            <img src="{{ asset($baseImage) }}" 
+                                alt="Base Render {{ $index + 1 }}" 
+                                class="img-fluid mb-1" 
+                                style="max-height: 100px;">
+                        @endif
 
-                            <input type="file" name="image_{{ $index + 1 }}" class="form-control">
+                        <input type="file" name="image_{{ $index + 1 }}" class="form-control">
 
-                            <img id="preview_image_{{ $index + 1 }}" 
-                                src="" 
-                                class="img-fluid mt-1" 
-                                style="max-height: 150px; display: none;">
-                        </div>
-                    @endforeach
+                        <img id="preview_image_{{ $index + 1 }}" 
+                            src="" 
+                            class="img-fluid mt-1" 
+                            style="max-height: 150px; display: none;">
+                    </div>
+                @endforeach
                 </div>
 
                 <div class="modal-footer">
