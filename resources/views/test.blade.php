@@ -126,66 +126,16 @@
 
                         <!-- Carrusel de miniaturas -->
                         <div id="owl-demo" class="owl-carousel gallery-carousel">
-                            <div class="item">
-                                <img src="/baseMinimalista/fachadaA/01-F.jpg" alt="imagen 1" class="thumb" />
-                                <div class="overlay-container"
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
-                                </div>
-
-                            </div>
-                            <div class="item">
-                                <img src="/baseMinimalista/fachadaA/02-R.jpg" alt="imagen 2" class="thumb" />
-                                <div class="overlay-container"
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
-                                </div>
-
-                            </div>
-                            <div class="item">
-                                <img src="/baseMinimalista/fachadaA/03L.jpg" alt="imagen 3" class="thumb" />
-                                <div class="overlay-container"
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
-                                </div>
-
-                            </div>
-                            <div class="item">
-                                <img src="/baseMinimalista/fachadaA/04-B.jpg" alt="imagen 4" class="thumb" />
-                                <div class="overlay-container"
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
-                                </div>
-
-                            </div>
-                            <div class="item">
-                                <img src="/baseMinimalista/MINIMALISTA-SALA-BASE.jpg" alt="imagen 5" class="thumb"
-                                    data-overlay="/baseMinimalista/PISOS/Cocina/COCINA-M01.png" />
-                                <div class="overlay-container"
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
-                                </div>
-
-                            </div>
-                            <div class="item">
-                                <img src="/baseMinimalista/MINIMALISTA-COCINA-BASE.jpg" alt="imagen 6" class="thumb"
-                                    data-overlay="/baseMinimalista/PISOS/Recamara/CUARTO-M01.png" />
-                                <div class="overlay-container"
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
-                                </div>
-
-                            </div>
-                            <div class="item">
-                                <img src="/baseMinimalista/MINIMALISTA-RECAMARA-BASE.jpg" alt="imagen 7" class="thumb"
-                                    data-overlay="/baseMinimalista/PISOS/Sala/SALA-M01.png" />
-                                <div class="overlay-container"
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img src="/baseMinimalista/MINIMALISTA-Bano-BASE.jpg" alt="imagen 8" class="thumb"
-                                    data-overlay="/baseMinimalista/PISOS/Sala/SALA-M01.png" />
-                                <div class="overlay-container"
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
-                                </div>
-                            </div>
+                            							@foreach ($baseImages as $image)
+																																<div class="item">
+																																				<img src="{{ $image->path }}" alt="imagen {{ $loop->iteration }}" class="thumb"
+																																								@if ($image->overlay) data-overlay="/{{ $image->overlay }}" @endif />
+																																				<div class="overlay-container"
+																																								style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+																																				</div>
+																																</div>
+																												@endforeach
                         </div>
-
                     </div>
                 </div>
             </div>

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use App\Models\BaseImage;
+
 use App\Models\Category;
 
 class RenderController extends Controller
@@ -16,31 +18,29 @@ class RenderController extends Controller
 
     public function index($style = 'Minimalista')
     {
-        $allowedStyles = ['Minimalista', 'Tulum', 'Mexicano'];
+        
+      
+        if ($style === 'home') $style = 'Minimalista';
+        if ($style === 'tulum') $style = 'Tulum';
+        if ($style === 'mexicano') $style = 'Mexicano';
 
+        $allowedStyles = ['Minimalista', 'Tulum', 'Mexicano'];
         if (!in_array($style, $allowedStyles)) {
             abort(404);
         }
 
-        $user = Auth::user();
-
-        if (!$user || !$user->isAdmin()) {
-            abort(403, 'No tienes permisos para acceder a esta página.');
-        }
-
-        // Filtrar productos y categorías por estilo
-        $products = Product::with('category')
+        // Productos con renders
+        $products = Product::with('renders')
             ->where('style', $style)
-            ->latest()
             ->get();
 
-        $categories = Category::whereHas('products', function ($query) use ($style) {
-            $query->where('style', $style);
-        })
-        ->orderBy('orden')
-        ->get();
+        // Imágenes base desde la tabla base_images
+        $baseImages = BaseImage::where('style', $style)
+            ->orderBy('order')
+            ->pluck('path') // solo valores
+            ->toArray();
 
-        return view('admin.render', compact('products', 'categories', 'style'));
+        return view('admin.render', compact('products', 'style', 'baseImages'));
     }
 
     public function update(Request $request, $id)

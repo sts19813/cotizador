@@ -12,39 +12,33 @@
                 <div class="modal-body row g-3">
                     <input type="hidden" name="product_id" id="renderProductId">
 
-                    @for ($i = 1; $i <= 9; $i++)
+                  @foreach($baseImages as $index => $baseImage)
                         <div class="col-md-4">
-                        <label>Render {{ $i }}</label>
+                            <label>Render {{ $index + 1 }}</label>
 
-                        {{-- Imagen base fija solo para los primeros 7 renders --}}
-                        @if($i <= 7)
-                            @php
-                            $baseImages=[
-                            1=> '/baseMinimalista/fachadaA/01-F.jpg',
-                            2 => '/baseMinimalista/fachadaA/02-R.jpg',
-                            3 => '/baseMinimalista/fachadaA/03L.jpg',
-                            4 => '/baseMinimalista/fachadaA/04-B.jpg',
-                            5 => '/baseMinimalista/MINIMALISTA-SALA-BASE.jpg',
-                            6 => '/baseMinimalista/MINIMALISTA-COCINA-BASE.jpg',
-                            7 => '/baseMinimalista/MINIMALISTA-RECAMARA-BASE.jpg',
-                            ];
-                            @endphp
-                            <img src="{{ $baseImages[$i] }}" alt="Base Render {{ $i }}" class="img-fluid mb-1" style="max-height: 100px;">
+                            {{-- Imagen base --}}
+                            @if($baseImage)
+                                <img src="{{ asset($baseImage) }}" 
+                                    alt="Base Render {{ $index + 1 }}" 
+                                    class="img-fluid mb-1" 
+                                    style="max-height: 100px;">
                             @endif
 
-                            <input type="file" name="image_{{ $i }}" class="form-control">
+                            <input type="file" name="image_{{ $index + 1 }}" class="form-control">
 
-                            <img id="preview_image_{{ $i }}" src="" class="img-fluid mt-1" style="max-height: 150px; display: none;">
+                            <img id="preview_image_{{ $index + 1 }}" 
+                                src="" 
+                                class="img-fluid mt-1" 
+                                style="max-height: 150px; display: none;">
+                        </div>
+                    @endforeach
                 </div>
-                @endfor
 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-dark">Guardar Renders</button>
+                </div>
+            </form>
         </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-dark">Guardar Renders</button>
-        </div>
-        </form>
     </div>
-</div>
 </div>

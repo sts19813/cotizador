@@ -16,7 +16,9 @@ class DatabaseSeeder extends Seeder
         //$this->call(CategorySeeder::class);
         //$this->call([ProductSeederTulum::class,]);
         //$this->call([ProductSeederMinimalista::class,]);
-        $this->call([CategorySeederMexicano::class,]);
-        $this->call([ProductSeederMexicano::class,]);
+        //$this->call([CategorySeederMexicano::class,]);
+        //$this->call([ProductSeederMexicano::class,]);
+        $this->call(BaseImagesSeeder::class);
+
     }
 }
