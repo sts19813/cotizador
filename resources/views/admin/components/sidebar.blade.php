@@ -36,6 +36,11 @@
                 <i class="bi bi-currency-dollar"></i> Render Tulum
             </a>
         </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="/admin/renders/Mexicano">
+                <i class="bi bi-currency-dollar"></i> Render Mexicano
+            </a>
+        </li>
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center gap-2" href="/admin/categories">
                 <i class="bi bi-tags"></i> Categorías

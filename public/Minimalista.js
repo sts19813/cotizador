@@ -437,7 +437,9 @@ function setOverlays(container, overlayImageUrls) {
 
 document.addEventListener('DOMContentLoaded', function () {
   // Selecciona la primera opción de cada categoría dinámica
-  document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
+   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
+    // Excluye la fila de estilos (ajusta el selector según tu HTML)
+    if (row.id === 'opciones-casas') return;
     const firstOption = row.querySelector('.option-card');
     if (firstOption) firstOption.click();
   });

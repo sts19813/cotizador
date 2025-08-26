@@ -18,6 +18,16 @@ class CategoryController extends Controller
 
     public function configurador($style = 'Minimalista')
     {
+
+        if ($style == 'home')
+            $style = 'Minimalista';
+
+        if ($style == 'tulum')
+            $style = 'Tulum';
+
+        if ($style == 'mexicano')
+            $style = 'Mexicano';
+
         $allowedStyles = ['Minimalista', 'Tulum', 'Mexicano'];
 
         if (!in_array($style, $allowedStyles)) {

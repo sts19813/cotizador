@@ -225,16 +225,18 @@
                                 <div  class="accordion-body">
                                     <div class="row g-3" id="opciones-casas">
                                         <div class="col-6 col-md-6">
+                                             <a href="/home">
                                             <div class="option-card" data-id="generalMinimalista" data-categoria="Estilo"
                                                 data-valor="Minimalista">
                                                 <img src="/img/minimalista.jpg" class="img-fluid rounded"
                                                     alt="Minimalista">
                                                 <div class="option-title">Minimalista</div>
                                             </div>
+                                            </a>
                                         </div>
                                         
                                         <div class="col-6 col-md-6">
-                                            <a href="/Tulum">
+                                            <a href="/tulum">
                                             <div class="option-card" data-id="generalTulum" data-categoria="Estilo"
                                                 data-valor="Tulum">
                                                 <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Tulum">
@@ -244,12 +246,14 @@
                                         </div>
                                         
                                         <div class="col-6 col-md-6">
+                                             <a href="/mexicano">
                                             <div class="option-card" data-id="generalMexicano" data-categoria="Estilo"
                                                 data-valor="Mexicano">
                                                 <img src="/img/mexicano.jpg" class="img-fluid rounded"
                                                     alt="Mexicano">
                                                 <div class="option-title">Mexicano</div>
                                             </div>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
