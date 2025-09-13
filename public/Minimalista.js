@@ -1,7 +1,6 @@
 let selections = {};
 let globalindex = 0;
 let activeOverlays = {};
-
 // Loader helpers y token global
 let currentLoadToken = 0;
 function showLoader() {
@@ -202,35 +201,11 @@ function updateThumbnailOverlay(index) {
   }
 }
 
-function replaceOverlay(container, newUrl) {
-  // Fade-out de la imagen anterior si existe
-  const oldImg = container.querySelector('img');
-  if (oldImg) {
-    oldImg.classList.add('fade-out');
-    setTimeout(() => oldImg.remove(), 600);
-  }
-
-  // Crear y fade-in de la nueva imagen
-  const img = document.createElement('img');
-  img.src = newUrl;
-  img.style.position = 'absolute';
-  img.style.top = '0';
-  img.style.left = '0';
-  img.style.width = '100%';
-  img.style.height = '100%';
-  img.style.pointerEvents = 'none';
-  img.classList.add('overlay-img');
-  container.appendChild(img);
-
-  requestAnimationFrame(() => img.classList.add('show'));
-}
-
-
-
 function updateMainPreview(index) {
   const mainPreview = document.getElementById('mainPreview');
   const previewWrapper = mainPreview.parentElement;
 
+  // Buscar o crear contenedor para overlays en imagen principal
   let overlayMainContainer = document.getElementById('overlayMainContainer');
   if (!overlayMainContainer) {
     overlayMainContainer = document.createElement('div');
@@ -242,49 +217,27 @@ function updateMainPreview(index) {
     overlayMainContainer.style.height = '100%';
     overlayMainContainer.style.pointerEvents = 'none';
     overlayMainContainer.style.userSelect = 'none';
-    previewWrapper.style.position = 'relative';
+
+    previewWrapper.style.position = 'relative'; // Asegura posición relativa
     previewWrapper.appendChild(overlayMainContainer);
   }
 
-  // Map de categorías que deben estar en este index
-  const currentCategories = (activeOverlays[index] || []).map(o => o.categoria);
+  // Limpia overlays previos
+  overlayMainContainer.innerHTML = '';
 
-  // 🔹 Limpiar layers que no están en la selección actual
-  Array.from(overlayMainContainer.querySelectorAll('.overlay-layer')).forEach(layer => {
-    if (!currentCategories.includes(layer.dataset.categoria)) {
-      layer.remove();
-    }
-  });
-
-  // 🔹 Iterar todas las categorías activas para este index
-  (activeOverlays[index] || []).forEach(ov => {
-    // Buscar o crear el layer de la categoría
-    let categoryLayer = overlayMainContainer.querySelector(
-      `.overlay-layer[data-categoria="${ov.categoria}"]`
-    );
-
-    if (!categoryLayer) {
-      categoryLayer = document.createElement('div');
-      categoryLayer.className = 'overlay-layer';
-      categoryLayer.dataset.categoria = ov.categoria;
-      categoryLayer.style.position = 'absolute';
-      categoryLayer.style.top = '0';
-      categoryLayer.style.left = '0';
-      categoryLayer.style.width = '100%';
-      categoryLayer.style.height = '100%';
-      categoryLayer.style.pointerEvents = 'none';
-      overlayMainContainer.appendChild(categoryLayer);
-    }
-
-    // 🔹 Si ya tiene la misma imagen, no hacer nada
-    const currentImg = categoryLayer.querySelector('img');
-    if (currentImg && currentImg.src.endsWith(ov.url)) {
-      return; // ya está puesta, no animar
-    }
-
-    // 🔹 Reemplazar con fade-in/out solo si cambia
-    replaceOverlay(categoryLayer, ov.url);
-  });
+  if (activeOverlays[index] && activeOverlays[index].length > 0) {
+    activeOverlays[index].forEach(ov => {
+      const img = document.createElement('img');
+      img.src = ov.url;
+      img.style.position = 'absolute';
+      img.style.top = '0';
+      img.style.left = '0';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.pointerEvents = 'none';
+      overlayMainContainer.appendChild(img);
+    });
+  }
 }
 function seleccionarOpcion(elemento) {
   
