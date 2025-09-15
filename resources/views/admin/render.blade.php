@@ -85,22 +85,33 @@
     });
 </script>
 <script>
+
+
 $(document).on('click', '.btn-edit-renders', function() {
     const button = $(this);
     const form = $('#renderForm');
 
     const productId = button.data('id');
-form.attr('action', `/admin/renders/${productId}`);
+    form.attr('action', `/admin/renders/${productId}`);
     form.find('#renderProductId').val(productId);
 
+    // --- Fachada ---
+    const fachada = button.data('fachada') || 'Fachada A';
+    $('#fachada').val(fachada);
+
+    for (let i = 1; i <= 4; i++) {
+        const imageUrl = button.data(`base_image_${i}`);
+        const preview = $(`#preview_base_image_${i}`);
+        if (imageUrl) preview.attr('src', imageUrl).show();
+        else preview.hide();
+    }
+
+    // --- Renders generales ---
     for (let i = 1; i <= 9; i++) {
         const imageUrl = button.data(`image_${i}`);
         const preview = $(`#preview_image_${i}`);
-        if (imageUrl) {
-            preview.attr('src',  imageUrl).show();
-        } else {
-            preview.hide();
-        }
+        if (imageUrl) preview.attr('src', imageUrl).show();
+        else preview.hide();
     }
 });
 </script>

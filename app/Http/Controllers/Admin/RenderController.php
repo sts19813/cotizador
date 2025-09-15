@@ -43,18 +43,37 @@ class RenderController extends Controller
         return view('admin.render', compact('products', 'style', 'baseImages'));
     }
 
-    public function update(Request $request, $id)
+   public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
 
-        $data = [];
-
-        // Asegura que exista la carpeta public/render
         $renderPath = public_path('render');
-        if (!file_exists($renderPath)) {
-            mkdir($renderPath, 0777, true);
+        if (!file_exists($renderPath)) mkdir($renderPath, 0777, true);
+
+        // --- 1. Guardar renders por fachada ---
+        $fachada = $request->input('fachada');
+        if ($fachada) {
+            $fachadaData = [];
+            for ($i = 1; $i <= 4; $i++) {
+                $inputName = "base_image_$i";
+                if ($request->hasFile($inputName)) {
+                    $file = $request->file($inputName);
+                    $filename = "render_{$product->id}_{$fachada}_{$i}." . $file->getClientOriginalExtension();
+                    $file->move($renderPath, $filename);
+
+                    $fachadaData[$inputName] = '/render/' . $filename;
+                }
+            }
+            if ($fachadaData) {
+                $product->fachadaRenders()->updateOrCreate(
+                    ['fachada' => $fachada],
+                    $fachadaData
+                );
+            }
         }
 
+        // --- 2. Guardar renders generales (los 9) ---
+        $generalData = [];
         for ($i = 1; $i <= 9; $i++) {
             $inputName = "image_$i";
             if ($request->hasFile($inputName)) {
@@ -62,12 +81,14 @@ class RenderController extends Controller
                 $filename = "render_{$product->id}_{$i}." . $file->getClientOriginalExtension();
                 $file->move($renderPath, $filename);
 
-                $data[$inputName] = '/render/' . $filename;
+                $generalData[$inputName] = '/render/' . $filename;
             }
         }
+        if ($generalData) {
+            $product->renders()->updateOrCreate([], $generalData);
+        }
 
-        $product->renders()->updateOrCreate([], $data);
-
-        return redirect()->back()->with('success', 'Renders actualizados correctamente.');
+        return back()->with('success', 'Renders actualizados correctamente.');
     }
+
 }

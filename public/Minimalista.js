@@ -1,6 +1,7 @@
 let selections = {};
 let globalindex = 0;
 let activeOverlays = {};
+let selectedFachada = null;
 // Loader helpers y token global
 let currentLoadToken = 0;
 function showLoader() {
@@ -240,70 +241,80 @@ function updateMainPreview(index) {
   }
 }
 function seleccionarOpcion(elemento) {
-  
   const categoria = elemento.getAttribute('data-categoria');
   const valor = elemento.getAttribute('data-valor');
-  const mainPreview = document.getElementById('mainPreview');
-  const carrusel = document.getElementById('owl-demo');
 
-  // Manejo especial para Fachada
-  if (categoria === 'Fachada' && (valor === 'Fachada A' || valor === 'Fachada B')) {
-    if (carrusel) {
-      const items = carrusel.querySelectorAll('.item img.thumb');
-      if (items.length >= 4) {
-        if (valor === 'Fachada B') {
-          items[0].src = '/baseMinimalista/fachadaB/01-F.jpg';
-          items[1].src = '/baseMinimalista/fachadaB/02-R.jpg';
-          items[2].src = '/baseMinimalista/fachadaB/03-L.jpg';
-          items[3].src = '/baseMinimalista/fachadaB/04-B.jpg';
-        } else {
-          items[0].src = '/baseMinimalista/fachadaA/01-F.jpg';
-          items[1].src = '/baseMinimalista/fachadaA/02-R.jpg';
-          items[2].src = '/baseMinimalista/fachadaA/03L.jpg';
-          items[3].src = '/baseMinimalista/fachadaA/04-B.jpg';
-        }
-        // Simular clic en la primera miniatura
-        items[0].dispatchEvent(new Event('click', { bubbles: true }));
+  // ===== Fachada =====
+  if (categoria === 'Fachada') {
+    selectedFachada = valor;
+    const rendersFachada = JSON.parse(elemento.getAttribute('data-fachada-renders'));
+    const fachadaData = rendersFachada[selectedFachada];
+    const items = document.querySelectorAll('#owl-demo .item img.thumb');
+    CambioBases(items, valor);
+
+    if (fachadaData) {
+
+      for (let i = 0; i < 4; i++) {
+        const src = fachadaData[`base_image_${i + 1}`];
+        if (src && items[i]) items[i].src = src;
       }
+      items[0].dispatchEvent(new Event('click', { bubbles: true }));
     }
-    // Limpiar overlays de la imagen principal y miniaturas
+
+    // Limpiar todos los overlays
     Object.keys(activeOverlays).forEach(idx => {
       activeOverlays[idx] = [];
       updateThumbnailOverlay(idx);
     });
-    // Limpiar overlays de la imagen principal
     const overlayMainContainer = document.getElementById('overlayMainContainer');
     if (overlayMainContainer) overlayMainContainer.innerHTML = '';
-
-    return; // Salir para que no aplique la lógica de overlays
+    return;
   }
 
-  // Lógica general para actualizar overlays (pisos, paredes, etc)
+  // ===== Productos =====
   const renders = JSON.parse(elemento.getAttribute('data-renders'));
+  const fachadaRenders = selectedFachada 
+    ? JSON.parse(elemento.getAttribute('data-fachada-renders'))[selectedFachada] 
+    : null;
 
-  // 1. Eliminar overlays anteriores de esta categoría
+  // ✅ 1. Eliminar overlays antiguos de la misma categoría y sus fachadas asociadas
   Object.keys(activeOverlays).forEach(idx => {
-    activeOverlays[idx] = activeOverlays[idx]?.filter(o => o.categoria !== categoria) || [];
-    updateThumbnailOverlay(idx);
+    activeOverlays[idx] = activeOverlays[idx]?.filter(o => {
+      return o.categoria !== categoria && o.categoria !== 'Fachada_' + categoria;
+    }) || [];
   });
 
-  // 2. Agregar nuevos overlays
+  // ✅ 2. Agregar overlays del producto seleccionado
   if (renders) {
-    for (let i = 1; i <= 9; i++) {
-      const imgPath = renders[`image_${i}`];
+    Object.keys(renders).forEach(key => {
+      const imgPath = renders[key];
+      if (imgPath) {
+        const index = parseInt(key.split('_')[1]) - 1;
+        if (!activeOverlays[index]) activeOverlays[index] = [];
+        activeOverlays[index].push({ categoria, url: imgPath });
+      }
+    });
+  }
+
+  // ✅ 3. Agregar overlays de la fachada del producto (solo primeras 4 imágenes)
+  if (fachadaRenders) {
+    for (let i = 1; i <= 4; i++) {
+      const imgPath = fachadaRenders[`base_image_${i}`];
       if (imgPath) {
         const index = i - 1;
         if (!activeOverlays[index]) activeOverlays[index] = [];
-        activeOverlays[index].push({ categoria, url: imgPath });
-        updateThumbnailOverlay(index);
+        // Guardamos categoría combinada para poder eliminarla correctamente luego
+        activeOverlays[index].push({ categoria: 'Fachada_' + categoria, url: imgPath });
       }
     }
   }
 
-  // 3. Actualizar imagen principal si la miniatura actual tiene overlays
+  // ✅ 4. Actualizar todas las miniaturas
+  Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx));
+
+  // ✅ 5. Actualizar imagen principal
   updateMainPreview(globalindex);
 }
-
 // ✅ Ejecutar al cargar la página
 $(document).ready(function () {
   prepararMiniaturas();
@@ -313,7 +324,6 @@ document.querySelectorAll('.option-card').forEach(card => {
   card.addEventListener('click', function () {
     const group = this.closest('.accordion-collapse');
     const groupId = group.id;
-    const cardId = this.getAttribute('data-id');
 
     if (this.classList.contains('selected')) {
       this.classList.remove('selected');
@@ -342,97 +352,9 @@ document.querySelectorAll('.option-card').forEach(card => {
   });
 });
 // Función para enviar configuración al backend
-async function saveConfiguration() {
-  try {
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    // Calcula el precio total sumando los precios de cada selección
-    const totalPrice = Object.values(selections).reduce((sum, sel) => {
-      return sel && sel.precio ? sum + sel.precio : sum;
-    }, 0);
-
-    const dataToSave = {
-      configuration: selections,
-      precioTotal: totalPrice,
-      fecha: new Date().toISOString(),
-    };
-
-    const response = await fetch('/house-configurations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': token,
-        'Accept': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify(dataToSave)
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error desconocido al guardar');
-    }
-
-    const responseData = await response.json();
-    alert("Guardado con éxito: " + (responseData.message || ''));
-
-  } catch (error) {
-    alert("Error al guardar: " + error.message);
-  }
-}
-document.querySelector('#capturar').addEventListener('click', () => {
-    const wrappers = document.querySelectorAll('.thumb-wrapper');
-    const imagenesBase64 = [];
-    let procesadas = 0;
-
-    wrappers.forEach((wrapper, index) => {
-        html2canvas(wrapper, {
-            backgroundColor: null, // mantiene transparencia si la hay
-            useCORS: true // por si hay imágenes externas
-        }).then(canvas => {
-            imagenesBase64[index] = canvas.toDataURL('image/png');
-            procesadas++;
-
-            // Cuando se procesen todas las imágenes individuales
-            if (procesadas === wrappers.length) {
-                localStorage.setItem('imagenesCarrusel', JSON.stringify(imagenesBase64));
-
-                // Capturamos el resumen completo como ya hacías
-                const elemento = document.querySelector('#owl-demo');
-                html2canvas(elemento, { useCORS: true }).then(canvas => {
-                    const resumenBase64 = canvas.toDataURL('image/png');
-                    localStorage.setItem('imagenResumen', resumenBase64);
-
-                    // Redirigir a la vista resumen
-                    window.location.href = '/resumen';
-                });
-            }
-        });
-    });
-});
 
 /*******opciones  */
 
-function setOverlays(container, overlayImageUrls) {
-  // Limpia overlays previos
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
-  // Inserta overlays
-  overlayImageUrls.forEach(url => {
-    const img = document.createElement('img');
-    img.src = url;
-    img.style.position = 'absolute';
-    img.style.top = '0';
-    img.style.left = '0';
-    img.style.width = '100%';
-    img.style.height = '100%';
-    img.style.pointerEvents = 'none';
-    img.style.userSelect = 'none';
-    // Opcional: agrega opacidad o mezcla, p.ej. img.style.opacity = '0.7';
-    container.appendChild(img);
-  });
-}
 
 
 document.addEventListener('DOMContentLoaded', function () {

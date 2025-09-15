@@ -317,6 +317,7 @@
                                                         data-categoria="{{ $category->name }}"
                                                         data-id="{{ $product->id }}"
                                                         data-renders='@json($product->renders)'
+                                                        data-fachada-renders='@json($fachadas[$product->id] ?? [])'
                                                         data-valor="{{ $product->title }}"
                                                         data-precio="{{ $product->base_price }}"
                                                         data-pre_code="{{ $product->pre_code }}"
@@ -325,8 +326,7 @@
                                                         <img src="/{{ $product->image_url ?? 'https://via.placeholder.com/400x300' }}"
                                                             class="img-fluid rounded" alt="" width="350px">
                                                         <div class="option-title">{{ $product->title }}</div>
-                                                        <div class="option-description">{{ $product->description }}
-                                                        </div>                                                      
+                                                        <div class="option-description">{{ $product->description }}</div>
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -348,6 +348,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/Minimalista.js"></script>
+    <script src="/cambioBasesFachadas.js"></script>
+    <script src="/save.js"></script>
+
     <script>
         document.querySelector('#capturar').addEventListener('click', () => {
             const elemento = document.querySelector('#seccionA');

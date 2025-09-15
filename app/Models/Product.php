@@ -44,4 +44,9 @@ class Product extends Model
     {
         return $this->hasOne(ProductRender::class);
     }
+
+    public function fachadaRenders()
+    {
+        return $this->hasMany(ProductFachadaRender::class);
+    }
 }
