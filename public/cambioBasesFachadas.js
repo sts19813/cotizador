@@ -31,7 +31,7 @@ $(document).ready(function () {
 });
 
 function CambioBases(items, valor) {
-debugger
+
 	if(slug == "home"){
 		if (valor === 'Fachada A') {
 			items[0].src = '/bases/minimalista/min01-01-A.webp';
@@ -186,4 +186,5 @@ debugger
 			items[3].src = '/bases/mexicano/min04-04-A.webp';
 		}
 	}
+	cambiarImagen(0);
 }
