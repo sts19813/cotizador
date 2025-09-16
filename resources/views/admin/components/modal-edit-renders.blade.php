@@ -12,42 +12,36 @@
                 @method('PUT')
                 <input type="hidden" name="product_id" id="renderProductId">
 
-                <div class="modal-body row g-3">
+                <div class="modal-body">
 
-                    <!-- Selector de fachada -->
-                    <div class="col-12 mb-3">
-                        <label for="fachada" class="form-label">Selecciona fachada</label>
-                        <select name="fachada" id="fachada" class="form-select">
-                            <option value="Fachada A">Fachada A</option>
-                            <option value="Fachada B">Fachada B</option>
-                            <option value="Fachada 2A">Fachada 2A</option>
-                            <option value="Fachada 2B">Fachada 2B</option>
-                            <option value="Fachada 3A">Fachada 3A</option>
-                            <option value="Fachada 3B">Fachada 3B</option>
-                            <option value="Fachada 4A">Fachada 4A</option>
+                    <!-- Tabla de fachadas y sus 4 imágenes -->
+                    <table class="table table-bordered mb-4">
+                        <thead>
+                            <tr>
+                                <th>Fachada</th>
+                                <th>Frente</th>
+                                <th>Izquierda</th>
+                                <th>Derecha</th>
+                                <th>Atrás</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fachadasTableBody">
+                            <!-- El contenido se llenará dinámicamente con JS al abrir el modal -->
+                        </tbody>
+                    </table>
 
-                        </select>
-                    </div>
-
-                    <!-- 4 imágenes base por fachada -->
-                    @for ($i = 1; $i <= 4; $i++)
-                        <div class="col-md-3">
-                            <label>Imagen Base {{ $i }} (Fachada)</label>
-                            <input type="file" name="base_image_{{ $i }}" class="form-control">
-                            <img id="preview_base_image_{{ $i }}" class="img-fluid mt-1 border" style="max-height:150px; display:none;">
-                        </div>
-                    @endfor
-
-                    <hr class="my-3">
+                    <hr>
 
                     <!-- 9 renders generales -->
-                    @for ($i = 1; $i <= 9; $i++)
-                        <div class="col-md-4">
-                            <label>Render {{ $i }} (General)</label>
-                            <input type="file" name="image_{{ $i }}" class="form-control">
-                            <img id="preview_image_{{ $i }}" class="img-fluid mt-1 border" style="max-height:150px; display:none;">
-                        </div>
-                    @endfor
+                    <div class="row g-3">
+                        @for ($i = 1; $i <= 9; $i++)
+                            <div class="col-md-4">
+                                <label>Render {{ $i }} (General)</label>
+                                <input type="file" name="image_{{ $i }}" class="form-control mb-1">
+                                <img id="preview_image_{{ $i }}" class="img-fluid border" style="max-height:100px; display:none;">
+                            </div>
+                        @endfor
+                    </div>
 
                 </div>
 
@@ -59,3 +53,45 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+$(document).on('click', '.btn-edit-renders', function() {
+    const button = $(this);
+    const form = $('#renderForm');
+    const productId = button.data('id');
+
+    form.attr('action', `/admin/renders/${productId}`);
+    form.find('#renderProductId').val(productId);
+
+    // --- Fachadas ---
+    const fachadasData = button.data('fachadas') || {};
+    const defaultFachadas = ['Fachada A','Fachada B','Fachada 2A','Fachada 2B','Fachada 3A','Fachada 3B','Fachada 4A'];
+    const tbody = $('#fachadasTableBody');
+    tbody.empty();
+
+    defaultFachadas.forEach(fachada => {
+        const renderFachada = fachadasData[fachada] || {};
+        let row = `<tr>
+            <td>${fachada}</td>`;
+        for(let i=1; i<=4; i++){
+            const imgUrl = renderFachada[`base_image_${i}`] || '';
+            row += `<td>
+                        <input type="file" name="fachadas[${fachada}][base_image_${i}]" class="form-control mb-1">
+                        ${imgUrl ? `<img src="${imgUrl}" class="img-fluid border" style="max-height:100px;">` : ''}
+                    </td>`;
+        }
+        row += `</tr>`;
+        tbody.append(row);
+    });
+
+    // --- Renders generales ---
+    for(let i=1; i<=9; i++){
+        const imageUrl = button.data(`image_${i}`);
+        const preview = $(`#preview_image_${i}`);
+        if(imageUrl) preview.attr('src', imageUrl).show();
+        else preview.hide();
+    }
+});
+</script>
+@endpush

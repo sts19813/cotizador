@@ -30,9 +30,8 @@ class RenderController extends Controller
         }
 
         // Productos con renders
-        $products = Product::with('renders')
-            ->where('style', $style)
-            ->get();
+        $products = Product::with(['renders', 'fachadaRenders'])->where('style', $style)->get();
+
 
         // Imágenes base desde la tabla base_images
         $baseImages = BaseImage::where('style', $style)
@@ -44,51 +43,49 @@ class RenderController extends Controller
     }
 
    public function update(Request $request, $id)
-    {
-        $product = Product::findOrFail($id);
+{
+    $product = Product::findOrFail($id);
+    $renderPath = public_path('render');
+    if (!file_exists($renderPath)) mkdir($renderPath, 0777, true);
 
-        $renderPath = public_path('render');
-        if (!file_exists($renderPath)) mkdir($renderPath, 0777, true);
-
-        // --- 1. Guardar renders por fachada ---
-        $fachada = $request->input('fachada');
-        if ($fachada) {
-            $fachadaData = [];
-            for ($i = 1; $i <= 4; $i++) {
-                $inputName = "base_image_$i";
-                if ($request->hasFile($inputName)) {
-                    $file = $request->file($inputName);
-                    $filename = "render_{$product->id}_{$fachada}_{$i}." . $file->getClientOriginalExtension();
-                    $file->move($renderPath, $filename);
-
-                    $fachadaData[$inputName] = '/render/' . $filename;
-                }
-            }
-            if ($fachadaData) {
-                $product->fachadaRenders()->updateOrCreate(
-                    ['fachada' => $fachada],
-                    $fachadaData
-                );
-            }
-        }
-
-        // --- 2. Guardar renders generales (los 9) ---
-        $generalData = [];
-        for ($i = 1; $i <= 9; $i++) {
-            $inputName = "image_$i";
-            if ($request->hasFile($inputName)) {
-                $file = $request->file($inputName);
-                $filename = "render_{$product->id}_{$i}." . $file->getClientOriginalExtension();
+    // --- 1. Guardar renders por fachada ---
+    $fachadas = $request->file('fachadas', []); // <-- archivos como array
+    foreach($fachadas as $fachadaName => $images) {
+        $fachadaData = [];
+        for($i=1; $i<=4; $i++){
+            if(isset($images["base_image_$i"])){
+                $file = $images["base_image_$i"];
+                $filename = "render_{$product->id}_{$fachadaName}_{$i}.".$file->getClientOriginalExtension();
                 $file->move($renderPath, $filename);
-
-                $generalData[$inputName] = '/render/' . $filename;
+                $fachadaData["base_image_$i"] = '/render/'.$filename;
             }
         }
-        if ($generalData) {
-            $product->renders()->updateOrCreate([], $generalData);
+        if($fachadaData){
+            $product->fachadaRenders()->updateOrCreate(
+                ['fachada' => $fachadaName],
+                $fachadaData
+            );
         }
-
-        return back()->with('success', 'Renders actualizados correctamente.');
     }
+
+    // --- 2. Guardar renders generales (los 9) ---
+    $generalData = [];
+    for ($i = 1; $i <= 9; $i++) {
+        $inputName = "image_$i";
+        if ($request->hasFile($inputName)) {
+            $file = $request->file($inputName);
+            $filename = "render_{$product->id}_{$i}." . $file->getClientOriginalExtension();
+            $file->move($renderPath, $filename);
+
+            $generalData[$inputName] = '/render/' . $filename;
+        }
+    }
+    if ($generalData) {
+        $product->renders()->updateOrCreate([], $generalData);
+    }
+
+    return back()->with('success', 'Renders actualizados correctamente.');
+}
+
 
 }

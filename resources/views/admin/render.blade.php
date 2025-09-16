@@ -34,16 +34,16 @@
                 <td>{{ $product->brand }}</td>
                 <td>${{ number_format($product->base_price, 2) }}</td>
                 <td>
-                    <a href="#" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a>
-                    <a href="#" class="btn btn-sm btn-outline-warning btn-edit-renders"
-                        data-id="{{ $product->id }}"
-                        @if($product->renders)
+                   <a href="#" class="btn btn-sm btn-outline-warning btn-edit-renders"
+                    data-id="{{ $product->id }}"
+                    data-fachadas='@json($product->fachadaRenders->keyBy("fachada"))'
+                    @if($product->renders)
                         @for($i = 1; $i <= 9; $i++)
                             data-image_{{ $i }}="{{ $product->renders->{'image_'.$i} }}"
-                            @endfor
-                            @endif
-                            data-bs-toggle="modal" data-bs-target="#editRendersModal">
-                            <i class="bi bi-layers"></i>
+                        @endfor
+                    @endif
+                    data-bs-toggle="modal" data-bs-target="#editRendersModal">
+                    <i class="bi bi-layers"></i>
                     </a>
 
                     <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="d-inline">
@@ -84,35 +84,5 @@
         });
     });
 </script>
-<script>
 
-
-$(document).on('click', '.btn-edit-renders', function() {
-    const button = $(this);
-    const form = $('#renderForm');
-
-    const productId = button.data('id');
-    form.attr('action', `/admin/renders/${productId}`);
-    form.find('#renderProductId').val(productId);
-
-    // --- Fachada ---
-    const fachada = button.data('fachada') || 'Fachada A';
-    $('#fachada').val(fachada);
-
-    for (let i = 1; i <= 4; i++) {
-        const imageUrl = button.data(`base_image_${i}`);
-        const preview = $(`#preview_base_image_${i}`);
-        if (imageUrl) preview.attr('src', imageUrl).show();
-        else preview.hide();
-    }
-
-    // --- Renders generales ---
-    for (let i = 1; i <= 9; i++) {
-        const imageUrl = button.data(`image_${i}`);
-        const preview = $(`#preview_image_${i}`);
-        if (imageUrl) preview.attr('src', imageUrl).show();
-        else preview.hide();
-    }
-});
-</script>
 @endpush
