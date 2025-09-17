@@ -175,8 +175,8 @@ function seleccionarOpcion(elemento) {
 
   // ===== Productos =====
   const renders = JSON.parse(elemento.getAttribute('data-renders'));
-  const fachadaRenders = selectedFachada 
-    ? JSON.parse(elemento.getAttribute('data-fachada-renders'))[selectedFachada] 
+  const fachadaRenders = selectedFachada
+    ? JSON.parse(elemento.getAttribute('data-fachada-renders'))[selectedFachada]
     : null;
 
   Object.keys(activeOverlays).forEach(idx => {
@@ -252,22 +252,73 @@ $(() => {
     threshold: 0.5
   };
 
+
   const secciones = [
-    { id: '#opciones-fachada', carouselIndex: 0 },
+    { id: '#heading-1', carouselIndex: 0 },
+    { id: '#heading-9', carouselIndex: 0 },
+    { id: '#heading-10', carouselIndex: 0 },
+    { id: '#heading-11', carouselIndex: 0 },
+    { id: '#heading-12', carouselIndex: 4 },
+    { id: '#heading-2', carouselIndex: 4 },
+    { id: '#heading-7', carouselIndex: 4 },
+    { id: '#heading-8', carouselIndex: 4 },
+    { id: '#heading-13', carouselIndex: 5 },
+    { id: '#heading-15', carouselIndex: 6 },
+    { id: '#heading-4', carouselIndex: 6 },
+    { id: '#heading-19', carouselIndex: 6 },
+    { id: '#heading-16', carouselIndex: 6 },
+    { id: '#heading-20', carouselIndex: 7 },
+    { id: '#heading-3', carouselIndex: 7 },
+    { id: '#heading-5', carouselIndex: 7 },
+    { id: '#heading-6', carouselIndex: 7 },
+    { id: '#heading-17', carouselIndex: 7 },
+    { id: '#heading-18', carouselIndex: 7 },
+
+
+    { id: '#heading-21', carouselIndex: 0 },
+    { id: '#heading-29', carouselIndex: 0 },
+    { id: '#heading-30', carouselIndex: 0 },
+    { id: '#heading-31', carouselIndex: 0 },
     { id: '#heading-22', carouselIndex: 4 },
     { id: '#heading-27', carouselIndex: 4 },
     { id: '#heading-28', carouselIndex: 4 },
     { id: '#heading-32', carouselIndex: 4 },
-    { id: '#heading-24', carouselIndex: 5 },
+    { id: '#heading-34', carouselIndex: 5 },
+    { id: '#heading-24', carouselIndex: 6 },
     { id: '#heading-33', carouselIndex: 6 },
     { id: '#heading-38', carouselIndex: 6 },
     { id: '#heading-35', carouselIndex: 6 },
-    { id: '#heading-39', carouselIndex: 6 },
+    { id: '#heading-39', carouselIndex: 7 },
     { id: '#heading-23', carouselIndex: 7 },
     { id: '#heading-25', carouselIndex: 7 },
     { id: '#heading-26', carouselIndex: 7 },
     { id: '#heading-36', carouselIndex: 7 },
+    { id: '#heading-37', carouselIndex: 7 },
+
+    { id: '#heading-58', carouselIndex: 0 },
+    { id: '#heading-47', carouselIndex: 0 },
+    { id: '#heading-48', carouselIndex: 0 },
+    { id: '#heading-40', carouselIndex: 0 },
+    { id: '#heading-45', carouselIndex: 4 },
+    { id: '#heading-46', carouselIndex: 4 },
+    { id: '#heading-49', carouselIndex: 4 },
+    { id: '#heading-51', carouselIndex: 4 },
+    { id: '#heading-42', carouselIndex: 5 },
+    { id: '#heading-50', carouselIndex: 6 },
+    { id: '#heading-55', carouselIndex: 6 },
+    { id: '#heading-57', carouselIndex: 6 },
+    { id: '#heading-56', carouselIndex: 6 },
+    { id: '#heading-41', carouselIndex: 7 },
+    { id: '#heading-43', carouselIndex: 7 },
+    { id: '#heading-44', carouselIndex: 7 },
+    { id: '#heading-53', carouselIndex: 7 },
+    { id: '#heading-54', carouselIndex: 7 },
   ];
+
+
+
+
+
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -327,13 +378,44 @@ document.querySelectorAll('.option-card').forEach(card => {
  **********************************************************/
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
-    if (row.id === 'opciones-casas') return;
+    if (row.id === 'opciones-casas') return; // <- estilos se manejan aparte
     const firstOption = row.querySelector('.option-card');
     if (firstOption) firstOption.click();
   });
 
+  // Auto-selección de 1 recámara
   setTimeout(() => {
     const recamara = document.querySelector('#Habitaciones [data-id="1Recamara"]');
     if (recamara && !recamara.classList.contains('selected')) recamara.click();
   }, 100);
+
+  // ===============================
+  // Auto-selección de estilo según slug
+  // ===============================
+  let slug = window.location.pathname.split("/").filter(Boolean).pop() || "home";
+
+  let estiloId = null;
+  if (slug === "home") estiloId = "generalMinimalista";
+  if (slug === "tulum") estiloId = "generalTulum";
+  if (slug === "mexicano") estiloId = "generalMexicano";
+
+  if (estiloId) {
+    const estiloCard = document.querySelector(`#opciones-casas .option-card[data-id="${estiloId}"]`);
+    if (estiloCard && !estiloCard.classList.contains("selected")) {
+
+      estiloCard.classList.add("selected");
+
+      const data = {};
+      Array.from(estiloCard.attributes).forEach(attr => {
+        if (attr.name.startsWith("data-")) {
+          const key = attr.name.replace("data-", "").replace(/-/g, "_");
+          data[key] = attr.value;
+        }
+      });
+      if (data.precio) data.precio = parseFloat(data.precio) || 0;
+      selections["opciones-casas"] = data;
+
+      localStorage.setItem("selections", JSON.stringify(selections));
+    }
+  }
 });

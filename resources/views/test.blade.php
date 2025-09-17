@@ -115,7 +115,7 @@
                     <div class="gallery-wrapper">
                         <!-- Imagen de previsualización principal -->
                         <div class="preview-image text-center" style="position: relative;">
-                            <img id="mainPreview" src="/baseMinimalista/fachadaA/01-F.jpg" alt="Vista previa"
+                            <img id="mainPreview" src="/base.jpg" alt="Vista previa"
                                 class="img-fluid preview-img">
                             <div id="imageLoader" class="image-loader" style="display:none;">
                                 <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem;">
