@@ -46,22 +46,33 @@ function prepararMiniaturas() {
   });
 }
 
+function isValidImageUrl(url) {
+  if (!url) return false;
+  if (typeof url !== 'string') return false;
+  url = url.trim();
+  // Solo aceptar extensiones de imagen comunes
+  return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
+}
+
 function updateThumbnailOverlay(index) {
   const $thumbWrapper = $('.gallery-carousel .owl-item').eq(index).find('.thumb-wrapper');
   const $overlayContainer = $thumbWrapper.find('.overlay-container');
   $overlayContainer.empty();
+
   if (activeOverlays[index]) {
     activeOverlays[index].forEach(ov => {
-      const img = document.createElement('img');
-      img.src = ov.url;
-      img.classList.add('thumb');
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.position = 'absolute';
-      img.style.top = '0';
-      img.style.left = '0';
-      img.style.pointerEvents = 'none';
-      $overlayContainer.append(img);
+      if (isValidImageUrl(ov.url)) {
+        const img = document.createElement('img');
+        img.src = ov.url;
+        img.classList.add('thumb');
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.position = 'absolute';
+        img.style.top = '0';
+        img.style.left = '0';
+        img.style.pointerEvents = 'none';
+        $overlayContainer.append(img);
+      }
     });
   }
 }
@@ -89,7 +100,8 @@ function updateMainPreview(index) {
   overlayMainContainer.innerHTML = '';
 
   if (activeOverlays[index] && activeOverlays[index].length > 0) {
-    activeOverlays[index].forEach(ov => {
+  activeOverlays[index].forEach(ov => {
+    if (isValidImageUrl(ov.url)) {
       const img = document.createElement('img');
       img.src = ov.url;
       img.style.position = 'absolute';
@@ -99,8 +111,9 @@ function updateMainPreview(index) {
       img.style.height = '100%';
       img.style.pointerEvents = 'none';
       overlayMainContainer.appendChild(img);
-    });
-  }
+    }
+  });
+}
 }
 
 
