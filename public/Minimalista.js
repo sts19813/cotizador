@@ -432,3 +432,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 });
+
+//para hacer la seleccion del primera opcion al cambio de fachada
+function autoSelectFirstOptions() {
+  document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
+    if (row.id === 'opciones-casas' || row.id === 'opciones-fachada' || row.id === 'opciones-habitaciones') return;
+    const firstOption = row.querySelector('.option-card');
+    if (firstOption && !firstOption.classList.contains('selected')) {
+      firstOption.click();
+    }
+  });
+}

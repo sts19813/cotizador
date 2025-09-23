@@ -39,162 +39,34 @@ $(document).ready(function () {
     $("#opciones-fachada .option-card").parent().hide();
     $('#opciones-fachada .option-card[data-pre_code="FAC01"]').parent().show();
 });
-
 function CambioBases(items, valor) {
+    const bases = {
+        home: 'minimalista',
+        tulum: 'tulum',
+        mexicano: 'mexicano'
+    };
 
-	if(slug == "home"){
-		if (valor === 'Fachada A') {
-			items[0].src = '/bases/minimalista/min01-01-A.webp';
-			items[1].src = '/bases/minimalista/min01-02-A.webp';
-			items[2].src = '/bases/minimalista/min01-03-A.webp';
-			items[3].src = '/bases/minimalista/min01-04-A.webp';
-		}
+    const fachadaFiles = {
+        'Fachada A': ['min01-01-A.webp','min01-02-A.webp','min01-03-A.webp','min01-04-A.webp'],
+        'Fachada B': ['min01-01-B.webp','min01-02-B.webp','min01-03-B.webp','min01-04-B.webp'],
+        'Fachada 2A': ['min02-01-A.webp','min02-02-A.webp','min02-03-A.webp','min02-04-A.webp'],
+        'Fachada 2B': ['min02-01-B.webp','min02-02-B.webp','min02-03-B.webp','min02-04-B.webp'],
+        'Fachada 3A': ['min03-01-A.webp','min03-02-A.webp','min03-03-A.webp','min03-04-A.webp'],
+        'Fachada 3B': ['min03-01-B.webp','min03-02-B.webp','min03-03-B.webp','min03-04-B.webp'],
+        'Fachada 4A': ['min04-01-A.webp','min04-02-A.webp','min04-03-A.webp','min04-04-A.webp']
+    };
 
-		if (valor === 'Fachada B') {
-			items[0].src = '/bases/minimalista/min01-01-B.webp';
-			items[1].src = '/bases/minimalista/min01-02-B.webp';
-			items[2].src = '/bases/minimalista/min01-03-B.webp';
-			items[3].src = '/bases/minimalista/min01-04-B.webp';
-		}
+    const baseFolder = bases[slug] || 'minimalista';
+    const files = fachadaFiles[valor];
 
+    if (!files) return;
 
-		if (valor === 'Fachada 2A') {
-			items[0].src = '/bases/minimalista/min02-01-A.webp';
-			items[1].src = '/bases/minimalista/min02-02-A.webp';
-			items[2].src = '/bases/minimalista/min02-03-A.webp';
-			items[3].src = '/bases/minimalista/min02-04-A.webp';
-		}
+    files.forEach((file, i) => {
+        if (items[i]) {
+            items[i].src = `/bases/${baseFolder}/${file}`;
+        }
+    });
 
-		if (valor === 'Fachada 2B') {
-			items[0].src = '/bases/minimalista/min02-01-B.webp';
-			items[1].src = '/bases/minimalista/min02-02-B.webp';
-			items[2].src = '/bases/minimalista/min02-03-B.webp';
-			items[3].src = '/bases/minimalista/min02-04-B.webp';
-		}
-
-		if (valor === 'Fachada 3A') {
-			items[0].src = '/bases/minimalista/min03-01-A.webp';
-			items[1].src = '/bases/minimalista/min03-02-A.webp';
-			items[2].src = '/bases/minimalista/min03-03-A.webp';
-			items[3].src = '/bases/minimalista/min03-04-A.webp';
-		}
-
-		if (valor === 'Fachada 3B') {
-			items[0].src = '/bases/minimalista/min03-01-B.webp';
-			items[1].src = '/bases/minimalista/min03-02-B.webp';
-			items[2].src = '/bases/minimalista/min03-03-B.webp';
-			items[3].src = '/bases/minimalista/min03-04-B.webp';
-		}
-
-		if (valor === 'Fachada 4A') {
-			items[0].src = '/bases/minimalista/min04-01-A.webp';
-			items[1].src = '/bases/minimalista/min04-02-A.webp';
-			items[2].src = '/bases/minimalista/min04-03-A.webp';
-			items[3].src = '/bases/minimalista/min04-04-A.webp';
-		}
-	}
-
-	if(slug == "tulum"){
-		if (valor === 'Fachada A') {
-			items[0].src = '/bases/tulum/min01-01-A.webp';
-			items[1].src = '/bases/tulum/min01-02-A.webp';
-			items[2].src = '/bases/tulum/min01-03-A.webp';
-			items[3].src = '/bases/tulum/min01-04-A.webp';
-		}
-
-		if (valor === 'Fachada B') {
-			items[0].src = '/bases/tulum/min01-01-B.webp';
-			items[1].src = '/bases/tulum/min01-02-B.webp';
-			items[2].src = '/bases/tulum/min01-03-B.webp';
-			items[3].src = '/bases/tulum/min01-04-B.webp';
-		}
-
-
-		if (valor === 'Fachada 2A') {
-			items[0].src = '/bases/tulum/min02-01-A.webp';
-			items[1].src = '/bases/tulum/min02-02-A.webp';
-			items[2].src = '/bases/tulum/min02-03-A.webp';
-			items[3].src = '/bases/tulum/min02-04-A.webp';
-		}
-
-		if (valor === 'Fachada 2B') {
-			items[0].src = '/bases/tulum/min02-01-B.webp';
-			items[1].src = '/bases/tulum/min02-02-B.webp';
-			items[2].src = '/bases/tulum/min02-03-B.webp';
-			items[3].src = '/bases/tulum/min02-04-B.webp';
-		}
-
-		if (valor === 'Fachada 3A') {
-			items[0].src = '/bases/tulum/min03-01-A.webp';
-			items[1].src = '/bases/tulum/min03-02-A.webp';
-			items[2].src = '/bases/tulum/min03-03-A.webp';
-			items[3].src = '/bases/tulum/min03-04-A.webp';
-		}
-
-		if (valor === 'Fachada 3B') {
-			items[0].src = '/bases/tulum/min03-01-B.webp';
-			items[1].src = '/bases/tulum/min03-02-B.webp';
-			items[2].src = '/bases/tulum/min03-03-B.webp';
-			items[3].src = '/bases/tulum/min03-04-B.webp';
-		}
-
-		if (valor === 'Fachada 4A') {
-			items[0].src = '/bases/tulum/min04-01-A.webp';
-			items[1].src = '/bases/tulum/min04-02-A.webp';
-			items[2].src = '/bases/tulum/min04-03-A.webp';
-			items[3].src = '/bases/tulum/min04-04-A.webp';
-		}
-	}
-	if(slug == "mexicano"){
-		if (valor === 'Fachada A') {
-			items[0].src = '/bases/mexicano/min01-01-A.webp';
-			items[1].src = '/bases/mexicano/min01-02-A.webp';
-			items[2].src = '/bases/mexicano/min01-03-A.webp';
-			items[3].src = '/bases/mexicano/min01-04-A.webp';
-		}
-
-		if (valor === 'Fachada B') {
-			items[0].src = '/bases/mexicano/min01-01-B.webp';
-			items[1].src = '/bases/mexicano/min01-02-B.webp';
-			items[2].src = '/bases/mexicano/min01-03-B.webp';
-			items[3].src = '/bases/mexicano/min01-04-B.webp';
-		}
-
-
-		if (valor === 'Fachada 2A') {
-			items[0].src = '/bases/mexicano/min02-01-A.webp';
-			items[1].src = '/bases/mexicano/min02-02-A.webp';
-			items[2].src = '/bases/mexicano/min02-03-A.webp';
-			items[3].src = '/bases/mexicano/min02-04-A.webp';
-		}
-
-		if (valor === 'Fachada 2B') {
-			items[0].src = '/bases/mexicano/min02-01-B.webp';
-			items[1].src = '/bases/mexicano/min02-02-B.webp';
-			items[2].src = '/bases/mexicano/min02-03-B.webp';
-			items[3].src = '/bases/mexicano/min02-04-B.webp';
-		}
-
-		if (valor === 'Fachada 3A') {
-			items[0].src = '/bases/mexicano/min03-01-A.webp';
-			items[1].src = '/bases/mexicano/min03-02-A.webp';
-			items[2].src = '/bases/mexicano/min03-03-A.webp';
-			items[3].src = '/bases/mexicano/min03-04-A.webp';
-		}
-
-		if (valor === 'Fachada 3B') {
-			items[0].src = '/bases/mexicano/min03-01-B.webp';
-			items[1].src = '/bases/mexicano/min03-02-B.webp';
-			items[2].src = '/bases/mexicano/min03-03-B.webp';
-			items[3].src = '/bases/mexicano/min03-04-B.webp';
-		}
-
-		if (valor === 'Fachada 4A') {
-			items[0].src = '/bases/mexicano/min04-01-A.webp';
-			items[1].src = '/bases/mexicano/min04-02-A.webp';
-			items[2].src = '/bases/mexicano/min04-03-A.webp';
-			items[3].src = '/bases/mexicano/min04-04-A.webp';
-		}
-	}
-	cambiarImagen(0);
+    // Actualiza la imagen principal
+    cambiarImagen(0);
 }
