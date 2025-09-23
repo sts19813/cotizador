@@ -1,3 +1,4 @@
+///método que guarda la configuracion en base de datos de la seleccion y configuracion de la casa
 async function saveConfiguration() {
   try {
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -36,6 +37,8 @@ async function saveConfiguration() {
     alert("Error al guardar: " + error.message);
   }
 }
+
+///método que genera las imagenes de las miniaturas
 document.querySelector('#capturar').addEventListener('click', () => {
     const wrappers = document.querySelectorAll('.thumb-wrapper');
     const imagenesBase64 = [];
