@@ -32,9 +32,15 @@
 .imagen-casa {
     position: relative;
     z-index: 2;
-    max-width: 1000px;
-    height: auto;
+    max-width: 1200px;
     margin-top: 200px;
+    margin: auto;
+    padding-top: 125px;
+}
+
+
+.gallery-wrapper {
+    text-align: center;
 }
 
 
@@ -193,13 +199,16 @@
 }
 
 .info-box {
-    max-width: 400px;   /* Ancho máximo reducido */
-    margin: 0 auto;     /* Centrar horizontalmente */
+    max-width: 400px;
+    /* Ancho máximo reducido */
+    margin: 0 auto;
+    /* Centrar horizontalmente */
 }
 
 .info-row {
     display: flex;
-    justify-content: space-between; /* Etiqueta a la izquierda, valor a la derecha */
+    justify-content: space-between;
+    /* Etiqueta a la izquierda, valor a la derecha */
     padding: 14px 0;
     border-bottom: 1px solid #eee;
 }
@@ -210,19 +219,25 @@
 
 
 .thumb-wrapper {
-    position: relative; /* necesario para los overlays */
+    position: relative;
+    /* necesario para los overlays */
     display: inline-block;
-    width: 300px; /* ajusta al tamaño que necesites */
-    height: 200px; /* ajusta al tamaño que necesites */
-    overflow: hidden; /* RECORTA todo lo que sobresalga de la base */
-    border-radius: 15px; /* opcional, para esquinas redondeadas */
+    width: 300px;
+    /* ajusta al tamaño que necesites */
+    height: 200px;
+    /* ajusta al tamaño que necesites */
+    overflow: hidden;
+    /* RECORTA todo lo que sobresalga de la base */
+    border-radius: 15px;
+    /* opcional, para esquinas redondeadas */
     margin: 20px;
 }
 
 .thumb-wrapper .tumb-original {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* base se adapta al contenedor */
+    object-fit: cover;
+    /* base se adapta al contenedor */
     display: block;
 }
 
