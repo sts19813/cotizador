@@ -128,7 +128,7 @@
                         <div id="owl-demo" class="owl-carousel gallery-carousel">
                             							@foreach ($baseImages as $image)
 																																<div class="item">
-																																				<img src="{{ $image->path }}" alt="imagen {{ $loop->iteration }}" class="thumb"
+																																				<img src="{{ $image->path }}" alt="imagen {{ $loop->iteration }}" class="thumb tumb-original"
 																																								@if ($image->overlay) data-overlay="/{{ $image->overlay }}" @endif />
 																																				<div class="overlay-container"
 																																								style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">

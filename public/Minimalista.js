@@ -100,20 +100,20 @@ function updateMainPreview(index) {
   overlayMainContainer.innerHTML = '';
 
   if (activeOverlays[index] && activeOverlays[index].length > 0) {
-  activeOverlays[index].forEach(ov => {
-    if (isValidImageUrl(ov.url)) {
-      const img = document.createElement('img');
-      img.src = ov.url;
-      img.style.position = 'absolute';
-      img.style.top = '0';
-      img.style.left = '0';
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.pointerEvents = 'none';
-      overlayMainContainer.appendChild(img);
-    }
-  });
-}
+    activeOverlays[index].forEach(ov => {
+      if (isValidImageUrl(ov.url)) {
+        const img = document.createElement('img');
+        img.src = ov.url;
+        img.style.position = 'absolute';
+        img.style.top = '0';
+        img.style.left = '0';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.pointerEvents = 'none';
+        overlayMainContainer.appendChild(img);
+      }
+    });
+  }
 }
 
 
@@ -166,7 +166,7 @@ function seleccionarOpcion(elemento) {
     selectedFachada = valor;
     const rendersFachada = JSON.parse(elemento.getAttribute('data-fachada-renders'));
     const fachadaData = rendersFachada[selectedFachada];
-    const items = document.querySelectorAll('#owl-demo .item img.thumb');
+    const items = document.querySelectorAll('#owl-demo .item img.tumb-original');
     CambioBases(items, valor);
 
     if (fachadaData) {
@@ -183,6 +183,10 @@ function seleccionarOpcion(elemento) {
     });
     const overlayMainContainer = document.getElementById('overlayMainContainer');
     if (overlayMainContainer) overlayMainContainer.innerHTML = '';
+
+    // EN LUGAR de autoSelectFirstOptions(); ... -> llamamos a la nueva función que reaplica todo
+    refreshSelectionsAndOverlays();
+
     return;
   }
 
@@ -391,16 +395,20 @@ document.querySelectorAll('.option-card').forEach(card => {
  **********************************************************/
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
-    if (row.id === 'opciones-casas') return; // <- estilos se manejan aparte
+    if (row.id === 'opciones-casas') return;
     const firstOption = row.querySelector('.option-card');
     if (firstOption) firstOption.click();
   });
 
-  // Auto-selección de 1 recámara
   setTimeout(() => {
     const recamara = document.querySelector('#Habitaciones [data-id="1Recamara"]');
     if (recamara && !recamara.classList.contains('selected')) recamara.click();
-  }, 100);
+
+    // 🔥 Forzar selección de las primeras opciones en todas las categorías
+    autoSelectFirstOptions();
+    Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx));
+    updateMainPreview(globalindex);
+  }, 300);
 
   // ===============================
   // Auto-selección de estilo según slug
@@ -439,7 +447,90 @@ function autoSelectFirstOptions() {
     if (row.id === 'opciones-casas' || row.id === 'opciones-fachada' || row.id === 'opciones-habitaciones') return;
     const firstOption = row.querySelector('.option-card');
     if (firstOption && !firstOption.classList.contains('selected')) {
+      // Disparar click para mantener coherencia de UI y estado
       firstOption.click();
+      // Y forzar la aplicación de overlays (por si el click solo marca la opción pero no aplica overlays)
+      try { seleccionarOpcion(firstOption); } catch (e) { /* ignore si no tiene data-renders */ }
     }
   });
+}
+
+/**
+ * Reinicia y reaplica todas las selecciones de opciones (excepto casas, fachadas y habitaciones),
+ * asegurando que los overlays se reconstruyan y se sincronicen con las miniaturas y la vista principal.
+ *
+ * Flujo de la función:
+ * 1. Limpia todos los overlays internos (`activeOverlays`) y también los contenedores visuales
+ *    de miniaturas y preview principal.
+ * 2. Recorre todos los grupos de opciones (`.row.g-3[id^="opciones-"]`).
+ *    - Ignora los grupos "casas", "fachada" y "habitaciones".
+ *    - Si el grupo ya tiene una opción seleccionada, la reaplica.
+ *    - Si no tiene ninguna seleccionada, selecciona la primera opción del grupo y la guarda en `selections`.
+ *    - En ambos casos, llama a `seleccionarOpcion(option)` para reconstruir los overlays y la lógica de renderizado.
+ * 3. Finalmente, actualiza las miniaturas y el preview principal para reflejar los overlays reaplicados.
+ *
+ * Uso típico:
+ * - Se llama cuando se cambia de fachada o de habitaciones, para mantener
+ *   las selecciones previas de color, piso, meseta, etc., en vez de perderlas.
+ */
+function refreshSelectionsAndOverlays() {
+  // 🔹 1. Resetear overlays en memoria
+  activeOverlays = {};
+
+  // 🔹 2. Limpiar visualmente overlays en miniaturas
+  const thumbCount = $('.gallery-carousel .owl-item').length;
+  for (let i = 0; i < thumbCount; i++) {
+    const $thumbWrapper = $('.gallery-carousel .owl-item').eq(i).find('.thumb-wrapper');
+    $thumbWrapper.find('.overlay-container').empty();
+  }
+
+  // 🔹 3. Limpiar overlays en el preview principal
+  const overlayMainContainer = document.getElementById('overlayMainContainer');
+  if (overlayMainContainer) overlayMainContainer.innerHTML = '';
+
+  // 🔹 4. Reaplicar selecciones en todos los grupos de opciones
+  document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
+    const rowId = row.id;
+
+    // Omitir grupos especiales
+    if (rowId === 'opciones-casas' || rowId === 'opciones-fachada' || rowId === 'opciones-habitaciones') return;
+
+    // Ver si ya hay opción seleccionada
+    let option = row.querySelector('.option-card.selected');
+
+    // Si no hay, seleccionar la primera opción del grupo
+    if (!option) {
+      option = row.querySelector('.option-card');
+      if (option) {
+        row.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+        option.classList.add('selected');
+
+        // Guardar en el objeto global de selecciones
+        const data = {};
+        Array.from(option.attributes).forEach(attr => {
+          if (attr.name.startsWith('data-')) {
+            const key = attr.name.replace('data-', '').replace(/-/g, '_');
+            data[key] = attr.value;
+          }
+        });
+        if (data.precio) data.precio = parseFloat(data.precio) || 0;
+        selections[rowId] = data;
+
+        localStorage.setItem('selections', JSON.stringify(selections));
+      }
+    }
+
+    // Reaplicar la lógica/renderizado de la opción actual
+    if (option) {
+      try {
+        seleccionarOpcion(option);
+      } catch (e) {
+        console.error('Error al reaplicar opción para', rowId, e);
+      }
+    }
+  });
+
+  // 🔹 5. Actualizar visuales en miniaturas y preview principal
+  Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx));
+  updateMainPreview(globalindex);
 }
