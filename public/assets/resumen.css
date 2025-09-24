@@ -207,3 +207,40 @@
 .label {
     font-weight: bold;
 }
+
+
+.thumb-wrapper {
+    position: relative; /* necesario para los overlays */
+    display: inline-block;
+    width: 300px; /* ajusta al tamaño que necesites */
+    height: 200px; /* ajusta al tamaño que necesites */
+    overflow: hidden; /* RECORTA todo lo que sobresalga de la base */
+    border-radius: 15px; /* opcional, para esquinas redondeadas */
+    margin: 20px;
+}
+
+.thumb-wrapper .tumb-original {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* base se adapta al contenedor */
+    display: block;
+}
+
+.overlay-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.overlay-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}

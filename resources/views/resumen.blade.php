@@ -20,8 +20,6 @@
 
         <h2 class="text-center fw-bold">Resumen</h2>
         <p class="text-center text-muted">#000</p>
-
-
         <hr>
         <div id="selecciones"></div>
     </div>
@@ -83,7 +81,8 @@
         <h2 style="text-align: center;">Galería</h2>
         <hr>
         <div class="gallery-wrapper row">
-            <img id="imagenGuardada" alt="Captura de sección" src="" style="text-align: center">
+
+                   <div id="miniaturasResumen" class="gallery-wrapper row"></div>
 
         </div>
 
@@ -130,15 +129,10 @@
     { id: '#heading-36', carouselIndex: 7 },
   ];
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const dataURL = localStorage.getItem('imagenResumen');
-            if (dataURL) {
-                document.querySelector('#imagenGuardada').src = dataURL;
-            }
-        });
+       
 
         const tbody = document.querySelector('#tablaResumen tbody');
-        imagenGuardada
+        
         tbody.innerHTML = '';
 
         Object.values(savedSelections).forEach((item, index) => {
@@ -226,6 +220,51 @@
     </script>
 
 
+<script>
+const miniaturasData = JSON.parse(localStorage.getItem('miniaturasData') || '[]');
+const container = document.querySelector('#miniaturasResumen');
+
+miniaturasData.forEach((item, index) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'thumb-wrapper';
+    wrapper.style.position = 'relative';
+    
+    // Imagen base
+    const imgBase = document.createElement('img');
+    imgBase.src = item.base;
+    imgBase.className = 'thumb tumb-original';
+    wrapper.appendChild(imgBase);
+    
+    // Overlay container
+    if (item.overlays.length > 0) {
+        const overlayDiv = document.createElement('div');
+        overlayDiv.className = 'overlay-container';
+        overlayDiv.style.position = 'absolute';
+        overlayDiv.style.top = '0';
+        overlayDiv.style.left = '0';
+        overlayDiv.style.width = '100%';
+        overlayDiv.style.height = '100%';
+        overlayDiv.style.pointerEvents = 'none';
+
+        item.overlays.forEach(src => {
+            const imgOverlay = document.createElement('img');
+            imgOverlay.src = src;
+            imgOverlay.className = 'thumb';
+            imgOverlay.style.width = '100%';
+            imgOverlay.style.height = '100%';
+            imgOverlay.style.position = 'absolute';
+            imgOverlay.style.top = '0';
+            imgOverlay.style.left = '0';
+            imgOverlay.style.pointerEvents = 'none';
+            overlayDiv.appendChild(imgOverlay);
+        });
+
+        wrapper.appendChild(overlayDiv);
+    }
+
+    container.appendChild(wrapper);
+});
+</script>
 
 </body>
 

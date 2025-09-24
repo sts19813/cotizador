@@ -37,35 +37,3 @@ async function saveConfiguration() {
     alert("Error al guardar: " + error.message);
   }
 }
-
-///método que genera las imagenes de las miniaturas
-document.querySelector('#capturar').addEventListener('click', () => {
-    const wrappers = document.querySelectorAll('.thumb-wrapper');
-    const imagenesBase64 = [];
-    let procesadas = 0;
-
-    wrappers.forEach((wrapper, index) => {
-        html2canvas(wrapper, {
-            backgroundColor: null, // mantiene transparencia si la hay
-            useCORS: true // por si hay imágenes externas
-        }).then(canvas => {
-            imagenesBase64[index] = canvas.toDataURL('image/png');
-            procesadas++;
-
-            // Cuando se procesen todas las imágenes individuales
-            if (procesadas === wrappers.length) {
-                localStorage.setItem('imagenesCarrusel', JSON.stringify(imagenesBase64));
-
-                // Capturamos el resumen completo como ya hacías
-                const elemento = document.querySelector('#owl-demo');
-                html2canvas(elemento, { useCORS: true }).then(canvas => {
-                    const resumenBase64 = canvas.toDataURL('image/png');
-                    localStorage.setItem('imagenResumen', resumenBase64);
-
-                    // Redirigir a la vista resumen
-                    window.location.href = '/resumen';
-                });
-            }
-        });
-    });
-});
