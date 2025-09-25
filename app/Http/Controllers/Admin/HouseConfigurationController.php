@@ -28,30 +28,33 @@ class HouseConfigurationController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-
         if (!$user) {
             return response()->json(['message' => 'No autenticado'], 401);
         }
 
-        $data = $request->input('configuration');
+        $configuration = $request->input('configuration');
+        $miniaturasData = $request->input('miniaturasData');
+        $precioTotal = $request->input('precioTotal');
+        $fecha = $request->input('fecha');
 
-        if (!$data || !is_array($data)) {
+        if (!$configuration || !is_array($configuration)) {
             return response()->json(['message' => 'Datos de configuración inválidos'], 400);
         }
 
-        // Guardar en base de datos
         HouseConfiguration::create([
             'user_id' => $user->id,
-            'configuration' => $data,
+            'configuration' => $configuration,
+            'miniaturas_data' => $miniaturasData,
+            'precio_total' => $precioTotal ?? 0,
+            'fecha' => $fecha ?? now(),
         ]);
 
         return response()->json(['message' => 'Configuración guardada correctamente']);
     }
 
-     public function list()
+    public function list()
     {
         $user = Auth::user();
-
         $configurations = HouseConfiguration::with('user')->where('user_id', $user->id)->latest()->get();
         return view('list', compact('configurations'));
     }

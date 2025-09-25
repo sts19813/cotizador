@@ -316,7 +316,7 @@ document.querySelectorAll('.option-card').forEach(card => {
       selections[groupId] = data;
     }
 
-    console.log(selections);
+    //console.log(selections);
     localStorage.setItem('selections', JSON.stringify(selections));
   });
 });
@@ -436,27 +436,6 @@ function refreshSelectionsAndOverlays() {
       if (option) {
         row.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
         option.classList.add('selected');
-
-        // Guardar en el objeto global de selecciones
-        const data = {};
-        Array.from(this.attributes).forEach(attr => {
-          if (attr.name.startsWith('data-')) {
-            const key = attr.name.replace('data-', '').replace(/-/g, '_');
-            data[key] = attr.value;
-          }
-        });
-        if (data.precio) data.precio = parseFloat(data.precio) || 0;
-
-        // Guardar el id del grupo como categoria_id (ej: "#heading-22")
-        const heading = this.closest('.accordion-item')?.querySelector('.accordion-header button');
-        if (heading) {
-          data.categoria_id = '#' + heading.id;
-        }
-
-        selections[groupId] = data;
-
-
-        localStorage.setItem('selections', JSON.stringify(selections));
       }
     }
 

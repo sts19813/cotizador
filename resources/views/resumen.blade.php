@@ -40,7 +40,7 @@
 																								<button class="btn btn-primary me-2" onclick="saveConfiguration()">Guardar</button>
 																								<a href="/" class="btn btn-outline-primary">Crear otra</a>
 																				@else
-																								<a href="/registro" class="btn btn-primary me-2">Iniciar sesión para guardar</a>
+																								<a href="/registro?redirect=/resumen" class="btn btn-primary me-2">Iniciar sesión para guardar</a>
 																				@endauth
 
 																</div>

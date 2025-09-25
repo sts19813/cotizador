@@ -19,7 +19,29 @@
                 <div class="card mb-4">
                     <div class="row g-0 align-items-center">
                         <div class="col-md-6">
-                            <img src="/img/minimalista.jpg" class="img-fluid rounded-4" alt="Casa render">
+                            <div id="principalRender{{ $index }}" class="imagen-casa animar-subida">
+                                @php
+                                    $miniaturas = $config->miniaturas_data ?? [];
+                                    $item = $miniaturas[1] ?? null; // segunda miniatura
+                                @endphp
+
+                                @if ($item)
+                                    <div style="position: relative; width: 100%; height: auto;">
+                                        {{-- Imagen base --}}
+                                        <img src="{{ $item['base'] }}" class="img-fluid rounded-4" style="width:100%; display:block;">
+                                        
+                                        {{-- Overlays --}}
+                                        @if (!empty($item['overlays']))
+                                            @foreach ($item['overlays'] as $overlay)
+                                                <img src="{{ $overlay }}" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                @else
+                                    {{-- fallback --}}
+                                    <img src="/img/minimalista.jpg" class="img-fluid rounded-4" alt="Casa render">
+                                @endif
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="card-body">

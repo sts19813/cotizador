@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('house_configurations', function (Blueprint $table) {
-            $table->uuid('id')->primary(); // El id de esta tabla puede ser UUID sin problema
+       Schema::create('house_configurations', function (Blueprint $table) {
+            $table->uuid('id')->primary();
 
-            $table->unsignedBigInteger('user_id'); // <-- tipo entero para hacer match con users.id (int/bigint)
-
-            // Llave foránea que referencia users.id (int)
+            $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->json('configuration'); // campo JSON
-            $table->enum('status', ['Guardada', 'Solicitada'])->default('Guardada');
+            $table->json('configuration'); // Se mantiene para savedSelections
+            $table->json('miniaturas_data')->nullable(); // Guardar miniaturas con base y overlays
+            $table->decimal('precio_total', 10, 2)->default(0); // Guardar precio total
+            $table->timestamp('fecha')->nullable(); // Guardar la fecha de guardado
 
+            $table->enum('status', ['Guardada', 'Solicitada'])->default('Guardada');
             $table->timestamps();
         });
     }

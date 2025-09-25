@@ -1,5 +1,4 @@
 let slug = window.location.pathname.split("/").filter(Boolean).pop() || "home";
-console.log(slug);
 
 $(document).ready(function () {
     // Cuando eligen una habitación

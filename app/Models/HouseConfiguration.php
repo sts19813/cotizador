@@ -7,17 +7,25 @@ use Illuminate\Support\Str;
 
 class HouseConfiguration extends Model
 {
-    use HasFactory;
+     use HasFactory;
 
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'id', 'user_id', 'configuration', 'status',
+        'id',
+        'user_id',
+        'configuration',
+        'miniaturas_data',
+        'precio_total',
+        'fecha',
+        'status',
     ];
 
     protected $casts = [
         'configuration' => 'array',
+        'miniaturas_data' => 'array',
+        'fecha' => 'datetime',
     ];
 
     protected static function boot()

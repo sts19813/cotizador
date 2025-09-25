@@ -253,7 +253,6 @@
     <script src="/constantes.js"></script>
     <script src="/Minimalista.js"></script>
     <script src="/cambioBasesFachadas.js"></script>
-    <script src="/save.js"></script>
 
     <script>
       document.querySelector('#capturar').addEventListener('click', () => {

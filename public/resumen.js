@@ -89,24 +89,21 @@ document.querySelector('img[alt=""][src^="/img/"][width="500px"]').src = imgSrc;
 ///método que guarda la configuracion en base de datos de la seleccion y configuracion de la casa
 async function saveConfiguration() {
   try {
-    // obtener token CSRF (si existe)
     const tokenMeta = document.querySelector('meta[name="csrf-token"]');
     const token = tokenMeta ? tokenMeta.getAttribute('content') : null;
 
-    // limpiar selections nulas/undefined y usar savedSelections (lo que ya cargas)
     const selectionsToSave = Object.fromEntries(
       Object.entries(savedSelections).filter(([k, v]) => v && typeof v === 'object')
     );
 
-    // calcular precio total (admite que precio venga como string o number, o propiedades con nombre distinto)
     const totalPrice = Object.values(selectionsToSave).reduce((sum, sel) => {
       const raw = sel.precio ?? sel.price ?? sel.preco ?? 0;
-      const p = parseFloat(raw) || 0;
-      return sum + p;
+      return sum + (parseFloat(raw) || 0);
     }, 0);
 
     const dataToSave = {
       configuration: selectionsToSave,
+      miniaturasData,
       precioTotal: totalPrice,
       fecha: new Date().toISOString(),
     };
@@ -123,16 +120,32 @@ async function saveConfiguration() {
     });
 
     if (!response.ok) {
-      // intentar leer JSON de error, si no, mostrar statusText
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(errorData.message || 'Error desconocido al guardar');
     }
 
     const responseData = await response.json();
-    alert("Guardado con éxito: " + (responseData.message || ''));
+
+    // ✅ SweetAlert2 en lugar de alert normal
+    Swal.fire({
+      icon: 'success',
+      title: 'Guardado',
+      text: 'Configuración guardada con éxito, encontrarás tus configuraciones guardadas en tu perfil',
+      showConfirmButton: false, // quitar el botón
+      timer: 3500, // se cierra automáticamente después de 2 segundos (2000 ms)
+      timerProgressBar: true // opcional: muestra barra de progreso
+    });
+
+
   } catch (error) {
     console.error('saveConfiguration error:', error);
-    alert("Error al guardar: " + (error.message || error));
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.message || 'Error al guardar la configuración',
+      confirmButtonText: 'Aceptar'
+    });
   }
 }
 

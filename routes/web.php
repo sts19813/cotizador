@@ -44,7 +44,7 @@ Route::get('/google-auth/callback', function () {
 
     Auth::login($user);
 
-    return redirect()->intended('/');
+    return redirect()->intended('/resumen');
 });
 
 /*
