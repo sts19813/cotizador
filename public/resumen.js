@@ -86,17 +86,27 @@ document.querySelector('img[alt=""][src^="/img/"][width="500px"]').src = imgSrc;
 // =======================
 // Funciones
 // =======================
+///método que guarda la configuracion en base de datos de la seleccion y configuracion de la casa
 async function saveConfiguration() {
   try {
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // obtener token CSRF (si existe)
+    const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+    const token = tokenMeta ? tokenMeta.getAttribute('content') : null;
 
-    // Calcula el precio total sumando los precios de cada selección
-    const totalPrice = Object.values(selections).reduce((sum, sel) => {
-      return sel && sel.precio ? sum + sel.precio : sum;
+    // limpiar selections nulas/undefined y usar savedSelections (lo que ya cargas)
+    const selectionsToSave = Object.fromEntries(
+      Object.entries(savedSelections).filter(([k, v]) => v && typeof v === 'object')
+    );
+
+    // calcular precio total (admite que precio venga como string o number, o propiedades con nombre distinto)
+    const totalPrice = Object.values(selectionsToSave).reduce((sum, sel) => {
+      const raw = sel.precio ?? sel.price ?? sel.preco ?? 0;
+      const p = parseFloat(raw) || 0;
+      return sum + p;
     }, 0);
 
     const dataToSave = {
-      configuration: savedSelections,
+      configuration: selectionsToSave,
       precioTotal: totalPrice,
       fecha: new Date().toISOString(),
     };
@@ -105,7 +115,7 @@ async function saveConfiguration() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': token,
+        ...(token ? { 'X-CSRF-TOKEN': token } : {}),
         'Accept': 'application/json'
       },
       credentials: 'include',
@@ -113,18 +123,19 @@ async function saveConfiguration() {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      // intentar leer JSON de error, si no, mostrar statusText
+      const errorData = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(errorData.message || 'Error desconocido al guardar');
     }
 
     const responseData = await response.json();
     alert("Guardado con éxito: " + (responseData.message || ''));
-
   } catch (error) {
-    debugger
-    alert("Error al guardar: " + error.message);
+    console.error('saveConfiguration error:', error);
+    alert("Error al guardar: " + (error.message || error));
   }
 }
+
 
 // =======================
 // Renderizado de miniaturas
