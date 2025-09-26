@@ -32,8 +32,10 @@ a:focus-visible {
 }
 
 .option-card img.selected {
-    border: 3px solid #007BFF; /* Azul Bootstrap */
-    border-radius: 0.375rem; /* Igual a .rounded si lo deseas */
+  border: 3px solid #007BFF;
+  /* Azul Bootstrap */
+  border-radius: 0.375rem;
+  /* Igual a .rounded si lo deseas */
 }
 
 hr {
@@ -64,18 +66,19 @@ hr {
 }
 
 .preview-img {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    object-position: center;
-    border-radius: 25px;
-    display: block;
-    margin: 0 auto;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 25px;
+  display: block;
+  margin: 0 auto;
 }
 
 .overlayMainContainer img {
   border-radius: 25px !important;
 }
+
 .active img {
   border-radius: 10px;
 }
@@ -258,12 +261,72 @@ ol li {
 
 .owl-carousel .owl-item {
   margin-top: 10px;
-  margin-right: 10px; /* se asegura del margen */
+  margin-right: 10px;
+  /* se asegura del margen */
 }
 
-#overlayMainContainer  {
+#overlayMainContainer {
   border-radius: 25px !important;
 }
-#overlayMainContainer img  {
+
+#overlayMainContainer img {
   border-radius: 25px !important;
+}
+
+
+
+@media only screen and (max-width: 600px) {
+  #mainPreview {
+    margin-top: 70px;
+  }
+
+  .sticky-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    padding: 10px;
+    background: white
+  }
+
+
+  .logo-mobile {
+    width: 140px !important;
+  }
+
+  .btn-radius {
+    border-radius: 25px;
+    font-size: 15px;
+    padding: 6px 25px !important;
+  }
+
+  .long-content {
+    margin-top: 320px;
+  }
+
+  .texto-fondo {
+    font-size: 60px !important;
+  }
+
+  .subtitulo {
+    font-family: 'Geologica', sans-serif;
+    font-weight: 400;
+    font-size: 20px !important;
+    transform: translateX(-50%);
+    z-index: 1;
+    color: #333;
+  }
+
+  .imagen-casa {
+    padding-top: 182px !important;
+  }
+
+  .seccion-casa {
+      padding: 0px !important;
+  }
+
+  .img-resumen-plano{
+    max-width: 100% !important  ;
+  }
 }

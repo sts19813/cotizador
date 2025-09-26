@@ -74,7 +74,7 @@
 
 												<div class="container" style="text-align: center; margin-top: 20px;">
 																<br><br>
-																<img src="/img/1.png" alt="" srcset="" width="500px">
+																<img src="/img/1.png" alt="" srcset="" class="img-resumen-plano" width="400px">
 												</div>
 								</div>
 								<br><br>

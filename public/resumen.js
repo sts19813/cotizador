@@ -81,7 +81,7 @@ let imgSrc = "/img/1.png";
 if (recamaras === "2 Recámaras") imgSrc = "/img/2.png";
 else if (recamaras === "3 Recámaras") imgSrc = "/img/3.png";
 else if (recamaras === "4 Recámaras") imgSrc = "/img/4.png";
-document.querySelector('img[alt=""][src^="/img/"][width="500px"]').src = imgSrc;
+document.querySelector('img[alt=""][src^="/img/"][width="400px"]').src = imgSrc;
 
 // =======================
 // Funciones

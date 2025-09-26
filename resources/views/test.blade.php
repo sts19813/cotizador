@@ -255,24 +255,29 @@
     <script src="/cambioBasesFachadas.js"></script>
 
     <script>
-      document.querySelector('#capturar').addEventListener('click', () => {
-        // Seleccionamos todos los thumb-wrapper
-        const wrappers = document.querySelectorAll('.thumb-wrapper');
+        document.querySelectorAll('.capturar').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Seleccionamos todos los thumb-wrapper
+                const wrappers = document.querySelectorAll('.thumb-wrapper');
 
-        // Creamos un array con la info de base y overlays
-        const miniaturasData = Array.from(wrappers).map(wrapper => {
-            const base = wrapper.querySelector('img.tumb-original')?.src || '';
-            const overlays = Array.from(wrapper.querySelectorAll('.overlay-container img')).map(img => img.src);
-            return { base, overlays };
+                // Creamos un array con la info de base y overlays
+                const miniaturasData = Array.from(wrappers).map(wrapper => {
+                    const base = wrapper.querySelector('img.tumb-original')?.src || '';
+                    const overlays = Array.from(wrapper.querySelectorAll('.overlay-container img')).map(img => img.src);
+                    return {
+                        base,
+                        overlays
+                    };
+                });
+
+                // Guardamos en localStorage
+                localStorage.setItem('miniaturasData', JSON.stringify(miniaturasData));
+
+                // Redirigimos a la página de resumen
+                window.location.href = '/resumen';
+            });
         });
-
-        // Guardamos en localStorage
-        localStorage.setItem('miniaturasData', JSON.stringify(miniaturasData));
-
-        // Redirigimos a la página de resumen
-        window.location.href = '/resumen';
-    });
-    </script>
+</script>
 </body>
 
 </html>
