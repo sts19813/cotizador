@@ -243,3 +243,11 @@ if (miniaturasData.length > 1) {
 
   principalRender.appendChild(wrapper);
 }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+      const btn = document.getElementById("btnRegresar");
+      if (btn) {
+          btn.href = "https://app.uondr.mx/";
+      }
+  });

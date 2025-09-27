@@ -9,7 +9,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <!-- Botones Regresar y Volver a empezar (izquierda en móvil y escritorio) -->
         <div class="d-flex align-items-center gap-2">
-            <a href="https://uondr.mx/" class="btn btn-outline-primary btn-radius dark-blue">
+            <a href="https://uondr.mx/" class="btn btn-outline-primary btn-radius dark-blue" id="btnRegresar">
                 Regresar
             </a>
             <a href="/" class="btn btn-outline-primary btn-radius dark-blue d-none d-md-inline">
@@ -89,7 +89,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <button class="btn btn-outline-primary btn-radius dark-blue capturar">
                 Ver Resumen <i class="bi bi-bookmark"></i>
             </button>
-            <a href="/registro" class="btn btn-primary btn-radius dark-blue">
+            <a href="/registro" class="btn btn-radius dark-blue">
                 Crear Cuenta <i class="bi bi-person"></i>
             </a>
         @endauth

@@ -240,6 +240,14 @@
                                 </div>
                             </div>
                         @endforeach
+
+                        {{-- Botón de Resumen solo visible en móvil --}}
+                        <div class="text-center mt-3 d-block d-md-none">
+                            <button class="btn btn-outline-primary btn-radius dark-blue capturar w-100">
+                                Ver Resumen <i class="bi bi-bookmark"></i>
+                            </button>
+                            <br> <br> <br>
+                        </div>
                     </div>
                 </div>
             </div>
