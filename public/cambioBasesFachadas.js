@@ -28,23 +28,33 @@ $(document).ready(function () {
             // ✅ Mantener la fachada seleccionada
             fachadaA = currentFachada;
         } else {
-            // ❌ Si no es válida, seleccionamos la Fachada A del grupo
+            // ❌ Si no es válida, seleccionamos la Fachada A del grupo correspondiente
             fachadaA = $(`#opciones-fachada .option-card[data-pre_code="${validPreCodes[0]}"][data-valor*="A"]`);
         }
 
         // Seleccionar automáticamente la fachada
         if (fachadaA && fachadaA.length) {
             fachadaA.trigger("click");
-
-            // Mantener coherencia de las demás opciones
             refreshSelectionsAndOverlays();
         }
     });
 
-    // Opcional: al inicio ocultamos todas y mostramos solo las de 1 recámara
+    // ✅ Al inicio: mostrar solo fachadas de 4 recámaras y seleccionar la A
     $("#opciones-fachada .option-card").parent().hide();
-    $('#opciones-fachada .option-card[data-pre_code="FAC01"]').parent().show();
+    $('#opciones-fachada .option-card[data-pre_code="FAC04"]').parent().show();
+
+    const fachada4A = $('#opciones-fachada .option-card[data-pre_code="FAC04"][data-valor*="A"]');
+    if (fachada4A.length) {
+        fachada4A.trigger('click');
+    }
+
+    // ✅ También seleccionar automáticamente las 4 recámaras al inicio
+    const recamara4 = $('#opciones-habitaciones .option-card[data-id="4Recamaras"]');
+    if (recamara4.length) {
+        recamara4.trigger('click');
+    }
 });
+
 function CambioBases(items, valor) {
     const bases = {
         home: 'minimalista',
