@@ -292,7 +292,7 @@ ol li {
 
 
   .logo-mobile {
-    width: 140px !important;
+    width: 120px !important;
   }
 
   .btn-radius {
@@ -328,5 +328,8 @@ ol li {
 
   .img-resumen-plano{
     max-width: 100% !important  ;
+  }
+  .navbar{
+    padding: 15px 0px !important;
   }
 }
