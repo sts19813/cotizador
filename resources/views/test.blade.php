@@ -83,7 +83,7 @@
                                              <a href="/home">
                                             <div class="option-card" data-id="generalMinimalista" data-categoria="Estilo"
                                                 data-valor="Minimalista">
-                                                <img src="/img/minimalista.jpg" class="img-fluid rounded"
+                                                <img src="/productos/MINIMALISTA-MINIATURA.webp" class="img-fluid rounded"
                                                     alt="Minimalista">
                                                 <div class="option-title">Minimalista</div>
                                             </div>
@@ -94,7 +94,7 @@
                                             <a href="/tulum">
                                             <div class="option-card" data-id="generalTulum" data-categoria="Estilo"
                                                 data-valor="Tulum">
-                                                <img src="/img/tulum.jpg" class="img-fluid rounded" alt="Tulum">
+                                                <img src="/productos/TULUM-MINIATURA.webp" class="img-fluid rounded" alt="Tulum">
                                                 <div class="option-title">Tulum</div>
                                             </div>
                                             </a>
@@ -104,7 +104,7 @@
                                              <a href="/mexicano">
                                             <div class="option-card" data-id="generalMexicano" data-categoria="Estilo"
                                                 data-valor="Mexicano">
-                                                <img src="/img/mexicano.jpg" class="img-fluid rounded"
+                                                <img src="/productos/MEXICANO-MINIATURA.webp" class="img-fluid rounded"
                                                     alt="Mexicano">
                                                 <div class="option-title">Mexicano</div>
                                             </div>
@@ -143,16 +143,26 @@
                                     <p class="fw-bold mb-1">Elige el número de habitaciones</p>
                                     <div class="row g-3" id="opciones-habitaciones">
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card estilo-color cursor-pointer" data-id="1Recamara" data-categoria="Habitaciones"
-                                                data-valor="1 Recámara" data-precio="0">
+                                            <div class="option-card estilo-color cursor-pointer" data-id="4Recamaras"
+                                                data-valor="4 Recámaras" data-precio="60000" data-categoria="Habitaciones">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
-                                                    <span class="fw-bold fs-4">01</span>
+                                                    <span class="fw-bold fs-4">04</span>
                                                 </div>
-                                                <div class="option-title">1 Habitación</div>
+                                                <div class="option-title">4 Habitaciones</div>
                                             </div>
                                         </div>
-                                        <div class="col-6 col-md-6">
+                                         <div class="col-6 col-md-6">
+                                            <div class="option-card estilo-color cursor-pointer" data-id="3Recamaras" data-categoria="Habitaciones"
+                                                data-valor="3 Recámaras" data-precio="40000">
+                                                <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
+                                                    style="height: 100px;">
+                                                    <span class="fw-bold fs-4">03</span>
+                                                </div>
+                                                <div class="option-title">3 Habitaciones</div>
+                                            </div>
+                                        </div>
+                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="2Recamaras"
                                                 data-valor="2 Recámaras" data-precio="25000" data-categoria="Habitaciones">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
@@ -163,25 +173,15 @@
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6">
-                                            <div class="option-card estilo-color cursor-pointer" data-id="3Recamaras" data-categoria="Habitaciones"
-                                                data-valor="3 Recámaras" data-precio="40000">
+                                            <div class="option-card estilo-color cursor-pointer" data-id="1Recamara" data-categoria="Habitaciones"
+                                                data-valor="1 Recámara" data-precio="0">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
-                                                    <span class="fw-bold fs-4">03</span>
+                                                    <span class="fw-bold fs-4">01</span>
                                                 </div>
-                                                <div class="option-title">3 Habitaciones</div>
+                                                <div class="option-title">1 Habitación</div>
                                             </div>
-                                        </div>
-                                        <div class="col-6 col-md-6">
-                                            <div class="option-card estilo-color cursor-pointer" data-id="4Recamaras"
-                                                data-valor="4 Recámaras" data-precio="60000" data-categoria="Habitaciones">
-                                                <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
-                                                    style="height: 100px;">
-                                                    <span class="fw-bold fs-4">04</span>
-                                                </div>
-                                                <div class="option-title">4 Habitaciones</div>
-                                            </div>
-                                        </div>
+                                        </div>                                      
                                     </div>
                                 </div>
                             </div>
@@ -240,29 +240,6 @@
                                 </div>
                             </div>
                         @endforeach
-
-                        {{-- Botones visibles en móvil y desktop --}}
-                        <div class="text-center mt-3">
-                            <div class="row g-2">
-                                <!-- Botón Ver Resumen -->
-                                <div class="col-12 col-md-6">
-                                    <button class="btn btn-outline-primary btn-radius dark-blue capturar w-100">
-                                        Ver Resumen <i class="bi bi-bookmark"></i>
-                                    </button>
-                                </div>
-
-                                <!-- Botón Subir arriba -->
-                                <div class="col-12 col-md-6">
-                                    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" 
-                                            class="btn btn-outline-secondary btn-radius w-100">
-                                        Subir arriba <i class="bi bi-arrow-up"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <br><br><br>
-
                     </div>
                 </div>
             </div>

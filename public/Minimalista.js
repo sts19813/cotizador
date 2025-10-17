@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   setTimeout(() => {
-    const recamara = document.querySelector('#Habitaciones [data-id="1Recamara"]');
+    const recamara = document.querySelector('#Habitaciones [data-id="4Recamaras"]');
     if (recamara && !recamara.classList.contains('selected')) recamara.click();
 
     // 🔥 Forzar selección de las primeras opciones en todas las categorías
@@ -371,6 +371,11 @@ document.addEventListener('DOMContentLoaded', function () {
       localStorage.setItem("selections", JSON.stringify(selections));
     }
   }
+
+  setTimeout(() => {
+    const items = document.querySelectorAll('#owl-demo .item img.tumb-original');
+    CambioBases(items, 'Fachada 4A');
+}, 400);
 });
 
 //para hacer la seleccion del primera opcion al cambio de fachada
