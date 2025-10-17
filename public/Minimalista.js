@@ -296,28 +296,44 @@ $(() => {
 document.querySelectorAll('.option-card').forEach(card => {
   card.addEventListener('click', function () {
     const group = this.closest('.accordion-collapse');
-    const groupId = group.id;
+    const groupId = group?.id || 'sin-id';
 
-    if (this.classList.contains('selected')) {
-      this.classList.remove('selected');
-      selections[groupId] = null;
-    } else {
-      group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-      this.classList.add('selected');
 
-      const data = {};
-      Array.from(this.attributes).forEach(attr => {
-        if (attr.name.startsWith('data-')) {
-          const key = attr.name.replace('data-', '').replace(/-/g, '_');
-          data[key] = attr.value;
-        }
-      });
-      if (data.precio) data.precio = parseFloat(data.precio) || 0;
-      selections[groupId] = data;
+    group?.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    this.classList.add('selected');
+
+    // Extraer todos los atributos data-
+    const data = {};
+    Array.from(this.attributes).forEach(attr => {
+      if (attr.name.startsWith('data-')) {
+        const key = attr.name.replace('data-', '').replace(/-/g, '_');
+        data[key] = attr.value;
+      }
+    });
+
+    // Validar precios
+    if (data.precio) data.precio = parseFloat(data.precio) || 0;
+
+    // Si falta la categoría, la obtiene desde el DOM
+    if (!data.categoria) {
+      data.categoria = this.getAttribute('data-categoria') || groupId.replace('opciones-', '');
     }
 
-    //console.log(selections);
-    localStorage.setItem('selections', JSON.stringify(selections));
+    // Si falta el valor visible, lo toma del contenido interno
+    if (!data.valor) {
+      const label = this.querySelector('.card-title, .card-text');
+      data.valor = label ? label.textContent.trim() : 'Sin nombre';
+    }
+
+    // Guarda selección limpia
+    selections[groupId] = data;
+
+    // 🔹 Quita cualquier valor nulo o roto antes de guardar
+    const cleaned = Object.fromEntries(
+      Object.entries(selections).filter(([k, v]) => v && typeof v === 'object')
+    );
+
+    localStorage.setItem('selections', JSON.stringify(cleaned));
   });
 });
 

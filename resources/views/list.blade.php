@@ -59,17 +59,12 @@
                                         <tr>
                                             <th class="ps-0">Estilo</th>
                                             <td class="text-end pe-0">
-                                                {{ $config->configuration['Estilos']['valor'] ?? '' }}</td>
+                                                {{ $config->configuration['opciones-casas']['valor'] ?? '' }}</td>
                                         </tr>
                                         <tr>
                                             <th class="ps-0">Recámaras</th>
                                             <td class="text-end pe-0">
                                                 {{ $config->configuration['Habitaciones']['valor'] ?? '' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th class="ps-0">Fachada</th>
-                                            <td class="text-end pe-0">
-                                                {{ $config->configuration['collapse-21']['valor'] ?? '' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
