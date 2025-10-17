@@ -8,14 +8,33 @@ use App\Models\BaseImage;
 use App\Models\ProductFachadaRender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Validation\Rule;
 class CategoryController extends Controller
 {
     // Mostrar listado de categorías
-    public function index()
+   public function index()
     {
-        $categories = Category::orderBy('orden')->get();
-        return view('admin.categories.index', compact('categories'));
+        $styles = ['Minimalista', 'Tulum', 'Mexicano'];
+        $categoriesByStyle = [];
+
+        foreach ($styles as $style) {
+            $categoriesByStyle[$style] = Category::where('style', $style)
+                ->orderBy('orden')
+                ->get();
+        }
+
+        return view('admin.categories.index', compact('categoriesByStyle'));
+    }
+
+    public function reorder(Request $request)
+    {
+        $orderData = $request->input('order', []);
+
+        foreach ($orderData as $index => $id) {
+            Category::where('id', $id)->update(['orden' => $index + 1]);
+        }
+
+        return response()->json(['success' => true]);
     }
 public function configurador($style = 'Minimalista')
 {
@@ -87,14 +106,23 @@ public function configurador($style = 'Minimalista')
 
     public function update(Request $request, Category $category)
     {
-        $request->validate([
-            'name' => 'required|unique:categories,name,' . $category->id,
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                // Unique solo dentro del mismo style, excluyendo la categoría actual
+                Rule::unique('categories')->where(function ($query) use ($request) {
+                    return $query->where('style', $request->style);
+                })->ignore($category->id),
+            ],
             'orden' => 'nullable|integer',
+            'style' => 'required|in:Minimalista,Tulum,Mexicano',
         ]);
 
-        $category->update($request->all());
+        $validated['is_active'] = $request->has('is_active'); // checkbox
 
-        return redirect()->route('admin.categories.index')->with('success', 'Categoría actualizada correctamente.');
+        $category->update($validated);
+
+        return response()->json(['success' => true]);
     }
 
     public function destroy(Category $category)

@@ -21,20 +21,29 @@ class Product extends Model
         'base_price',
         'image_url',
         'product_url',
-        'one_bedroom_price',
-        'two_bedroom_price',
-        'three_bedroom_price',
-        'four_bedroom_price',
+
+        'fachada_1_price',
+        'fachada_2_price',
+        'fachada_3_price',
+        'fachada_4_price',
+        'fachada_5_price',
+        'fachada_6_price',
+        'fachada_7_price',
     ];
 
     protected $casts = [
         'base_price' => 'float',
-        'one_bedroom_price' => 'float',
-        'two_bedroom_price' => 'float',
-        'three_bedroom_price' => 'float',
-        'four_bedroom_price' => 'float',
+
+        'fachada_1_price' => 'float',
+        'fachada_2_price' => 'float',
+        'fachada_3_price' => 'float',
+        'fachada_4_price' => 'float',
+        'fachada_5_price' => 'float',
+        'fachada_6_price' => 'float',
+        'fachada_7_price' => 'float',
     ];
 
+    // 🔗 Relaciones
     public function category()
     {
         return $this->belongsTo(Category::class);

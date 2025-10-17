@@ -84,7 +84,7 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::put('renders/{id}', [RenderController::class, 'update'])->name('renders.update');
     
         Route::resource('categories', CategoryController::class)->names('categories');
-        
+        Route::post('categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
 
         Route::resource('leads', LeadController::class)->names('leads');
         Route::get('/casas-creadas', [HouseConfigurationController::class, 'index'])->name('admin.houses.index');
@@ -92,6 +92,13 @@ Route::middleware(['auth', AdminMiddleware::class])
                 ->parameters(['precios-base' => 'basePrice'])
                 ->except(['create', 'show', 'edit']);
 
+          // Mostrar productos por estilo para edición masiva
+        Route::get('products/prices/{style}', [ProductController::class, 'showByStyle'])
+            ->name('products.prices.byStyle');
+
+        // Guardado masivo de precios por estilo
+        Route::put('products/update-mass/{style}', [ProductController::class, 'updateMassPrices'])
+            ->name('products.update-mass');
     });
 
 /*

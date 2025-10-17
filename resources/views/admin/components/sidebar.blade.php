@@ -41,6 +41,21 @@
                 <i class="bi bi-currency-dollar"></i> Render Mexicano
             </a>
         </li>
+         <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="/admin/products/prices/Minimalista">
+                <i class="bi bi-currency-dollar"></i> Precios Minimalistas
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="/admin/products/prices/Tulum">
+                <i class="bi bi-currency-dollar"></i> Precios Tulum
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="/admin/products/prices/Mexicano">
+                <i class="bi bi-currency-dollar"></i> Precios Mexicano
+            </a>
+        </li>
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center gap-2" href="/admin/categories">
                 <i class="bi bi-tags"></i> Categorías
