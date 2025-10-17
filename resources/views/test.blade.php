@@ -241,13 +241,28 @@
                             </div>
                         @endforeach
 
-                        {{-- Botón de Resumen solo visible en móvil --}}
-                        <div class="text-center mt-3 d-block d-md-none">
-                            <button class="btn btn-outline-primary btn-radius dark-blue capturar w-100">
-                                Ver Resumen <i class="bi bi-bookmark"></i>
-                            </button>
-                            <br> <br> <br>
+                        {{-- Botones visibles en móvil y desktop --}}
+                        <div class="text-center mt-3">
+                            <div class="row g-2">
+                                <!-- Botón Ver Resumen -->
+                                <div class="col-12 col-md-6">
+                                    <button class="btn btn-outline-primary btn-radius dark-blue capturar w-100">
+                                        Ver Resumen <i class="bi bi-bookmark"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Botón Subir arriba -->
+                                <div class="col-12 col-md-6">
+                                    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" 
+                                            class="btn btn-outline-secondary btn-radius w-100">
+                                        Subir arriba <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+
+                        <br><br><br>
+
                     </div>
                 </div>
             </div>

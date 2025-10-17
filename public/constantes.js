@@ -25,7 +25,7 @@ const secciones = [
   { id: '#heading-29', carouselIndex: 0 },
   { id: '#heading-30', carouselIndex: 0 },
   { id: '#heading-31', carouselIndex: 0 },
-  { id: '#heading-22', carouselIndex: 0 },
+  { id: '#heading-22', carouselIndex: 4 },
   { id: '#heading-27', carouselIndex: 4 },
   { id: '#heading-28', carouselIndex: 4 },
   { id: '#heading-32', carouselIndex: 4 },
