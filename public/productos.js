@@ -7,11 +7,16 @@ $(document).ready(function() {
     $('#productsTable').DataTable({
         autoWidth: false,
         columnDefs: [
-            { width: '360px', targets: 4 },
+            { width: '400px', targets: 4 },
             { width: '100px', targets: 7 }
         ],
         language: { url: '//cdn.datatables.net/plug-ins/2.3.2/i18n/es-MX.json' },
-        responsive: true
+        responsive: true,
+        dom:
+        "<'row mb-3'<'col-12 d-flex justify-content-end'f>>" + // buscador arriba derecha
+        "<'row'<'col-12'tr>>" +                               // tabla
+        "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" // select y paginación abajo
+
     });
 });
 

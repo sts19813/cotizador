@@ -76,7 +76,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard'); 
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::resource('products', ProductController::class)->names('products');
         Route::get('renders/{style?}', [RenderController::class, 'index'])
             ->name('renders.index');
@@ -87,7 +87,7 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::post('categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
 
         Route::resource('leads', LeadController::class)->names('leads');
-        Route::get('/casas-creadas', [HouseConfigurationController::class, 'index'])->name('admin.houses.index');
+        Route::get('/casas-creadas', [HouseConfigurationController::class, 'index'])->name('houses.index');
         Route::resource('/precios-base', BasePriceController::class)
                 ->parameters(['precios-base' => 'basePrice'])
                 ->except(['create', 'show', 'edit']);
