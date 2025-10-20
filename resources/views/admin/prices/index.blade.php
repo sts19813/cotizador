@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <h3 class="mb-4">Precios - {{ $style }}</h3>
 
-    <!-- Botones Exportar e Importar (fuera del form) -->
+    <!-- Botones Exportar e Importar -->
     <div class="mb-3 d-flex justify-content-between">
         <button id="exportBtn" class="btn btn-primary">
             <i class="bi bi-file-earmark-excel"></i> Exportar plantilla
@@ -19,12 +19,15 @@
     </div>
 
     <!-- Formulario masivo -->
-    <form action="{{ route('admin.products.update-mass', $style) }}" method="POST">
+    <form id="massUpdateForm" action="{{ route('admin.products.update-mass', $style) }}" method="POST">
         @csrf
         @method('PUT')
 
-    <!-- tus inputs de precios -->
-    <button type="submit" class="btn btn-success">Guardar cambios</button>
+        <div class="d-flex justify-content-end mb-3">
+            <button type="submit" class="btn btn-success" id="saveBtn">
+                <i class="bi bi-save"></i> Guardar cambios
+            </button>
+        </div>
 
         <table class="table table-bordered table-hover align-middle" id="pricesTable">
             <thead class="table-light text-center">
@@ -62,44 +65,26 @@
     </form>
 </div>
 
-<!-- XLSX JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-document.getElementById('exportBtn').addEventListener('click', () => {
-    const table = document.getElementById('pricesTable');
-    const wb = XLSX.utils.table_to_book(table, {sheet:"Precios"});
-    XLSX.writeFile(wb, "plantilla_precios_{{ $style }}.xlsx");
-});
+<!-- Loader overlay -->
+<div id="loaderOverlay" style="
+    display:none;
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    background:rgba(255,255,255,0.8);
+    z-index:2000;
+    align-items:center;
+    justify-content:center;
+">
+    <div class="spinner-border text-primary" style="width:3rem; height:3rem;" role="status"></div>
+</div>
 
-document.getElementById('importBtn').addEventListener('click', () => {
-    const fileInput = document.getElementById('importFile');
-    if(!fileInput.files.length) {
-        alert("Selecciona un archivo primero");
-        return;
-    }
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const wb = XLSX.read(data, {type: 'array'});
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(ws, {header:1});
-        
-        // Iteramos filas, saltando la cabecera
-        for(let i=1; i<json.length; i++){
-            const row = json[i];
-            const id = row[0];
-            if(!id) continue;
-
-            const inputs = document.querySelectorAll(`#pricesTable tbody tr td input[name^="products[${id}]"]`);
-            for(let j=0; j<inputs.length; j++){
-                if(row[j+3] !== undefined){
-                    inputs[j].value = row[j+3]; // offset de columnas (ID, Producto, Imagen)
-                }
-            }
-        }
-    };
-    reader.readAsArrayBuffer(file);
-});
-</script>
 @endsection
+
+@push('scripts')
+    <!-- Dependencias -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- Script externo -->
+    <script src="{{ asset('/assets/js/admin/prices-mass.js') }}"></script>
+@endpush
