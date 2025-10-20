@@ -5,7 +5,7 @@
  */
 $(document).ready(function() {
     $('#productsTable').DataTable({
-        autoWidth: false,
+        autoWidth: true,
         columnDefs: [
             { width: '400px', targets: 4 },
             { width: '100px', targets: 7 }

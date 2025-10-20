@@ -1,68 +1,68 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Categorías</h2>
-        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
-            <i class="bi bi-plus-lg"></i> Nueva Categoría
-        </button>
-    </div>
 
-    {{-- Mensaje de éxito --}}
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Categorías</h2>
+    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+        <i class="bi bi-plus-lg"></i> Nueva Categoría
+    </button>
+</div>
 
-    {{-- ======== TABLAS EN FILA ======== --}}
-    <div class="row">
-        @foreach($categoriesByStyle as $style => $categories)
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <span>{{ $style }}</span>
-                    <button class="btn btn-light btn-sm save-order" data-style="{{ $style }}">Guardar Orden</button>
-                </div>
-                <div class="card-body p-0">
-                    <table class="table table-striped mb-0 table-sm sortable-table" data-style="{{ $style }}">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Orden</th>
-                                <th>Nombre</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody class="sortable">
-                            @foreach($categories as $category)
-                            <tr data-id="{{ $category->id }}">
-                                <td class="align-middle text-muted">{{ $category->orden }}</td>
-                                <td class="align-middle">{{ $category->name }}</td>
-                                <td class="align-middle" style="width: 100px">
-                                    <button class="btn btn-sm btn-outline-primary btn-edit-category"
-                                        data-id="{{ $category->id }}"
-                                        data-name="{{ $category->name }}"
-                                        data-orden="{{ $category->orden }}"
-                                        data-style="{{ $category->style }}"
-                                        data-active="{{ $category->is_active ? 1 : 0 }}"
-                                        data-bs-toggle="modal" data-bs-target="#editCategoryModal">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta categoría?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+{{-- Mensaje de éxito --}}
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+{{-- ======== TABLAS EN FILA ======== --}}
+<div class="row">
+    @foreach($categoriesByStyle as $style => $categories)
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <span>{{ $style }}</span>
+                <button class="btn btn-light btn-sm save-order" data-style="{{ $style }}">Guardar Orden</button>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0 table-sm sortable-table" data-style="{{ $style }}">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="padding: 10px">Orden</th>
+                            <th>Nombre</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sortable">
+                        @foreach($categories as $category)
+                        <tr data-id="{{ $category->id }}">
+                            <td style="padding-left: 30px" class="align-middle text-muted">{{ $category->orden }}</td>
+                            <td class="align-middle">{{ $category->name }}</td>
+                            <td class="align-middle" style="width: 120px">
+                                <button class="btn btn-sm btn-outline-primary btn-edit-category"
+                                    data-id="{{ $category->id }}"
+                                    data-name="{{ $category->name }}"
+                                    data-orden="{{ $category->orden }}"
+                                    data-style="{{ $category->style }}"
+                                    data-active="{{ $category->is_active ? 1 : 0 }}"
+                                    data-bs-toggle="modal" data-bs-target="#editCategoryModal">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta categoría?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-        @endforeach
     </div>
+    @endforeach
 </div>
+
 
 {{-- ======================
     MODAL: CREAR CATEGORÍA
