@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const inputs = document.querySelectorAll(`#pricesTable tbody tr td input[name^="products[${id}]"]`);
                 for (let j = 0; j < inputs.length; j++) {
-                    if (row[j + 3] !== undefined) {
-                        inputs[j].value = row[j + 3]; // offset columnas
+                    if (row[j + 4] !== undefined) {
+                        inputs[j].value = row[j + 4]; // ajustado porque agregamos "Categoría"
                     }
                 }
             }

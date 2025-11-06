@@ -7,21 +7,6 @@ let activeOverlays = {};
 let selectedFachada = null;
 let currentLoadToken = 0; // Loader helpers y token global
 
-// Precios por categorías
-let precioEstilo = 0;
-let precioFachada = 0;
-let precioColor = 0;
-let precioPiso = 0;
-let precioMeseta = 0;
-let precioCanceleria = 0;
-let precioPuerta = 0;
-let precioAddon = 0;
-let precioInterior = 0;
-let precioExterior = 0;
-let precioJardin = 0;
-let precioHabitaciones = 0;
-
-
 /**********************************************************
  * LOADER
  **********************************************************/
@@ -32,6 +17,12 @@ function hideLoader() {
   $('#imageLoader').fadeOut(120);
 }
 
+function actualizarPrecioPrincipal(precio) {
+  const precioEl = document.getElementById('precioTotal');
+  if (!precioEl) return;
+  const formateado = '$' + Number(precio).toLocaleString('es-MX', { minimumFractionDigits: 2 }) + ' MXN';
+  precioEl.textContent = formateado;
+}
 
 /**********************************************************
  * PREPARACIÓN DE MINIATURAS Y OVERLAYS
@@ -187,7 +178,35 @@ function seleccionarOpcion(elemento) {
     // EN LUGAR de autoSelectFirstOptions(); ... -> llamamos a la nueva función que reaplica todo
     refreshSelectionsAndOverlays();
 
+    // === ACTUALIZAR PRECIOS AL CAMBIAR DE FACHADA ===
+    const fachada = valor.trim().toLowerCase(); // ej. 'fachada 3a'
+    const sufijo = fachada.replace('fachada', '').trim(); // '3a'
+    const precioKey = 'precio_' + sufijo; // ej. 'precio_3a'
+
+    document.querySelectorAll('.option-card').forEach(card => {
+      // obtener precio segun fachada, o base_price si no hay
+      const nuevoPrecio = parseFloat(card.dataset[precioKey]) || parseFloat(card.dataset.precio) || 0;
+      const priceLabel = card.querySelector('.precio-producto');
+      if (priceLabel) {
+        priceLabel.textContent = '$' + nuevoPrecio.toFixed(2);
+      }
+
+      card.dataset.precio = nuevoPrecio;
+
+      // 🔹 Si hay un producto seleccionado, actualiza el precio principal también
+      const seleccionado = document.querySelector('.option-card.selected');
+      if (seleccionado) {
+        const precioActivo = parseFloat(seleccionado.dataset.precio) || 0;
+        actualizarPrecioPrincipal(precioActivo);
+      }
+    });
     return;
+  }
+
+   // === Si es un producto, actualizar el precio total principal ===
+  if (categoria !== 'Fachada') {
+    const precioSeleccionado = parseFloat(elemento.dataset.precio) || 0;
+    actualizarPrecioPrincipal(precioSeleccionado);
   }
 
   // ===== Productos =====
@@ -389,9 +408,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   setTimeout(() => {
-    const items = document.querySelectorAll('#owl-demo .item img.tumb-original');
-    CambioBases(items, 'Fachada 4A');
-}, 400);
+      const items = document.querySelectorAll('#owl-demo .item img.tumb-original');
+      CambioBases(items, 'Fachada 4A');
+  }, 400);
 });
 
 //para hacer la seleccion del primera opcion al cambio de fachada

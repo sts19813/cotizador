@@ -37,7 +37,12 @@ class ProductController extends Controller
             abort(404);
         }
 
-        $products = Product::where('style', $style)->get();
+           $products = Product::with('category')
+            ->where('style', $style)
+            ->whereDoesntHave('category', function ($q) {
+                $q->where('name', 'LIKE', '%Fachada%');
+            })
+            ->get();
 
         return view('admin.prices.index', compact('products', 'style'));
     }
