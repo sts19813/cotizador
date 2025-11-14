@@ -227,3 +227,15 @@
 .accordion-button:not(.collapsed) .minus-icon {
     display: inline-block;
 }
+
+
+.precio-sticky {
+    position: sticky;
+    top: 20px;
+    /* se pega arriba */
+    z-index: 9999;
+}
+
+.precio-sticky span {
+    font-size: 20px;
+}

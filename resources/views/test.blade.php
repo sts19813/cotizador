@@ -48,7 +48,7 @@
             <div class="col-md-4 mt-100">
                 <div class="long-content">
 
-                    <h4 class="fw-bold precio-total azulFuerte" style="position:fixed; z-index: 9999; background: white;">
+                    <h4 class="fw-bold precio-total azulFuerte precio-sticky">
                         <img src="/img/tag.svg" alt="">
                         <span id="precioTotal">$1,450,000.00 MXN</span>
                     </h4>
