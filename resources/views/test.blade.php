@@ -146,7 +146,7 @@
                                     <div class="row g-3" id="opciones-habitaciones">
                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="4Recamaras"
-                                                data-valor="4 Recámaras" data-precio="60000"
+                                                data-valor="4 Recámaras" data-precio="0"
                                                 data-categoria="Habitaciones">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
@@ -158,7 +158,7 @@
                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="3Recamaras"
                                                 data-categoria="Habitaciones" data-valor="3 Recámaras"
-                                                data-precio="40000">
+                                                data-precio="0">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">03</span>
@@ -168,7 +168,7 @@
                                         </div>
                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="2Recamaras"
-                                                data-valor="2 Recámaras" data-precio="25000"
+                                                data-valor="2 Recámaras" data-precio="0"
                                                 data-categoria="Habitaciones">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
@@ -246,7 +246,7 @@
                                                         <div class="option-description">{{ $product->description }}</div>
                                                         <div class="option-description precio-producto">
                                                             {{ number_format($product->fachada_7_price, 2, '.', ',') }}
-                                                        xd</div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             @endforeach

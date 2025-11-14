@@ -144,6 +144,44 @@ function cambiarImagen(index) {
   }
 }
 
+function recalcularPrecioTotal() {
+  let total = 0;
+
+  console.clear();
+  console.log("===== DETALLE DE SUMA =====");
+
+  // 🟦 Fachada
+  if (selections["precio_base_fachada"]) {
+    const precioFachada = parseFloat(selections["precio_base_fachada"]);
+    console.log("FACHADA:", precioFachada);
+    total += precioFachada;
+  }
+
+  // 🟩 Productos
+  Object.keys(selections).forEach(key => {
+    const item = selections[key];
+
+    if (item && item.precio && key !== "precio_base_fachada") {
+      const precioProducto = parseFloat(item.precio);
+      console.log(`PRODUCTO (${key}):`, precioProducto);
+      total += precioProducto;
+    }
+  });
+
+  console.log("============================");
+  console.log("TOTAL CALCULADO:", total);
+  console.log("============================");
+
+  actualizarPrecioPrincipal(total);
+}
+
+function formatoMXN(numero) {
+    return numero.toLocaleString('es-MX', {
+        style: 'currency',
+        currency: 'MXN'
+    });
+}
+
 
 /**********************************************************
  * SELECCIONAR OPCIONES
@@ -155,6 +193,13 @@ function seleccionarOpcion(elemento) {
   // ===== Fachada =====
   if (categoria === 'Fachada') {
     selectedFachada = valor;
+
+    const precioBase = parseFloat(elemento.dataset.precio) || 0;
+    selections["precio_base_fachada"] = precioBase;
+
+    // Actualizar precio principal
+    actualizarPrecioPrincipal(precioBase);
+
     const rendersFachada = JSON.parse(elemento.getAttribute('data-fachada-renders'));
     const fachadaData = rendersFachada[selectedFachada];
     const items = document.querySelectorAll('#owl-demo .item img.tumb-original');
@@ -188,7 +233,7 @@ function seleccionarOpcion(elemento) {
       const nuevoPrecio = parseFloat(card.dataset[precioKey]) || parseFloat(card.dataset.precio) || 0;
       const priceLabel = card.querySelector('.precio-producto');
       if (priceLabel) {
-        priceLabel.textContent = '$' + nuevoPrecio.toFixed(2);
+            priceLabel.textContent = formatoMXN(nuevoPrecio);
       }
 
       card.dataset.precio = nuevoPrecio;
@@ -200,6 +245,9 @@ function seleccionarOpcion(elemento) {
         actualizarPrecioPrincipal(precioActivo);
       }
     });
+
+    recalcularPrecioTotal();
+
     return;
   }
 
@@ -312,12 +360,15 @@ $(() => {
 /**********************************************************
  * OPCIONES Y SELECCIONES
  **********************************************************/
+/**********************************************************
+ * OPCIONES Y SELECCIONES (handler actualizado)
+ **********************************************************/
 document.querySelectorAll('.option-card').forEach(card => {
   card.addEventListener('click', function () {
     const group = this.closest('.accordion-collapse');
     const groupId = group?.id || 'sin-id';
 
-
+    // UI: marcar seleccionado
     group?.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
     this.classList.add('selected');
 
@@ -340,19 +391,42 @@ document.querySelectorAll('.option-card').forEach(card => {
 
     // Si falta el valor visible, lo toma del contenido interno
     if (!data.valor) {
-      const label = this.querySelector('.card-title, .card-text');
+      const label = this.querySelector('.card-title, .card-text, .option-title');
       data.valor = label ? label.textContent.trim() : 'Sin nombre';
     }
 
-    // Guarda selección limpia
+    // ----- Manejo especial para Fachada: no guardamos la fachada como selección de grupo -----
+    if (data.categoria && data.categoria.toLowerCase() === 'fachada' || groupId === 'opciones-fachada') {
+      // Guardar solo el precio base de fachada (número) para evitar doble conteo
+      selections["precio_base_fachada"] = data.precio || 0;
+
+      // Persistir (incluimos números en la limpieza para que se guarde)
+      const cleaned = Object.fromEntries(
+        Object.entries(selections).filter(([k, v]) => v !== null && v !== undefined && (typeof v === 'object' || typeof v === 'number'))
+      );
+      localStorage.setItem('selections', JSON.stringify(cleaned));
+
+      // Recalcular total y aplicar overlays/logic vía seleccionarOpcion (si hace falta)
+      recalcularPrecioTotal();
+
+      // Llamamos a la función de selección para que aplique renders/overlays si es necesario
+      try { seleccionarOpcion(this); } catch (e) { /* ignore */ }
+
+      return; // terminamos aquí para evitar guardar la fachada como grupo normal
+    }
+
+    // Guarda selección normal (no fachada)
     selections[groupId] = data;
 
-    // 🔹 Quita cualquier valor nulo o roto antes de guardar
+    // 🔹 Quita cualquier valor nulo o roto antes de guardar (incluimos números para fachada si existen)
     const cleaned = Object.fromEntries(
-      Object.entries(selections).filter(([k, v]) => v && typeof v === 'object')
+      Object.entries(selections).filter(([k, v]) => v !== null && v !== undefined && (typeof v === 'object' || typeof v === 'number'))
     );
 
     localStorage.setItem('selections', JSON.stringify(cleaned));
+
+    // Recalcular el total (la fachada no será contada aquí porque no está en selections[groupId])
+    recalcularPrecioTotal();
   });
 });
 
