@@ -245,8 +245,8 @@
                                                         <div class="option-title">{{ $product->title }}</div>
                                                         <div class="option-description">{{ $product->description }}</div>
                                                         <div class="option-description precio-producto">
-                                                            ${{ number_format($product->fachada_7_price, 2) }}
-                                                        </div>
+                                                            {{ number_format($product->fachada_7_price, 2, '.', ',') }}
+                                                        xd</div>
                                                     </div>
                                                 </div>
                                             @endforeach

@@ -76,7 +76,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::resource('products', ProductController::class)->names('products');
         Route::get('renders/{style?}', [RenderController::class, 'index'])
             ->name('renders.index');
@@ -107,10 +107,14 @@ Route::middleware(['auth', AdminMiddleware::class])
 |--------------------------------------------------------------------------
 */
 
+Route::view('/unauthorized', 'unauthorized')->name('unauthorized');
 
 Route::get('/resumen', [CategoryController::class, 'resumen']);
 Route::view('/registro', 'register');
 Route::view('/inicio-sesion', 'login');
+Route::get('/login', function () {
+    return redirect('/inicio-sesion');
+});
 Route::view('/test/{style?}', 'configurador');
 Route::get('/{style?}', [CategoryController::class, 'configurador']);
 
