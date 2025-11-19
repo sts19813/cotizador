@@ -15,11 +15,11 @@ use App\Http\Controllers\Admin\BasePriceController;
 use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Foundation\Exceptions\Renderer\Renderer;
 
-/*
-|--------------------------------------------------------------------------
-| Rutas públicas
-|--------------------------------------------------------------------------
-*/
+
+Route::get('/lang/{lang}', function ($lang) {
+    session(['locale' => $lang]);
+    return back();
+})->name('lang.switch');
 
 
 /*
@@ -27,7 +27,6 @@ use Illuminate\Foundation\Exceptions\Renderer\Renderer;
 | Login con Google
 |--------------------------------------------------------------------------
 */
-
 Route::get('/google-auth/redirect', function () {
     return Socialite::driver('google')->redirect();
 });
@@ -52,7 +51,6 @@ Route::get('/google-auth/callback', function () {
 | Rutas para usuarios autenticados normales
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -71,7 +69,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 | Rutas para administradores
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth', AdminMiddleware::class])
     ->prefix('admin')
     ->name('admin.')
@@ -92,13 +89,19 @@ Route::middleware(['auth', AdminMiddleware::class])
                 ->parameters(['precios-base' => 'basePrice'])
                 ->except(['create', 'show', 'edit']);
 
-          // Mostrar productos por estilo para edición masiva
+        // Mostrar productos por estilo para edición masiva
         Route::get('products/prices/{style}', [ProductController::class, 'showByStyle'])
             ->name('products.prices.byStyle');
 
         // Guardado masivo de precios por estilo
         Route::put('products/update-mass/{style}', [ProductController::class, 'updateMassPrices'])
             ->name('products.update-mass');
+
+        //perfil administrador
+        Route::get('/perfil', [ProfileController::class, 'index'])->name('profile.index');
+        Route::post('/perfil/actualizar', [ProfileController::class, 'updateAdmin'])->name('profile.update');
+        Route::post('/perfil/foto', [ProfileController::class, 'updatePhoto'])->name('profile.update.photo');
+        Route::post('/perfil/password', [ProfileController::class, 'updatePassword'])->name('profile.update.password');
     });
 
 /*
@@ -106,9 +109,7 @@ Route::middleware(['auth', AdminMiddleware::class])
 | Rutas de autenticación generadas por Laravel Breeze/Fortify/etc.
 |--------------------------------------------------------------------------
 */
-
 Route::view('/unauthorized', 'unauthorized')->name('unauthorized');
-
 Route::get('/resumen', [CategoryController::class, 'resumen']);
 Route::view('/registro', 'register');
 Route::view('/inicio-sesion', 'login');

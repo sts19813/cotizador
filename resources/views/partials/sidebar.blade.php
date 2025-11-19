@@ -30,7 +30,7 @@
                         <span class="menu-icon">
                             <i class="ki-outline ki-element-11 fs-2"></i>
                         </span>
-                        <span class="menu-title">Dashboard</span>
+                        <span class="menu-title">{{ __('sidebar.dashboard') }}</span>
                     </a>
                 </div>
 
@@ -41,7 +41,7 @@
                         <span class="menu-icon">
                             <i class="ki-outline ki ki-package fs-2 fs-2"></i>
                         </span>
-                        <span class="menu-title">Productos</span>
+                        <span class="menu-title">{{ __('sidebar.products') }}</span>
                     </a>
                 </div>
 
@@ -52,7 +52,7 @@
                         <span class="menu-icon">
                             <i class="ki-outline ki-user fs-2"></i>
                         </span>
-                        <span class="menu-title">Leads</span>
+                        <span class="menu-title">{{ __('sidebar.leads') }}</span>
                     </a>
                 </div>
 
@@ -63,7 +63,7 @@
                         <span class="menu-icon">
                             <i class="ki-outline ki-home-2 fs-2"></i>
                         </span>
-                        <span class="menu-title">Casas Creadas</span>
+                        <span class="menu-title">{{ __('sidebar.houses_created') }}</span>
                     </a>
                 </div>
 
@@ -74,7 +74,7 @@
                         <span class="menu-icon">
                             <i class="ki-outline ki-dollar fs-2"></i>
                         </span>
-                        <span class="menu-title">Precios Base</span>
+                        <span class="menu-title">{{ __('sidebar.base_prices') }}</span>
                     </a>
                 </div>
 
@@ -85,7 +85,7 @@
                         <span class="menu-icon">
                             <i class="ki-outline bi-image fs-2"></i>
                         </span>
-                        <span class="menu-title">Renders</span>
+                        <span class="menu-title">{{ __('sidebar.renders') }}</span>
                         <span class="menu-arrow"></span>
                     </span>
 
@@ -118,7 +118,7 @@
                         <span class="menu-icon">
                             <i class="ki-outline ki-price-tag fs-2"></i>
                         </span>
-                        <span class="menu-title">Precios por Estilo</span>
+                        <span class="menu-title">{{ __('sidebar.style_prices') }}</span>
                         <span class="menu-arrow"></span>
                     </span>
 
@@ -151,13 +151,11 @@
                         <span class="menu-icon">
                             <i class="ki-outline ki-tag fs-2"></i>
                         </span>
-                        <span class="menu-title">Categorías</span>
+                        <span class="menu-title">{{ __('sidebar.categories') }}</span>
                     </a>
                 </div>
-
             </div>
             <!--end::Sidebar menu-->
-
         </div>
     </div>
     <!--end::Wrapper-->

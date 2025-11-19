@@ -17,7 +17,7 @@
             </div>
             <!--end::Sidebar mobile toggle-->
             <!--begin::Logo-->
-            <a href="/desarrollos" class="app-sidebar-logo">
+            <a href="/admin" class="app-sidebar-logo">
                 <img alt="Logo" src="/img/logo.svg" class="theme-light-show" style="width:180px"/>
                 <img alt="Logo" src="/img/logo.svg" class="theme-dark-show"  style="width:180px" />
             </a>
