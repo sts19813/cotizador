@@ -69,8 +69,8 @@
 
                 <!-- Precios base -->
                 <div class="menu-item">
-                    <a class="menu-link {{ request()->is('admin/precios-base*') ? 'active' : '' }}"
-                       href="{{ route('admin.precios-base.index') }}">
+                    <a class="menu-link {{ request()->is('admin/precio/fachadas*') ? 'active' : '' }}"
+                       href="/admin/precio/fachadas">
                         <span class="menu-icon">
                             <i class="ki-outline ki-dollar fs-2"></i>
                         </span>

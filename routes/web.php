@@ -11,8 +11,8 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RenderController;
 use App\Http\Controllers\Admin\LeadController;
-use App\Http\Controllers\Admin\BasePriceController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductFachadaController;
 use Illuminate\Foundation\Exceptions\Renderer\Renderer;
 
 
@@ -85,9 +85,6 @@ Route::middleware(['auth', AdminMiddleware::class])
 
         Route::resource('leads', LeadController::class)->names('leads');
         Route::get('/casas-creadas', [HouseConfigurationController::class, 'index'])->name('houses.index');
-        Route::resource('/precios-base', BasePriceController::class)
-                ->parameters(['precios-base' => 'basePrice'])
-                ->except(['create', 'show', 'edit']);
 
         // Mostrar productos por estilo para edición masiva
         Route::get('products/prices/{style}', [ProductController::class, 'showByStyle'])
@@ -102,6 +99,14 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::post('/perfil/actualizar', [ProfileController::class, 'updateAdmin'])->name('profile.update');
         Route::post('/perfil/foto', [ProfileController::class, 'updatePhoto'])->name('profile.update.photo');
         Route::post('/perfil/password', [ProfileController::class, 'updatePassword'])->name('profile.update.password');
+
+        //precios base
+        Route::get('/precio/fachadas', [ProductFachadaController::class, 'index'])
+            ->name('precio.fachadas');
+
+        Route::post('/precio/fachadas/update/{product}', [ProductFachadaController::class, 'update'])
+            ->name('precio.fachadas.update');
+
     });
 
 /*
