@@ -7,10 +7,9 @@
 
     <x-header />
 
-
     <div class="container py-5">
 
-        <br><br><br><br>
+        <br><br><br>
 
         <h2 class="fw-bold text-center mb-5">Hola,  {{ Auth::user()->name }}</h2>
 
@@ -53,7 +52,7 @@
                                         </tr>
                                         <tr>
                                             <th class="ps-0">Fecha de Creación</th>
-                                            <td class="text-end pe-0">{{ $config->created_at->format('d / m / Y') }}
+                                            <td class="text-end pe-0">{{ $config->created_at->format('d/m/Y h:i A') }}
                                             </td>
                                         </tr>
                                         <tr>
@@ -100,13 +99,8 @@
             @endforeach
         </div>
     </div>
-
-
-
     <x-footer />
-
     <x-scripts />
 
 </body>
-
 </html>

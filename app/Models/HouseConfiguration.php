@@ -26,6 +26,7 @@ class HouseConfiguration extends Model
         'configuration' => 'array',
         'miniaturas_data' => 'array',
         'fecha' => 'datetime',
+        'precio_total'    => 'float',
     ];
 
     protected static function boot()

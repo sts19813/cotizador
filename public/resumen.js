@@ -1,28 +1,25 @@
 // =======================
-// Variables iniciales
+// VARIABLES INICIALES
 // =======================
 const savedSelections = JSON.parse(localStorage.getItem('selections')) || {};
 const miniaturasData = JSON.parse(localStorage.getItem('miniaturasData') || '[]');
 
 // =======================
-// Construcción de tabla resumen con renders superpuestos
+// TABLA RESUMEN
 // =======================
 const tbody = document.querySelector('#tablaResumen tbody');
 tbody.innerHTML = '';
 
-// Convertir a array y separar "Estilo" del resto
 const entries = Object.entries(savedSelections);
-const estiloEntry = entries.find(([key, item]) => item.categoria === "Estilo");
-const otherEntries = entries.filter(([key, item]) => item.categoria !== "Estilo");
+const estiloEntry = entries.find(([_, item]) => item.categoria === "Estilo");
+const otherEntries = entries.filter(([_, item]) => item.categoria !== "Estilo");
 
-// Orden final: primero Estilo, luego el resto
 const orderedEntries = estiloEntry ? [estiloEntry, ...otherEntries] : otherEntries;
 
-orderedEntries.forEach(([key, item], index) => {
-  // Normalizar: collapse-XX → #heading-XX
-  const headingId = '#' + key.replace('collapse-', 'heading-');
+orderedEntries.forEach(([key, item]) => {
+  if (!item.categoria || item.categoria.trim() === '') return;
 
-  // Buscar en "secciones" el índice de carrusel correspondiente al ID (si existe)
+  const headingId = '#' + key.replace('collapse-', 'heading-');
   const seccion = secciones.find(s => s.id === headingId);
   const carouselIndex = seccion ? seccion.carouselIndex : null;
 
@@ -31,16 +28,17 @@ orderedEntries.forEach(([key, item], index) => {
   if (carouselIndex !== null && miniaturasData[carouselIndex]) {
     const mini = miniaturasData[carouselIndex];
 
-    // Construir wrapper con base + overlays
     renderHTML = `
-      <div style="position:relative; width:100px; height:auto;">
-        <img src="${mini.base}" class="img-fluid rounded" style="width:100%; display:block;">
+      <div style="position:relative; width:100px;">
+        <img src="${mini.base}" class="img-fluid rounded" style="width:100%;">
         ${mini.overlays.map(src => `
           <img src="${src}" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
         `).join('')}
       </div>
     `;
   }
+
+  const precioFinal = getPrecioCorrecto(item);
 
   const row = `
     <tr>
@@ -51,24 +49,39 @@ orderedEntries.forEach(([key, item], index) => {
         ${item.variant_code ? 'Var: ' + item.variant_code : ''}
       </td>
       <td class="text-nowrap">${renderHTML}</td>
+      <td>$${precioFinal.toLocaleString('es-MX')}</td>
     </tr>
   `;
   tbody.insertAdjacentHTML('beforeend', row);
 });
 
 // =======================
-// Actualización de elementos de UI
+// TOTAL RESUMEN
 // =======================
-document.querySelector('.texto-fondo').textContent = savedSelections.Habitaciones.valor;
-document.querySelector('#recamarastabla').textContent = savedSelections.Habitaciones.valor;
-const fachadaEntry = Object.values(savedSelections).find(item => item.categoria === "Fachada");
+let totalResumen = 0;
+orderedEntries.forEach(([_, item]) => totalResumen += getPrecioCorrecto(item));
 
-// Si existe, actualizar el texto
+const totalElemento = document.querySelector('#totalResumen');
+if (totalElemento) {
+  totalElemento.textContent = "$" + totalResumen.toLocaleString("es-MX");
+}
+
+// =======================
+// ACTUALIZACIÓN DE UI
+// =======================
+if (savedSelections.Habitaciones) {
+  document.querySelector('.texto-fondo').textContent = savedSelections.Habitaciones.valor;
+  document.querySelector('#recamarastabla').textContent = savedSelections.Habitaciones.valor;
+}
+
+const fachadaEntry = Object.values(savedSelections).find(item => item.categoria === "Fachada");
 if (fachadaEntry) {
   document.querySelector('#fachadatabla').textContent = fachadaEntry.valor;
 }
 
-document.querySelector('#estilotabla').textContent = savedSelections["opciones-casas"].valor;
+if (savedSelections["opciones-casas"]) {
+  document.querySelector('#estilotabla').textContent = savedSelections["opciones-casas"].valor;
+}
 
 if (savedSelections["collapse-21"]?.valor === "Fachada B") {
   document.querySelector('.imagen-casa').src = "/img/resumen-b.png";
@@ -76,35 +89,33 @@ if (savedSelections["collapse-21"]?.valor === "Fachada B") {
   document.querySelector('.imagen-casa').src = "/img/resumen.png";
 }
 
-const recamaras = savedSelections.Habitaciones.valor;
-let imgSrc = "/img/1.png";
-if (recamaras === "2 Recámaras") imgSrc = "/img/2.png";
-else if (recamaras === "3 Recámaras") imgSrc = "/img/3.png";
-else if (recamaras === "4 Recámaras") imgSrc = "/img/4.png";
-document.querySelector('img[alt=""][src^="/img/"][width="400px"]').src = imgSrc;
+// Imagen según recámaras
+if (savedSelections.Habitaciones) {
+  const recamaras = savedSelections.Habitaciones.valor;
+  let imgSrc = "/img/1.png";
+  if (recamaras === "2 Recámaras") imgSrc = "/img/2.png";
+  else if (recamaras === "3 Recámaras") imgSrc = "/img/3.png";
+  else if (recamaras === "4 Recámaras") imgSrc = "/img/4.png";
+
+  const imgRec = document.querySelector('.imagen-recamaras');
+  if (imgRec) imgRec.src = imgSrc;
+}
 
 // =======================
-// Funciones
+// GUARDAR CONFIGURACIÓN
 // =======================
-///método que guarda la configuracion en base de datos de la seleccion y configuracion de la casa
 async function saveConfiguration() {
   try {
-    const tokenMeta = document.querySelector('meta[name="csrf-token"]');
-    const token = tokenMeta ? tokenMeta.getAttribute('content') : null;
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
 
     const selectionsToSave = Object.fromEntries(
-      Object.entries(savedSelections).filter(([k, v]) => v && typeof v === 'object')
+      Object.entries(savedSelections).filter(([_, v]) => v && typeof v === 'object')
     );
-
-    const totalPrice = Object.values(selectionsToSave).reduce((sum, sel) => {
-      const raw = sel.precio ?? sel.price ?? sel.preco ?? 0;
-      return sum + (parseFloat(raw) || 0);
-    }, 0);
 
     const dataToSave = {
       configuration: selectionsToSave,
       miniaturasData,
-      precioTotal: totalPrice,
+      precioTotal: totalResumen,
       fecha: new Date().toISOString(),
     };
 
@@ -124,18 +135,14 @@ async function saveConfiguration() {
       throw new Error(errorData.message || 'Error desconocido al guardar');
     }
 
-    const responseData = await response.json();
-
-    // ✅ SweetAlert2 en lugar de alert normal
     Swal.fire({
       icon: 'success',
       title: 'Guardado',
       text: 'Configuración guardada con éxito, encontrarás tus configuraciones guardadas en tu perfil',
-      showConfirmButton: false, // quitar el botón
-      timer: 3500, // se cierra automáticamente después de 2 segundos (2000 ms)
-      timerProgressBar: true // opcional: muestra barra de progreso
+      showConfirmButton: false,
+      timer: 3500,
+      timerProgressBar: true
     });
-
 
   } catch (error) {
     console.error('saveConfiguration error:', error);
@@ -149,24 +156,21 @@ async function saveConfiguration() {
   }
 }
 
-
 // =======================
-// Renderizado de miniaturas
+// MINIATURAS
 // =======================
 const container = document.querySelector('#miniaturasResumen');
 
-miniaturasData.forEach((item, index) => {
+miniaturasData.forEach(item => {
   const wrapper = document.createElement('div');
   wrapper.className = 'thumb-wrapper';
   wrapper.style.position = 'relative';
 
-  // Imagen base
   const imgBase = document.createElement('img');
   imgBase.src = item.base;
   imgBase.className = 'thumb tumb-original';
   wrapper.appendChild(imgBase);
 
-  // Overlay container
   if (item.overlays.length > 0) {
     const overlayDiv = document.createElement('div');
     overlayDiv.className = 'overlay-container';
@@ -186,7 +190,6 @@ miniaturasData.forEach((item, index) => {
       imgOverlay.style.position = 'absolute';
       imgOverlay.style.top = '0';
       imgOverlay.style.left = '0';
-      imgOverlay.style.pointerEvents = 'none';
       overlayDiv.appendChild(imgOverlay);
     });
 
@@ -197,24 +200,21 @@ miniaturasData.forEach((item, index) => {
 });
 
 // =======================
-// Usar segunda miniatura como imagen principal con overlays
+// RENDER PRINCIPAL
 // =======================
 const principalRender = document.querySelector('#principalRender');
 
 if (miniaturasData.length > 1) {
-  const item = miniaturasData[1]; // segunda miniatura
+  const item = miniaturasData[1];
 
   const wrapper = document.createElement('div');
   wrapper.style.position = 'relative';
-  wrapper.style.width = '100%';
 
-  // Imagen base
   const imgBase = document.createElement('img');
   imgBase.src = item.base;
   imgBase.className = 'thumb tumb-original img-fluid rounded';
   wrapper.appendChild(imgBase);
 
-  // Overlay container
   if (item.overlays.length > 0) {
     const overlayDiv = document.createElement('div');
     overlayDiv.className = 'overlay-container';
@@ -228,13 +228,9 @@ if (miniaturasData.length > 1) {
     item.overlays.forEach(src => {
       const imgOverlay = document.createElement('img');
       imgOverlay.src = src;
-      imgOverlay.className = 'thumb';
       imgOverlay.style.width = '100%';
       imgOverlay.style.height = '100%';
       imgOverlay.style.position = 'absolute';
-      imgOverlay.style.top = '0';
-      imgOverlay.style.left = '0';
-      imgOverlay.style.pointerEvents = 'none';
       overlayDiv.appendChild(imgOverlay);
     });
 
@@ -244,10 +240,40 @@ if (miniaturasData.length > 1) {
   principalRender.appendChild(wrapper);
 }
 
+// =======================
+// BOTÓN REGRESAR
+// =======================
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("btnRegresar");
+  if (btn) btn.href = "https://app.uondr.mx/";
+});
 
-document.addEventListener("DOMContentLoaded", function () {
-      const btn = document.getElementById("btnRegresar");
-      if (btn) {
-          btn.href = "https://app.uondr.mx/";
-      }
-  });
+// =======================
+// FUNCIONES DE PRECIOS
+// =======================
+function getClavePrecioFachada() {
+  const fachadaEntry = Object.values(savedSelections)
+    .find(item => item.categoria === "Fachada");
+
+  if (!fachadaEntry) return null;
+
+  let sufijo = fachadaEntry.valor.replace(/fachada/i, "").trim().toLowerCase();
+
+  return "precio_" + sufijo;
+}
+
+function getPrecioCorrecto(producto) {
+  if (!producto || typeof producto !== "object") return 0;
+
+  const clave = getClavePrecioFachada();
+
+  if (clave && producto[clave] !== undefined) {
+    const val = parseFloat(producto[clave]);
+    return isNaN(val) ? 0 : val;
+  }
+
+  if (producto.precio_a) return parseFloat(producto.precio_a) || 0;
+  if (producto.precio_b) return parseFloat(producto.precio_b) || 0;
+
+  return parseFloat(producto.precio) || 0;
+}

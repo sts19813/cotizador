@@ -245,8 +245,13 @@
                                                         <div class="option-title">{{ $product->title }}</div>
                                                         <div class="option-description">{{ $product->description }}</div>
                                                         <div class="option-description precio-producto">
-                                                            {{ number_format($product->fachada_7_price, 2, '.', ',') }}
+                                                            @if ($product->fachada_7_price == 0)
+                                                                <span class="incluido">Incluido</span>
+                                                            @else
+                                                                {{ number_format($product->fachada_7_price, 2, '.', ',') }}
+                                                            @endif
                                                         </div>
+
                                                     </div>
                                                 </div>
                                             @endforeach

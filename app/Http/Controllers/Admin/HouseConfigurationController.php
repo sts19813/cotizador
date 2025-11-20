@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\HouseConfiguration;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UondrMailNuevaCotizacion;
 use Illuminate\Http\Request;
 
 
@@ -48,6 +49,8 @@ class HouseConfigurationController extends Controller
             'precio_total' => $precioTotal ?? 0,
             'fecha' => $fecha ?? now(),
         ]);
+ 
+        Mail::to('sts19813@gmail.com')->send(new UondrMailNuevaCotizacion());
 
         return response()->json(['message' => 'Configuración guardada correctamente']);
     }

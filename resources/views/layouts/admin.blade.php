@@ -18,6 +18,7 @@
 	<meta property="og:site_name" content="Metronic by Keenthemes" />
 	<link rel="canonical" href="https://preview.keenthemes.com/metronic8" />
 	<link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 
 	<!-- Fonts -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
@@ -128,18 +129,6 @@
 	<!--end::Global Javascript Bundle-->
 
 	<!--begin::Vendors Javascript (usados solo en algunas páginas)-->
-	<script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
-	<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/map.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/geodata/continentsLow.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/geodata/usaLow.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZonesLow.js"></script>
-	<script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZoneAreasLow.js"></script>
 	<script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
 	<!--end::Vendors Javascript-->
 

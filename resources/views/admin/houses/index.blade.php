@@ -1,6 +1,26 @@
 @extends('layouts.admin')
 
+
 @section('content')
+
+    <style>
+    .item-badge {
+        display: inline-block;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #111;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* Modo oscuro */
+    body.dark-mode .item-badge {
+        background: rgba(255,255,255,0.1);
+        color: #f1f1f1;
+        border: 1px solid rgba(255,255,255,0.15);
+    }
+    </style>
 
     <h2>Casas Creadas</h2>
     <p class="text-muted">Visualiza todas las casas creadas por los leads</p>
@@ -24,12 +44,12 @@
                     <td>
                         @php
                             $items = $config->configuration;
-                            $maxVisible = 5;
+                            $maxVisible = 4;
                         @endphp
 
                         {{-- Mostrar los primeros 5 items --}}
                         @foreach(array_slice($items, 0, $maxVisible) as $item)
-                            <span class="badge bg-light text-dark mb-1" style="font-size: 0.75rem;">
+                            <span class="item-badge mb-1">
                                 {{ $item['categoria'] ?? '' }}: {{ $item['valor'] ?? '' }}
                             </span>
                         @endforeach
@@ -43,7 +63,7 @@
 
                             <div class="collapse mt-1" id="extraItems{{ $index }}">
                                 @foreach(array_slice($items, $maxVisible) as $item)
-                                    <span class="badge bg-light text-dark mb-1" style="font-size: 0.75rem;">
+                                    <span class="item-badge mb-1">
                                         {{ $item['categoria'] ?? '' }}: {{ $item['valor'] ?? '' }}
                                     </span>
                                 @endforeach
@@ -52,7 +72,7 @@
                     </td>
                     <td>
                         <span class="text-success fw-bold">
-                            ${{ number_format(array_sum(array_column($config->configuration, 'price')), 0, '.', ',') }}
+                                ${{ number_format($config->precio_total, 0, '.', ',') }}
                         </span>
                     </td>
                     <td>
@@ -60,7 +80,7 @@
                             {{ $config->status }}
                         </span>
                     </td>
-                    <td><i class="bi bi-calendar"></i> {{ $config->created_at->format('d/m/Y') }}</td>
+                    <td><i class="bi bi-calendar"></i> {{ $config->created_at->format('d/m/Y h:i A') }} </td>
                 </tr>
             @endforeach
         </tbody>

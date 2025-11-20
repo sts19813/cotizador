@@ -239,3 +239,13 @@
 .precio-sticky span {
     font-size: 20px;
 }
+
+.incluido{
+    background: #386EFA12;
+    width: 166px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: #386EFA;
+    font-weight: 400;
+    font-family: 'Geologica', sans-serif;
+}

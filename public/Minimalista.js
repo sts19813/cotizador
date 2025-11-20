@@ -18,10 +18,17 @@ function hideLoader() {
 }
 
 function actualizarPrecioPrincipal(precio) {
-  const precioEl = document.getElementById('precioTotal');
-  if (!precioEl) return;
-  const formateado = '$' + Number(precio).toLocaleString('es-MX', { minimumFractionDigits: 2 }) + ' MXN';
-  precioEl.textContent = formateado;
+    const precioEl = document.getElementById('precioTotal');
+    if (!precioEl) return;
+
+    if (precio === 0) {
+        precioEl.textContent = "Sin costo adicional";
+        precioEl.classList.add("incluido");
+    } else {
+        precioEl.textContent = '$' + Number(precio)
+            .toLocaleString('es-MX', { minimumFractionDigits: 2 }) + ' MXN';
+        precioEl.classList.remove("incluido");
+    }
 }
 
 /**********************************************************
@@ -150,18 +157,19 @@ function recalcularPrecioTotal() {
   console.clear();
   console.log("===== DETALLE DE SUMA =====");
 
-  // 🟦 Fachada
+  // 🟦 Fachada (suma única desde el número)
   if (selections["precio_base_fachada"]) {
     const precioFachada = parseFloat(selections["precio_base_fachada"]);
     console.log("FACHADA:", precioFachada);
     total += precioFachada;
   }
 
-  // 🟩 Productos
+  // Productos (ignorar la key de fachada para no duplicar)
   Object.keys(selections).forEach(key => {
+    if (key === "precio_base_fachada" || key === "opciones-fachada") return; // <-- importante
     const item = selections[key];
 
-    if (item && item.precio && key !== "precio_base_fachada") {
+    if (item && item.precio) {
       const precioProducto = parseFloat(item.precio);
       console.log(`PRODUCTO (${key}):`, precioProducto);
       total += precioProducto;
@@ -233,7 +241,13 @@ function seleccionarOpcion(elemento) {
       const nuevoPrecio = parseFloat(card.dataset[precioKey]) || parseFloat(card.dataset.precio) || 0;
       const priceLabel = card.querySelector('.precio-producto');
       if (priceLabel) {
+        if (nuevoPrecio === 0) {
+            priceLabel.textContent = "Sin costo adicional";
+            priceLabel.classList.add("incluido");
+        } else {
             priceLabel.textContent = formatoMXN(nuevoPrecio);
+            priceLabel.classList.remove("incluido");
+        }
       }
 
       card.dataset.precio = nuevoPrecio;
@@ -254,7 +268,7 @@ function seleccionarOpcion(elemento) {
    // === Si es un producto, actualizar el precio total principal ===
   if (categoria !== 'Fachada') {
     const precioSeleccionado = parseFloat(elemento.dataset.precio) || 0;
-    actualizarPrecioPrincipal(precioSeleccionado);
+    recalcularPrecioTotal();
   }
 
   // ===== Productos =====
@@ -397,6 +411,16 @@ document.querySelectorAll('.option-card').forEach(card => {
 
     // ----- Manejo especial para Fachada: no guardamos la fachada como selección de grupo -----
     if (data.categoria && data.categoria.toLowerCase() === 'fachada' || groupId === 'opciones-fachada') {
+      //guarda la fachada para el resumen
+       selections["opciones-fachada"] = {
+          categoria: data.categoria,
+          valor: data.valor,
+          precio: data.precio,
+          id: data.id || null,
+          renders: data.renders || null,
+          fachada_renders: data.fachada_renders || null
+      };
+      
       // Guardar solo el precio base de fachada (número) para evitar doble conteo
       selections["precio_base_fachada"] = data.precio || 0;
 
