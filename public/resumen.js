@@ -41,17 +41,22 @@ orderedEntries.forEach(([key, item]) => {
   const precioFinal = getPrecioCorrecto(item);
 
   const row = `
-    <tr>
-      <td>${item.categoria ?? ''}</td>
-      <td>${item.valor ?? ''}</td>
-      <td>
-        ${item.pre_code ? 'Pre: ' + item.pre_code + '<br>' : ''}
-        ${item.variant_code ? 'Var: ' + item.variant_code : ''}
-      </td>
-      <td class="text-nowrap">${renderHTML}</td>
-      <td>$${precioFinal.toLocaleString('es-MX')}</td>
-    </tr>
-  `;
+  <tr>
+    <td>${item.categoria ?? ''}</td>
+    <td>${item.valor ?? ''}</td>
+    <td>
+      ${item.pre_code ? 'Pre: ' + item.pre_code + '<br>' : ''}
+      ${item.variant_code ? 'Var: ' + item.variant_code : ''}
+    </td>
+    <td class="text-nowrap">${renderHTML}</td>
+    <td>
+      ${precioFinal === 0 
+        ? '<span class="incluido">Incluido</span>' 
+        : '$' + precioFinal.toLocaleString('es-MX')
+      }
+    </td>
+  </tr>
+`;
   tbody.insertAdjacentHTML('beforeend', row);
 });
 
