@@ -36,7 +36,7 @@
         <table class="table table-bordered table-hover align-middle" id="pricesTable">
             <thead class="table-light text-center">
                 <tr>
-                    <th>ID</th>
+                    <th class="d-none">ID</th>
                     <th>Imagen</th>
                     <th>Producto</th>
                     <th>Categoría</th> {{-- 🔹 Nueva columna --}}
@@ -48,7 +48,7 @@
             <tbody>
                 @foreach ($products as $product)
                     <tr>
-                        <td>{{ $product->id }}</td>
+                        <td class="d-none">{{ $product->id }}</td>
                         <td class="text-center">
                             @if($product->image_url)
                                 <img src="/{{ $product->image_url }}" alt="Imagen" class="img-thumbnail" style="max-width: 100px;">
@@ -60,10 +60,18 @@
                         <td>{{ $product->category ? $product->category->name : 'Sin categoría' }}</td>
 
                         @for($i = 1; $i <= 7; $i++)
-                            <td>
-                                <input type="number" step="0.01" class="form-control"
+                            <td> 
+                               <div class="input-group input-group-sm">
+                                <span class="input-group-text">$</span>
+                                <input 
+                                    type="number" 
+                                    step="0.01" 
+                                    class="form-control"
                                     name="products[{{ $product->id }}][fachada_{{ $i }}_price]"
-                                    value="{{ $product->{'fachada_' . $i . '_price'} }}">
+                                    value="{{ $product->{'fachada_' . $i . '_price'} }}"
+                                >
+                            </div>
+
                             </td>
                         @endfor
                     </tr>

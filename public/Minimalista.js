@@ -22,8 +22,7 @@ function actualizarPrecioPrincipal(precio) {
     if (!precioEl) return;
 
     if (precio === 0) {
-        precioEl.textContent = "Sin costo adicional";
-        precioEl.classList.add("incluido");
+
     } else {
         precioEl.textContent = '$' + Number(precio)
             .toLocaleString('es-MX', { minimumFractionDigits: 2 }) + ' MXN';
@@ -237,39 +236,43 @@ function seleccionarOpcion(elemento) {
     const precioKey = 'precio_' + sufijo; // ej. 'precio_3a'
 
     document.querySelectorAll('.option-card').forEach(card => {
-      // obtener precio segun fachada, o base_price si no hay
-      const nuevoPrecio = parseFloat(card.dataset[precioKey]) || parseFloat(card.dataset.precio) || 0;
-      const priceLabel = card.querySelector('.precio-producto');
-      if (priceLabel) {
-        if (nuevoPrecio === 0) {
-            priceLabel.textContent = "Sin costo adicional";
-            priceLabel.classList.add("incluido");
-        } else {
-            priceLabel.textContent = formatoMXN(nuevoPrecio);
-            priceLabel.classList.remove("incluido");
-        }
+    const nuevoPrecio = parseFloat(card.dataset[precioKey]) || parseFloat(card.dataset.precio) || 0;
+    const priceLabel = card.querySelector('.precio-producto');
+
+    // Mostrar nuevo precio en UI
+    if (priceLabel) {
+      if (nuevoPrecio === 0) {     
+      } else {
+        priceLabel.textContent = formatoMXN(nuevoPrecio);
+        priceLabel.classList.remove("incluido");
       }
+    }
 
-      card.dataset.precio = nuevoPrecio;
+    // Actualizar atributo para futuros clics
+    card.dataset.precio = nuevoPrecio;
 
-      // 🔹 Si hay un producto seleccionado, actualiza el precio principal también
-      const seleccionado = document.querySelector('.option-card.selected');
-      if (seleccionado) {
-        const precioActivo = parseFloat(seleccionado.dataset.precio) || 0;
-        actualizarPrecioPrincipal(precioActivo);
+    // 🔥 CORRECCIÓN IMPORTANTE:
+    // Si esta tarjeta está seleccionada, actualizar también selections[groupId].precio
+    if (card.classList.contains('selected')) {
+      const group = card.closest('.accordion-collapse');
+      const groupId = group?.id || 'sin-id';
+
+      if (selections[groupId]) {
+        selections[groupId].precio = nuevoPrecio;
       }
-    });
+    }
+  });
 
-    recalcularPrecioTotal();
+  // Guardar selections corregido
+  localStorage.setItem('selections', JSON.stringify(selections));
+
+  // Recalcular total una vez que TODAS las selecciones tienen el precio correcto
+  recalcularPrecioTotal();
+
 
     return;
   }
 
-   // === Si es un producto, actualizar el precio total principal ===
-  if (categoria !== 'Fachada') {
-    const precioSeleccionado = parseFloat(elemento.dataset.precio) || 0;
-    recalcularPrecioTotal();
-  }
 
   // ===== Productos =====
   const renders = JSON.parse(elemento.getAttribute('data-renders'));

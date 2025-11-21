@@ -5,6 +5,12 @@
 
 <body>
 
+	<style>
+        #mainNav .capturar{
+            display: none !important;
+        }
+    </style>
+
 	<x-header />
 
 	<div class="general-background">
@@ -35,12 +41,8 @@
 					para hacerla realidad.
 				</p>
 				<div class="mb-3">
-					@auth
-						<button class="btn btn-primary me-2" onclick="saveConfiguration()">Guardar</button>
+					<button class="btn btn-primary me-2" onclick="guardarFlujo()">Guardar</button>
 						<a href="/" class="btn btn-outline-primary">Crear otra</a>
-					@else
-						<a href="/registro?redirect=/resumen" class="btn btn-primary me-2">Iniciar sesión para guardar</a>
-					@endauth
 				</div>
 			</div>
 		</div>
@@ -62,7 +64,13 @@
 
 			</div>
 
-			<div class="container" style="text-align: center; margin-top: 20px;">
+			<div class="container mt-4">
+				<div class="p-3 mb-4 rounded text-center" style=" margin-top: 20px;">
+					<h3 class="m-0">Total: <span id="totalResumenTop">$0</span></h3>
+				</div>
+			</div>
+
+			<div class="container" style="text-align: center;">
 				<br><br>
 				<img src="/img/1.png" alt="" srcset="" class="img-resumen-plano" width="400px">
 			</div>
@@ -94,5 +102,29 @@
 	<br><br>
 	<x-footer />
 	<x-scripts />
+
+	<script>
+	function guardarFlujo() {
+
+		const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+
+		if (!isLoggedIn) {
+			// Redirige a login con parámetro de retorno
+			window.location.href = "/login?redirect=guardar";
+			return;
+		}
+
+		// Si ya está logueado, guardar normalmente
+		saveConfiguration();
+	}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    @if(request('autoguardar') == 1)
+        saveConfiguration();
+    @endif
+});
+</script>
 </body>
 </html>

@@ -11,7 +11,7 @@
     <x-header />
 
     <!-- Contenido principal -->
-    <div class="container-fluid mt-4">
+    <div class="container-fluid">
         <div class="row">
 
             <!-- Columna de 8 con contenido sticky -->
@@ -50,7 +50,7 @@
 
                     <h4 class="fw-bold precio-total azulFuerte precio-sticky">
                         <img src="/img/tag.svg" alt="">
-                        <span id="precioTotal">$1,450,000.00 MXN</span>
+                        <span id="precioTotal">$0 MXN</span>
                     </h4>
 
                     <p>Bienvenido al configurador de casas UONDR. Explora y personaliza tu casa ideal eligiendo el
@@ -82,7 +82,7 @@
                             </h2>
                             <div id="Estilos" class="accordion-collapse collapse show" aria-labelledby="headingGeneral">
                                 <div class="accordion-body">
-                                    <div class="row g-3" id="opciones-casas">
+                                    <div class="row g-3 opcion-selected" id="opciones-casas">
                                         <div class="col-6 col-md-6">
                                             <a href="/home">
                                                 <div class="option-card" data-id="generalMinimalista"
@@ -143,7 +143,7 @@
                                 aria-labelledby="headingHabitaciones">
                                 <div class="accordion-body">
                                     <p class="fw-bold mb-1">Elige el número de habitaciones</p>
-                                    <div class="row g-3" id="opciones-habitaciones">
+                                    <div class="row g-3 opcion-selected" id="opciones-habitaciones">
                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="4Recamaras"
                                                 data-valor="4 Recámaras" data-precio="0"
@@ -220,7 +220,7 @@
                                     aria-labelledby="heading-{{ $category->id }}">
                                     <div class="accordion-body">
                                         <p class="fw-bold mb-1">Opciones de {{ $category->name }}</p>
-                                        <div class="row g-3" id="opciones-{{ Str::slug($category->name) }}">
+                                        <div class="row g-3 opcion-selected" id="opciones-{{ Str::slug($category->name) }}">
                                             @foreach ($category->products as $product)
                                                 <div class="col-6 col-md-6">
                                                     <div class="option-card estilo-{{ Str::slug($category->name) }} cursor-pointer"
@@ -246,7 +246,7 @@
                                                         <div class="option-description">{{ $product->description }}</div>
                                                         <div class="option-description precio-producto">
                                                             @if ($product->fachada_7_price == 0)
-                                                                <span class="incluido">Incluido</span>
+                                                                <span></span>
                                                             @else
                                                                 {{ number_format($product->fachada_7_price, 2, '.', ',') }}
                                                             @endif

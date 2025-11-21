@@ -4,7 +4,17 @@
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<nav class="navbar fixed-top bg-white shadow-sm px-3 py-2 z-3">
+
+<style>
+    #mainNav {
+    transition: transform 0.25s ease;
+    }
+
+    #mainNav.nav-hidden {
+        transform: translateY(-100%);
+    }
+</style>
+<nav id="mainNav" class="navbar fixed-top bg-white shadow-sm px-3 py-2 z-3">
     <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
 
         <!-- Botones Regresar y Volver a empezar (izquierda en móvil y escritorio) -->
@@ -96,3 +106,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         
     </div>
 </div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const nav = document.getElementById("mainNav");
+    const preview = document.getElementById("mainPreview");
+    let lastScroll = 0;
+
+    window.addEventListener("scroll", function () {
+        const currentScroll = window.pageYOffset;
+
+        if (window.innerWidth <= 768) {
+
+            if (currentScroll > lastScroll && currentScroll > 50) {
+                nav.classList.add("nav-hidden");
+                preview.style.marginTop = "0px"; // ⬆️ Subir preview
+            } else {
+                nav.classList.remove("nav-hidden");
+                preview.style.marginTop = "80px"; // ⬇️ Bajar preview
+            }
+        }
+
+        lastScroll = currentScroll;
+    });
+});
+</script>
+

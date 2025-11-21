@@ -11,7 +11,40 @@ document.addEventListener("DOMContentLoaded", () => {
     // EXPORTAR EXCEL
     // ===============================
     exportBtn.addEventListener('click', () => {
-        const wb = XLSX.utils.table_to_book(table, { sheet: "Precios" });
+
+        const rows = [];
+
+        // Header
+        const headers = [];
+        table.querySelectorAll("thead th").forEach(th => {
+            headers.push(th.innerText.trim());
+        });
+        rows.push(headers);
+
+        // Body
+        table.querySelectorAll("tbody tr").forEach(tr => {
+            const row = [];
+            tr.querySelectorAll("td").forEach(td => {
+
+                // Si tiene input → tomar el valor
+                const input = td.querySelector("input");
+                if (input) {
+                    row.push(input.value || 0);
+                } else {
+                    // texto normal sin $
+                    row.push(td.innerText.replace('$', '').trim());
+                }
+            });
+
+            rows.push(row);
+        });
+
+        // Crear libro y hoja
+        const ws = XLSX.utils.aoa_to_sheet(rows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Precios");
+
+        // Descargar archivo
         XLSX.writeFile(wb, `plantilla_precios_${styleName()}.xlsx`);
     });
 
@@ -78,27 +111,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: 'POST',
                 body: new FormData(form)
             })
-            .then(res => {
-                debugger
-                loader.style.display = "none";
+                .then(res => {
+                    debugger
+                    loader.style.display = "none";
 
-                if (!res.ok) throw new Error('Error en la actualización.');
+                    if (!res.ok) throw new Error('Error en la actualización.');
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Precios actualizados ✅',
-                    text: 'Los cambios se guardaron correctamente.',
-                    timer: 2000,
-                    showConfirmButton: false
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Precios actualizados ✅',
+                        text: 'Los cambios se guardaron correctamente.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    setTimeout(() => location.reload(), 2000);
+                })
+                .catch(() => {
+                    debugger
+                    loader.style.display = "none";
+                    Swal.fire("Error", "Hubo un problema al guardar los cambios.", "error");
                 });
-
-                setTimeout(() => location.reload(), 2000);
-            })
-            .catch(() => {
-                debugger
-                loader.style.display = "none";
-                Swal.fire("Error", "Hubo un problema al guardar los cambios.", "error");
-            });
         });
     });
 
@@ -109,5 +142,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const title = document.querySelector('h3.mb-4');
         return title ? title.textContent.replace("Precios - ", "").trim() : "estilo";
     }
+
+
+        // ===============================
+    // FORMATEAR INPUTS A 2 DECIMALES
+    // ===============================
+    const priceInputs = document.querySelectorAll('#pricesTable input[type="number"]');
+
+    priceInputs.forEach(input => {
+
+        // Formatear valor inicial al cargar
+        if (input.value !== "") {
+            input.value = parseFloat(input.value).toFixed(2);
+        }
+
+        // Formatear al salir del campo
+        input.addEventListener('blur', () => {
+            if (input.value !== "") {
+                input.value = parseFloat(input.value).toFixed(2);
+            }
+        });
+    });
+
 
 });

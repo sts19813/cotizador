@@ -51,7 +51,7 @@ orderedEntries.forEach(([key, item]) => {
     <td class="text-nowrap">${renderHTML}</td>
     <td>
       ${precioFinal === 0 
-        ? '<span class="incluido">Incluido</span>' 
+        ? '' 
         : '$' + precioFinal.toLocaleString('es-MX')
       }
     </td>
@@ -71,6 +71,11 @@ if (totalElemento) {
   totalElemento.textContent = "$" + totalResumen.toLocaleString("es-MX");
 }
 
+// Total duplicado arriba
+const totalTop = document.querySelector('#totalResumenTop');
+if (totalTop) {
+  totalTop.textContent = "$" + totalResumen.toLocaleString("es-MX");
+}
 // =======================
 // ACTUALIZACIÓN DE UI
 // =======================

@@ -196,7 +196,7 @@
 
 @media only screen and (max-width: 600px) {
     #mainPreview {
-        margin-top: 70px;
+        margin-top: 80px;
     }
 
     .sticky-content {
@@ -228,14 +228,10 @@
     display: inline-block;
 }
 
-
-.precio-sticky {
-    position: sticky;
-    top: 20px;
-    z-index: 9999;
-    width: 230px;
+.opcion-selected{
+    --bs-gutter-y:5px !important;
+    --bs-gutter-x: 5px !important;
 }
-
 .precio-sticky span {
     font-size: 20px;
 }
@@ -248,4 +244,35 @@
     color: #386EFA;
     font-weight: 400;
     font-family: 'Geologica', sans-serif;
+}
+.precio-sticky {
+    position: sticky;
+    top: 70px;
+    z-index: 10;
+    width: 100%;
+    background: #F5F9FC;
+    padding: 10px;
+}
+
+
+@media (max-width: 768px) {
+    #owl-demo .item img {
+        max-height: 65px;   /* Ajusta el tamaño que prefieras */
+        height: 65px;
+        object-fit: cover;
+    }
+    .gallery-carousel .item {
+        width: 120px !important;
+    }
+
+    .precio-sticky {
+        top: unset !important;
+        bottom: 0px;
+        position: fixed;
+        text-align: center;
+        width: 93%;
+        border-radius: 20px;
+        padding: 6px !important;
+        opacity: 0.9;
+    }
 }

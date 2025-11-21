@@ -28,11 +28,18 @@ Route::get('/lang/{lang}', function ($lang) {
 |--------------------------------------------------------------------------
 */
 Route::get('/google-auth/redirect', function () {
+    // Si nos pasan redirect lo guardamos en sesión para recuperarlo después del callback
+    if (request()->has('redirect')) {
+        session(['redirect_after_login' => request()->get('redirect')]);
+    }
     return Socialite::driver('google')->redirect();
 });
 
 Route::get('/google-auth/callback', function () {
-    $user_google = Socialite::driver('google')->stateless()->setHttpClient(new \GuzzleHttp\Client(['verify' => false]))->user();
+    $user_google = Socialite::driver('google')
+        ->stateless()
+        ->setHttpClient(new \GuzzleHttp\Client(['verify' => false]))
+        ->user();
 
     $user = User::updateOrCreate([
         'google_id' => $user_google->id,
@@ -43,7 +50,15 @@ Route::get('/google-auth/callback', function () {
 
     Auth::login($user);
 
-    return redirect()->intended('/resumen');
+    // Detectar si venía de un "guardar"
+    $redir = session('redirect_after_login');
+    session()->forget('redirect_after_login');
+
+    if ($redir === 'guardar') {
+        return redirect('/resumen?autoguardar=1');
+    }
+
+    return redirect('/resumen');
 });
 
 /*
@@ -119,7 +134,14 @@ Route::get('/resumen', [CategoryController::class, 'resumen']);
 Route::view('/registro', 'register');
 Route::view('/inicio-sesion', 'login');
 Route::get('/login', function () {
-    return redirect('/inicio-sesion');
+    $redirect = request()->redirect;
+    $url = '/inicio-sesion';
+
+    if ($redirect) {
+        $url .= '?redirect=' . $redirect;
+    }
+
+    return redirect($url);
 });
 Route::view('/test/{style?}', 'configurador');
 Route::get('/{style?}', [CategoryController::class, 'configurador']);

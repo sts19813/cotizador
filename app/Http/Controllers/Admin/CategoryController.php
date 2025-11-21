@@ -36,55 +36,60 @@ class CategoryController extends Controller
 
         return response()->json(['success' => true]);
     }
-public function configurador($style = 'Minimalista')
-{
-    if ($style === 'home') {
-        $style = 'Minimalista';
-    } elseif ($style === 'tulum') {
-        $style = 'Tulum';
-    } elseif ($style === 'mexicano') {
-        $style = 'Mexicano';
-    }
-    $allowedStyles = ['Minimalista', 'Tulum', 'Mexicano'];
+    public function configurador($style = 'Minimalista')
+    {
+        if ($style === 'home') {
+            $style = 'Minimalista';
+        } elseif ($style === 'tulum') {
+            $style = 'Tulum';
+        } elseif ($style === 'mexicano') {
+            $style = 'Mexicano';
+        }
+        $allowedStyles = ['Minimalista', 'Tulum', 'Mexicano'];
 
-    if (!in_array($style, $allowedStyles)) {
-        abort(404);
-    }
+        if (!in_array($style, $allowedStyles)) {
+            abort(404);
+        }
 
-    // Categorías activas con productos y sus renders generales
-    $categories = Category::with(['products.renders'])
+        // Categorías activas con productos y sus renders generales
+        $categories = Category::with([
+            'products' => function ($q) {
+                $q->orderBy('fachada_7_price', 'asc');
+            },
+            'products.renders'
+        ])
         ->where('is_active', true)
         ->where('style', $style)
         ->orderBy('orden')
         ->get();
 
-    // Base images (miniaturas del carrusel)
-    $baseImages = BaseImage::where('style', $style)
-        ->orderBy('order')
-        ->get();
+        // Base images (miniaturas del carrusel)
+        $baseImages = BaseImage::where('style', $style)
+            ->orderBy('order')
+            ->get();
 
-    // Fachadas por producto, agrupadas por producto_id y luego por nombre de fachada
-    $fachadas = ProductFachadaRender::with('product')
-        ->whereHas('product', function ($q) use ($style) {
-            $q->where('style', $style);
-        })
-        ->get()
-        ->groupBy('product_id')
-        ->map(function ($rendersPorProducto) {
-            return $rendersPorProducto->keyBy('fachada'); // ahora es una Collection, keyBy funciona
+        // Fachadas por producto, agrupadas por producto_id y luego por nombre de fachada
+        $fachadas = ProductFachadaRender::with('product')
+            ->whereHas('product', function ($q) use ($style) {
+                $q->where('style', $style);
+            })
+            ->get()
+            ->groupBy('product_id')
+            ->map(function ($rendersPorProducto) {
+                return $rendersPorProducto->keyBy('fachada'); // ahora es una Collection, keyBy funciona
+            });
+
+        // Transforma renders por producto para JSON en Blade
+        $rendersPorProducto = $categories->flatMap(function ($category) {
+            return $category->products->mapWithKeys(function ($product) {
+                // Asegurarnos de que sea Collection antes de usar keyBy
+                $renders = collect($product->renders)->keyBy('id');
+                return [$product->id => $renders];
+            });
         });
 
-    // Transforma renders por producto para JSON en Blade
-    $rendersPorProducto = $categories->flatMap(function ($category) {
-        return $category->products->mapWithKeys(function ($product) {
-            // Asegurarnos de que sea Collection antes de usar keyBy
-            $renders = collect($product->renders)->keyBy('id');
-            return [$product->id => $renders];
-        });
-    });
-
-    return view('test', compact('categories', 'style', 'baseImages', 'fachadas', 'rendersPorProducto'));
-}
+        return view('test', compact('categories', 'style', 'baseImages', 'fachadas', 'rendersPorProducto'));
+    }
 
      public function resumen()
     {

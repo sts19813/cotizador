@@ -66,7 +66,7 @@
 
                     <div class="text-center text-muted my-3">O inicia sesión con</div>
                     <div class="d-flex justify-content-center gap-3 mb-3">
-                        <a href="/google-auth/redirect" class="btn btn-outline-secondary w-100 btn-login-google">
+                        <a href="/google-auth/redirect?redirect={{ request('redirect') }}" class="btn btn-outline-secondary w-100 btn-login-google">
                             <img src="https://img.icons8.com/color/16/000000/google-logo.png" /> Google
                         </a>
                         <!--

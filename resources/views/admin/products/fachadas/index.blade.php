@@ -33,7 +33,7 @@
                    class="table table-row-bordered table-hover table-striped align-middle gy-3">
                 <thead>
                     <tr class="fw-bold fs-6 text-gray-800">
-                        <th>ID</th>
+                        <th class="d-none">ID</th>
                         <th>Title</th>
                         <th>Style</th>
                         <th>Base Price</th>
@@ -45,7 +45,7 @@
                 <tbody>
                     @foreach ($products as $product)
                         <tr>
-                            <td>{{ $product->id }}</td>
+                            <td class="d-none">{{ $product->id }}</td>
                             <td>{{ $product->title }}</td>
                             <td>
                                 <span class="badge badge-light-primary">{{ $product->style }}</span>
@@ -56,11 +56,15 @@
                                       method="POST"
                                       class="d-flex gap-2">
                                     @csrf
-                                    <input type="number"
-                                           name="base_price"
-                                           class="form-control form-control-sm w-150px"
-                                           value="{{ $product->base_price }}"
-                                           step="0.01">
+                                    <div class="input-group input-group-sm w-150px">
+                                        <span class="input-group-text">$</span>
+                                        <input 
+                                            type="text"
+                                            name="base_price"
+                                            class="form-control price-input"
+                                            value="{{ number_format($product->base_price, 2, '.', ',') }}"
+                                        >
+                                    </div>
                             </td>
 
                             <td>
@@ -89,6 +93,16 @@
 <script>
     $("#fachadas_table").DataTable({
         pageLength: 25,
+    });
+
+    // LIMPIAR COMAS Y SIGNOS al enviar
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", () => {
+            let input = form.querySelector(".price-input");
+            if (input) {
+                input.value = input.value.replace(/[^0-9.]/g, "");
+            }
+        });
     });
 </script>
 @endpush

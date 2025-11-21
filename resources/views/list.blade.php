@@ -6,6 +6,11 @@
 <body>
 
     <x-header />
+    <style>
+        #mainNav .capturar, #mainNav .align-items-center .d-md-inline{
+            display: none !important;
+        }
+    </style>
 
     <div class="container py-5">
 
@@ -18,7 +23,7 @@
                 <div class="card mb-4">
                     <div class="row g-0 align-items-center">
                         <div class="col-md-6">
-                            <div id="principalRender{{ $index }}" class="imagen-casa animar-subida">
+                            <div id="principalRender{{ $index }}" class="imagen-casa animar-subida" style="padding-top: 0px !important">
                                 @php
                                     $miniaturas = $config->miniaturas_data ?? [];
                                     $item = $miniaturas[1] ?? null; // segunda miniatura
@@ -65,33 +70,20 @@
                                             <td class="text-end pe-0">
                                                 {{ $config->configuration['Habitaciones']['valor'] ?? '' }}</td>
                                         </tr>
+                                        <tr>
+                                            <th class="ps-0">Precio</th>
+                                            <td class="text-end pe-0">
+                                                ${{ number_format($config->precio_total ?? 0, 0, '.', ',') }}
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
-                                <!-- Botón Ver más -->
-                                <button class="btn btn-link p-0 mt-2" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#verMas{{ $index }}">
-                                    Ver más
+                                <button class="btn btn-primary ver-resumen-user"
+                                        data-configuration='@json($config->configuration)'
+                                        data-miniaturas='@json($config->miniaturas_data)'
+                                        data-precio="{{ $config->precio_total }}">
+                                    Ver resumen
                                 </button>
-                                <div class="collapse mt-3" id="verMas{{ $index }}">
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Categoría</th>
-                                                <th>Valor</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($config->configuration as $key => $item)
-                                                @if (!in_array($key, ['Estilos', 'Habitaciones', 'collapse-21']))
-                                                    <tr>
-                                                        <td>{{ $item['categoria'] ?? $key }}</td>
-                                                        <td>{{ $item['valor'] ?? '' }}</td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -101,6 +93,177 @@
     </div>
     <x-footer />
     <x-scripts />
+
+
+    <!-- MODAL RESUMEN -->
+    <div class="modal fade" id="modalResumenUsuario" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Resumen de Configuración</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="renderPrincipalUsuario" class="mb-4"></div>
+
+                    <h5>Miniaturas</h5>
+                    <div id="miniaturasUsuario" class="d-flex gap-2 mb-4"></div>
+
+                    <h5>Tabla de Opciones</h5>
+                    <table class="table table-bordered" id="tablaResumenUsuario">
+                        <thead>
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Opción</th>
+                                <th>Código</th>
+                                <th>Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <h4 class="mt-3">Total: 
+                        <span id="totalResumenUsuario" class="text-success fw-bold"></span>
+                    </h4>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    document.querySelectorAll(".ver-resumen-user").forEach(btn => {
+        
+        btn.addEventListener("click", () => {
+
+            const configuration = JSON.parse(btn.dataset.configuration);
+            const miniaturasData = JSON.parse(btn.dataset.miniaturas);
+            const precioTotal = btn.dataset.precio;
+
+            // ==========================
+            // LIMPIAR MODAL
+            // ==========================
+            document.querySelector("#renderPrincipalUsuario").innerHTML = "";
+            document.querySelector("#miniaturasUsuario").innerHTML = "";
+            document.querySelector("#tablaResumenUsuario tbody").innerHTML = "";
+            document.querySelector("#totalResumenUsuario").textContent = "$" + 
+                parseFloat(precioTotal).toLocaleString("es-MX");
+
+            // ==========================
+            // RENDER PRINCIPAL
+            // ==========================
+            if (miniaturasData.length > 1) {
+                const item = miniaturasData[1];
+
+                const wrapper = document.createElement("div");
+                wrapper.style.position = "relative";
+
+                const imgBase = document.createElement("img");
+                imgBase.src = item.base;
+                imgBase.className = "img-fluid rounded";
+                wrapper.appendChild(imgBase);
+
+                if (item.overlays.length > 0) {
+                    const overlayDiv = document.createElement("div");
+                    overlayDiv.style.position = "absolute";
+                    overlayDiv.style.top = "0";
+                    overlayDiv.style.left = "0";
+                    overlayDiv.style.width = "100%";
+                    overlayDiv.style.height = "100%";
+                    overlayDiv.style.pointerEvents = "none";
+
+                    item.overlays.forEach(src => {
+                        const imgOverlay = document.createElement("img");
+                        imgOverlay.src = src;
+                        imgOverlay.style.width = "100%";
+                        imgOverlay.style.height = "100%";
+                        imgOverlay.style.position = "absolute";
+                        overlayDiv.appendChild(imgOverlay);
+                    });
+
+                    wrapper.appendChild(overlayDiv);
+                }
+
+                document.querySelector("#renderPrincipalUsuario").appendChild(wrapper);
+            }
+
+            // ==========================
+            // MINIATURAS
+            // ==========================
+            miniaturasData.forEach(item => {
+                const wrapper = document.createElement("div");
+                wrapper.style.position = "relative";
+                wrapper.style.width = "120px";
+
+                const imgBase = document.createElement("img");
+                imgBase.src = item.base;
+                imgBase.className = "img-fluid rounded";
+                wrapper.appendChild(imgBase);
+
+                if (item.overlays.length > 0) {
+                    const overlayDiv = document.createElement("div");
+                    overlayDiv.style.position = "absolute";
+                    overlayDiv.style.top = "0";
+                    overlayDiv.style.left = "0";
+                    overlayDiv.style.width = "100%";
+                    overlayDiv.style.height = "100%";
+                    overlayDiv.style.pointerEvents = "none";
+
+                    item.overlays.forEach(src => {
+                        const imgOverlay = document.createElement("img");
+                        imgOverlay.src = src;
+                        imgOverlay.style.width = "100%";
+                        imgOverlay.style.height = "100%";
+                        imgOverlay.style.position = "absolute";
+                        overlayDiv.appendChild(imgOverlay);
+                    });
+
+                    wrapper.appendChild(overlayDiv);
+                }
+
+                document.querySelector("#miniaturasUsuario").appendChild(wrapper);
+            });
+
+            // ==========================
+            // TABLA DE RESUMEN
+            // ==========================
+            Object.entries(configuration).forEach(([key, item]) => {
+
+                const precio = parseFloat(item.precio || item.precio_a || item.precio_b || 0);
+
+                const row = `
+                    <tr>
+                        <td>${item.categoria ?? ""}</td>
+                        <td>${item.valor ?? ""}</td>
+                        <td>${item.pre_code ?? ""} ${item.variant_code ?? ""}</td>
+                        <td>${precio === 0
+                                ? ''
+                                : '$' + precio.toLocaleString("es-MX")
+                            }
+                        </td>
+                    </tr>
+                `;
+
+                document.querySelector("#tablaResumenUsuario tbody")
+                        .insertAdjacentHTML("beforeend", row);
+            });
+
+            // ==========================
+            // ABRIR MODAL
+            // ==========================
+            const modal = new bootstrap.Modal(document.getElementById("modalResumenUsuario"));
+            modal.show();
+
+        });
+    });
+
+});
+</script>
 
 </body>
 </html>
