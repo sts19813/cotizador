@@ -24,16 +24,27 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->authenticate();
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        $request->session()->regenerate();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
-        if ($request->redirect === 'guardar') {
-            return redirect('/resumen?autoguardar=1');
+            if ($request->redirect === 'guardar') {
+                return redirect('/resumen?autoguardar=1');
+            }
+
+            // Redirigir a la ruta original
+            return redirect()->intended('/resumen');
         }
 
-        return redirect()->intended('/resumen');
+        return back()->withErrors([
+            'email' => 'Las credenciales no coinciden con nuestros registros.',
+        ])->onlyInput('email');
     }
+
 
     /**
      * Destroy an authenticated session.

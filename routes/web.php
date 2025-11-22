@@ -13,7 +13,10 @@ use App\Http\Controllers\Admin\RenderController;
 use App\Http\Controllers\Admin\LeadController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductFachadaController;
-use Illuminate\Foundation\Exceptions\Renderer\Renderer;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 
 Route::get('/lang/{lang}', function ($lang) {
@@ -21,14 +24,12 @@ Route::get('/lang/{lang}', function ($lang) {
     return back();
 })->name('lang.switch');
 
-
 /*
 |--------------------------------------------------------------------------
 | Login con Google
 |--------------------------------------------------------------------------
 */
 Route::get('/google-auth/redirect', function () {
-    // Si nos pasan redirect lo guardamos en sesión para recuperarlo después del callback
     if (request()->has('redirect')) {
         session(['redirect_after_login' => request()->get('redirect')]);
     }
@@ -41,29 +42,45 @@ Route::get('/google-auth/callback', function () {
         ->setHttpClient(new \GuzzleHttp\Client(['verify' => false]))
         ->user();
 
-    $user = User::updateOrCreate([
-        'google_id' => $user_google->id,
-    ], [
-        'name' => $user_google->name,
-        'email' => $user_google->email,
-    ]);
+    $user = User::updateOrCreate(
+        ['google_id' => $user_google->id],
+        ['name' => $user_google->name, 'email' => $user_google->email]
+    );
 
     Auth::login($user);
 
-    // Detectar si venía de un "guardar"
-    $redir = session('redirect_after_login');
+    $redir = session('redirect_after_login', null);
     session()->forget('redirect_after_login');
 
     if ($redir === 'guardar') {
         return redirect('/resumen?autoguardar=1');
     }
 
-    return redirect('/resumen');
+    return redirect()->intended($redir ?? '/resumen');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Rutas para usuarios autenticados normales
+| Rutas para invitados (guest)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('guest')->group(function () {
+    Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('register', [RegisteredUserController::class, 'store']);
+
+    Route::get('inicio-sesion', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('inicio-sesion', [AuthenticatedSessionController::class, 'store']);
+
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+
+    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Rutas para usuarios autenticados
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -126,23 +143,12 @@ Route::middleware(['auth', AdminMiddleware::class])
 
 /*
 |--------------------------------------------------------------------------
-| Rutas de autenticación generadas por Laravel Breeze/Fortify/etc.
+| Otras rutas normales
 |--------------------------------------------------------------------------
 */
 Route::view('/unauthorized', 'unauthorized')->name('unauthorized');
 Route::get('/resumen', [CategoryController::class, 'resumen']);
 Route::view('/registro', 'register');
-Route::view('/inicio-sesion', 'login');
-Route::get('/login', function () {
-    $redirect = request()->redirect;
-    $url = '/inicio-sesion';
-
-    if ($redirect) {
-        $url .= '?redirect=' . $redirect;
-    }
-
-    return redirect($url);
-});
 Route::view('/test/{style?}', 'configurador');
 Route::get('/{style?}', [CategoryController::class, 'configurador']);
 

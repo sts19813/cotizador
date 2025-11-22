@@ -62,9 +62,8 @@
 
                         <!-- Botón de login -->
                         <button type="submit" class="btn btn-primary w-100 mb-3 btn-registrar">Iniciar sesión</button>
-                    </form>
 
-                    <div class="text-center text-muted my-3">O inicia sesión con</div>
+                         <div class="text-center text-muted my-3">O inicia sesión con</div>
                     <div class="d-flex justify-content-center gap-3 mb-3">
                         <a href="/google-auth/redirect?redirect={{ request('redirect') }}" class="btn btn-outline-secondary w-100 btn-login-google">
                             <img src="https://img.icons8.com/color/16/000000/google-logo.png" /> Google
@@ -75,6 +74,9 @@
                         </a>
                         -->
                     </div>
+                    </form>
+
+                   
 
                     <p class="text-center text-muted">¿No tienes cuenta aún?
                         <a href="/registro" class="text-decoration-none">Regístrate</a>

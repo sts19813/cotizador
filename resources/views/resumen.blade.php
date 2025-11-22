@@ -110,7 +110,7 @@
 
 		if (!isLoggedIn) {
 			// Redirige a login con parámetro de retorno
-			window.location.href = "/login?redirect=guardar";
+			window.location.href = "/inicio-sesion?redirect=guardar";
 			return;
 		}
 
