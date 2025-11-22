@@ -50,8 +50,11 @@ class HouseConfigurationController extends Controller
             'fecha' => $fecha ?? now(),
         ]);
  
-        Mail::to('sts19813@gmail.com')->send(new UondrMailNuevaCotizacion());
-
+        Mail::to([
+            'sts19813@gmail.com',
+            'hi@davidsabido.com',
+            'cantonaarons@gmail.com'
+        ])->send(new UondrMailNuevaCotizacion());
         return response()->json(['message' => 'Configuración guardada correctamente']);
     }
 
