@@ -99,16 +99,30 @@ if (savedSelections["collapse-21"]?.valor === "Fachada B") {
   document.querySelector('.imagen-casa').src = "/img/resumen.png";
 }
 
-// Imagen según recámaras
+// =======================
+// IMAGEN SEGÚN RECÁMARAS + FACHADA
+// =======================
 if (savedSelections.Habitaciones) {
-  const recamaras = savedSelections.Habitaciones.valor;
-  let imgSrc = "/img/1.png";
-  if (recamaras === "2 Recámaras") imgSrc = "/img/2.png";
-  else if (recamaras === "3 Recámaras") imgSrc = "/img/3.png";
-  else if (recamaras === "4 Recámaras") imgSrc = "/img/4.png";
+  const recamarasTexto = savedSelections.Habitaciones.valor;
 
-  const imgRec = document.querySelector('.imagen-recamaras');
-  if (imgRec) imgRec.src = imgSrc;
+  // Obtener número de recámaras (1,2,3,4)
+  const match = recamarasTexto.match(/\d+/);
+
+  if (match) {
+    const recamaras = match[0];
+
+    // Obtener fachada (A o B)
+    const fachadaEntry = Object.values(savedSelections)
+      .find(item => item.categoria === "Fachada");
+
+    const fachada = fachadaEntry && /b/i.test(fachadaEntry.valor) ? 'B' : 'A';
+
+    // Construir ruta final
+    const imgSrc = `/assets/plantas/${recamaras}${fachada}.jpg`;
+
+    const imgRec = document.querySelector('.imagen-recamaras');
+    if (imgRec) imgRec.src = imgSrc;
+  }
 }
 
 // =======================

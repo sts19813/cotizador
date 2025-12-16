@@ -66,7 +66,7 @@
 
                     <div class="mb-5">
                         <label class="form-label">Contraseña Actual</label>
-                        <input type="password" class="form-control" name="current_password" required>
+                        <input type="password" class="form-control" name="current_password">
                     </div>
 
                     <div class="mb-5">
