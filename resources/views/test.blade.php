@@ -257,12 +257,122 @@
                                 </div>
                             </div>
                         @endforeach
+
+
+                        <div class="card shadow-sm border-0 mt-5 financing-card">
+                            <div class="card-body p-4">
+
+                                <h5 class="fw-bold mb-3">Financiamiento</h5>
+
+                                <div class="mb-3">
+                                    <span class="fs-3 fw-bold">$129,340.00</span>
+                                    <span class="text-primary">/mes estimado</span>
+                                </div>
+
+                                <hr>
+
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <small class="">Anticipo 30%</small>
+                                        <div class="fw-bold">$650,890.00</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="">Plazo</small>
+                                        <div class="fw-bold">12 Meses</div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <small class="">% Tasa de interés fija anual</small>
+                                        <div class="fw-bold">11.99%</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="">Monto financiado</small>
+                                        <div class="fw-bold">$1,787,056.00</div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <small class="">Saldo contra entrega 20%</small>
+                                    <div class="fw-bold">$230,120.00</div>
+                                </div>
+
+                                <p class="small ">
+                                    Esta simulación es sólo referencial del crédito otorgado por Banco Santander México
+                                    S.A.
+                                    La aprobación final está sujeta a evaluación crediticia.
+                                </p>
+
+                                {{-- BOTONES --}}
+                                <div class="d-grid gap-2 mt-4">
+                                    <a href="{{ url('/resumen') }}" class="btn btn-primary btn-lg btn-radius">
+                                        Siguiente
+                                    </a>
+
+                                    <button class="btn btn-outline-primary btn-lg btn-radius" data-bs-toggle="modal"
+                                        data-bs-target="#modalAsesor">
+                                        Hablar con un asesor
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+
+    <div class="modal fade" id="modalAsesor" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Hablar con un asesor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formAsesor">
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Correo</label>
+                        <input type="email" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mensaje</label>
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button class="btn btn-primary">
+                    Enviar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
     <x-footer />
