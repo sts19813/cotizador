@@ -146,8 +146,7 @@
                                     <div class="row g-3 opcion-selected" id="opciones-habitaciones">
                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="4Recamaras"
-                                                data-valor="4 Recámaras" data-precio="0"
-                                                data-categoria="Habitaciones">
+                                                data-valor="4 Recámaras" data-precio="0" data-categoria="Habitaciones">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">04</span>
@@ -157,8 +156,7 @@
                                         </div>
                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="3Recamaras"
-                                                data-categoria="Habitaciones" data-valor="3 Recámaras"
-                                                data-precio="0">
+                                                data-categoria="Habitaciones" data-valor="3 Recámaras" data-precio="0">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">03</span>
@@ -168,8 +166,7 @@
                                         </div>
                                         <div class="col-6 col-md-6">
                                             <div class="option-card estilo-color cursor-pointer" data-id="2Recamaras"
-                                                data-valor="2 Recámaras" data-precio="0"
-                                                data-categoria="Habitaciones">
+                                                data-valor="2 Recámaras" data-precio="0" data-categoria="Habitaciones">
                                                 <div class="rounded mb-2 bg-habitaciones d-flex align-items-center justify-content-center"
                                                     style="height: 100px;">
                                                     <span class="fw-bold fs-4">02</span>
@@ -298,6 +295,91 @@
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const reloadModal = document.getElementById('reloadModal');
+            const reloadBtn = document.querySelector('.modal-reload');
+            const reloadClose = reloadModal.querySelector('.uondr-close');
+            const btnAccept = document.getElementById('btnReloadAccept');
+            const btnCancel = document.getElementById('btnReloadCancel');
+
+            function openReloadModal() {
+                reloadModal.classList.add('show');
+            }
+
+            function closeReloadModal() {
+                reloadModal.classList.remove('show');
+            }
+
+            // Click en icono recargar
+            if (reloadBtn) {
+                reloadBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    openReloadModal();
+                });
+            }
+
+            // Aceptar → recargar página
+            btnAccept.addEventListener('click', function () {
+                window.location.reload();
+            });
+
+            // No → cerrar modal
+            btnCancel.addEventListener('click', closeReloadModal);
+            reloadClose.addEventListener('click', closeReloadModal);
+
+            // Click fuera del modal
+            reloadModal.addEventListener('click', function (e) {
+                if (e.target === reloadModal) {
+                    closeReloadModal();
+                }
+            });
+
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const modal = document.getElementById('uondrModal');
+            const openBtn = document.querySelector('.modal-info');
+            const closeBtn = modal.querySelector('.uondr-close');
+
+            // Abrir modal
+            function openModal() {
+                modal.classList.add('show');
+            }
+
+            // Cerrar modal
+            function closeModal() {
+                modal.classList.remove('show');
+            }
+
+            // Click en icono info
+            if (openBtn) {
+                openBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    openModal();
+                });
+            }
+
+            // Botón cerrar
+            closeBtn.addEventListener('click', closeModal);
+
+            // Click fuera del contenido
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Mostrar en la primera carga de la página
+            openModal();
+
+        });
+    </script>
+
+
 </body>
 
 </html>
