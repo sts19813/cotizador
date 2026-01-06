@@ -9,10 +9,12 @@ use App\Models\ProductFachadaRender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Http;
+
 class CategoryController extends Controller
 {
     // Mostrar listado de categorías
-   public function index()
+    public function index()
     {
         $styles = ['Minimalista', 'Tulum', 'Mexicano'];
         $categoriesByStyle = [];
@@ -58,10 +60,10 @@ class CategoryController extends Controller
             },
             'products.renders'
         ])
-        ->where('is_active', true)
-        ->where('style', $style)
-        ->orderBy('orden')
-        ->get();
+            ->where('is_active', true)
+            ->where('style', $style)
+            ->orderBy('orden')
+            ->get();
 
         // Base images (miniaturas del carrusel)
         $baseImages = BaseImage::where('style', $style)
@@ -88,10 +90,18 @@ class CategoryController extends Controller
             });
         });
 
-        return view('test', compact('categories', 'style', 'baseImages', 'fachadas', 'rendersPorProducto'));
+        $stageId=19; // Piaro   
+
+        $map = Http::get(
+            config('services.naboo.url') . 'api/masterplan/map',
+            ['stage_id' => $stageId]
+        )->json();
+
+        return view('test', compact('categories', 'style', 'baseImages', 'fachadas', 'rendersPorProducto', 'map'));
     }
 
-     public function resumen()
+
+    public function resumen()
     {
 
         return view('resumen');

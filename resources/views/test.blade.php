@@ -60,6 +60,106 @@
 
                     <div class="accordion " id="configAccordion">
 
+                        <div class="accordion-item hover-shadow mb-4">
+
+                            <h2 class="accordion-header" id="headingPiaro">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#piaroCard" aria-expanded="true" aria-controls="piaroCard">
+                                    <span class="textAcordeon">Piaro</span>
+                                    <span class="icon ms-auto">...</span>
+                                </button>
+                            </h2>
+
+                            <div id="piaroCard" class="accordion-collapse collapse show">
+
+                                <div class="accordion-body">
+
+                                    <!-- CONTENIDO INICIAL (SE OCULTA) -->
+                                    <div id="piaroInitialContent">
+
+                                        <h5 class="fw-bold mb-2">¿Ya eres parte de Piaro?</h5>
+                                        <p class="mb-3">
+                                            Si ya cuentas con un lote en Piaro, indícanos tu número de lote
+                                            para brindarte una asesoría personalizada y continuar con tu proyecto.
+                                        </p>
+
+                                        <div class="d-flex gap-2 mb-4">
+
+                                            <div class="position-relative flex-grow-1">
+                                                <input type="text" id="lotInput" class="form-control"
+                                                    placeholder="Num. de lote" autocomplete="off">
+
+                                                <input type="hidden" id="lotId">
+
+                                                <div id="lotDropdown"
+                                                    class="list-group position-absolute w-100 shadow-sm"
+                                                    style="z-index:1000; display:none;">
+                                                </div>
+                                            </div>
+
+                                            <button class="btn btn-primary btn-radius px-4" id="saveLotBtn">
+                                                Guardar
+                                            </button>
+
+                                        </div>
+
+                                        <hr>
+
+                                        <h6 class="fw-bold mt-3">¿Aún no tienes lote en Piaro?</h6>
+                                        <p class="mb-3">
+                                            Actualmente, UONDR desarrolla proyectos exclusivamente dentro de Piaro.
+                                        </p>
+
+                                        <button class="btn btn-outline-primary btn-radius w-100" data-bs-toggle="modal"
+                                            data-bs-target="#modalPiaro">
+                                            Cotizar lote
+                                        </button>
+
+                                    </div>
+
+                                    <!-- CARD LOTE SELECCIONADO -->
+                                    <div id="selectedLotCard" class="d-none">
+                                        <div class="card-body">
+
+                                            <h5 class="fw-bold mb-3" id="lotTitle"></h5>
+
+                                            <div class="row mb-3">
+                                                <div class="col-6">
+                                                    <small class="">Lote</small>
+                                                    <div class="fw-semibold" id="lotName"></div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="">Área</small>
+                                                    <div class="fw-semibold" id="lotArea"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-6">
+                                                    <small class="">Precio m²</small>
+                                                    <div class="fw-semibold" id="lotPriceM2"></div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="">Precio Total</small>
+                                                    <div class="fw-semibold" id="lotTotal"></div>
+                                                </div>
+                                            </div>
+
+                                            <p class="small">
+                                                Esta simulación es sólo referencial.
+                                            </p>
+
+                                            <button class="btn btn-outline-primary w-100" id="changeLotBtn">
+                                                Seleccionar otro lote
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- General -->
                         <div class="accordion-item hover-shadow mb-4">
                             <h2 class="accordion-header" id="headingGeneral">
@@ -261,9 +361,7 @@
 
                         <div class="card shadow-sm border-0 mt-5 financing-card">
                             <div class="card-body p-4">
-
                                 <h5 class="fw-bold mb-3">Financiamiento</h5>
-
                                 <div class="mb-3">
                                     <span class="fs-3 fw-bold">$129,340.00</span>
                                     <span class="text-primary">/mes estimado</span>
@@ -306,7 +404,7 @@
 
                                 {{-- BOTONES --}}
                                 <div class="d-grid gap-2 mt-4">
-                                    <a href="{{ url('/resumen') }}" class="btn btn-primary btn-lg btn-radius">
+                                    <a class="btn btn-primary btn-lg btn-radius capturar">
                                         Siguiente
                                     </a>
 
@@ -318,178 +416,32 @@
 
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <div class="modal fade" id="modalAsesor" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Hablar con un asesor</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <form id="formAsesor">
-
-                    <div class="mb-3">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Correo</label>
-                        <input type="email" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Mensaje</label>
-                        <textarea class="form-control" rows="3"></textarea>
-                    </div>
-
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-                <button class="btn btn-primary">
-                    Enviar
-                </button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
+    <x-modal-asesor />
+    <x-modal-piaro />
     <x-footer />
+
+    <script>
+        window.masterplanMap = @json($map);
+        window.STAGE_ID = 19;
+        window.API_URL = '{{ config('services.naboo.url') }}api/lots';
+        window.lotsCache = [];
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/constantes.js"></script>
     <script src="/Minimalista.js"></script>
     <script src="/cambioBasesFachadas.js"></script>
-
-    <script>
-        document.querySelectorAll('.capturar').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Seleccionamos todos los thumb-wrapper
-                const wrappers = document.querySelectorAll('.thumb-wrapper');
-
-                // Creamos un array con la info de base y overlays
-                const miniaturasData = Array.from(wrappers).map(wrapper => {
-                    const base = wrapper.querySelector('img.tumb-original')?.src || '';
-                    const overlays = Array.from(wrapper.querySelectorAll('.overlay-container img')).map(img => img.src);
-                    return {
-                        base,
-                        overlays
-                    };
-                });
-
-                // Guardamos en localStorage
-                localStorage.setItem('miniaturasData', JSON.stringify(miniaturasData));
-
-                // Redirigimos a la página de resumen
-                window.location.href = '/resumen';
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-
-            const reloadModal = document.getElementById('reloadModal');
-            const reloadBtn = document.querySelector('.modal-reload');
-            const reloadClose = reloadModal.querySelector('.uondr-close');
-            const btnAccept = document.getElementById('btnReloadAccept');
-            const btnCancel = document.getElementById('btnReloadCancel');
-
-            function openReloadModal() {
-                reloadModal.classList.add('show');
-            }
-
-            function closeReloadModal() {
-                reloadModal.classList.remove('show');
-            }
-
-            // Click en icono recargar
-            if (reloadBtn) {
-                reloadBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    openReloadModal();
-                });
-            }
-
-            // Aceptar → recargar página
-            btnAccept.addEventListener('click', function () {
-                window.location.reload();
-            });
-
-            // No → cerrar modal
-            btnCancel.addEventListener('click', closeReloadModal);
-            reloadClose.addEventListener('click', closeReloadModal);
-
-            // Click fuera del modal
-            reloadModal.addEventListener('click', function (e) {
-                if (e.target === reloadModal) {
-                    closeReloadModal();
-                }
-            });
-
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-
-            const modal = document.getElementById('uondrModal');
-            const openBtn = document.querySelector('.modal-info');
-            const closeBtn = modal.querySelector('.uondr-close');
-
-            // Abrir modal
-            function openModal() {
-                modal.classList.add('show');
-            }
-
-            // Cerrar modal
-            function closeModal() {
-                modal.classList.remove('show');
-            }
-
-            // Click en icono info
-            if (openBtn) {
-                openBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    openModal();
-                });
-            }
-
-            // Botón cerrar
-            closeBtn.addEventListener('click', closeModal);
-
-            // Click fuera del contenido
-            modal.addEventListener('click', function (e) {
-                if (e.target === modal) {
-                    closeModal();
-                }
-            });
-
-            // Mostrar en la primera carga de la página
-            openModal();
-
-        });
-    </script>
-
-
+    <script src="/assets/js/core/globals.js"></script>
+    <script src="/assets/js/ui/capture.js"></script>
+    <script src="/assets/js/ui/reload-modal.js"></script>
+    <script src="/assets/js/ui/info-modal.js"></script>
+    <script src="/assets/js/piaro-map.js"></script>
+    <script src="/assets/js/app.js"></script>
 </body>
 
 </html>
