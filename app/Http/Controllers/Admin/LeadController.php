@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Lead;
 use Illuminate\Support\Facades\Auth;
 
 class LeadController extends Controller
@@ -39,7 +40,7 @@ class LeadController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'  => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
         ]);
 
@@ -51,6 +52,34 @@ class LeadController extends Controller
 
         return redirect()->route('admin.leads.index')->with('success', 'Lead creado correctamente.');
     }
+
+    public function storeLead(Request $request)
+    {
+        $ctx = $request->context;
+
+        Lead::create([
+            'nombre' => $request->lead['nombre'],
+            'apellido' => $request->lead['apellido'],
+            'email' => $request->lead['email'],
+            'telefono' => $request->lead['telefono'],
+            'mensaje' => $request->lead['mensaje'] ?? null,
+
+            'source' => $ctx['source'],
+            'total' => $ctx['total'],
+
+            'configuration' => $ctx['configuration'],
+            'miniaturas' => $ctx['miniaturas'],
+
+            'lote_id' => $ctx['lote']['id'] ?? null,
+            'lote_nombre' => $ctx['lote']['name'] ?? null,
+            'lote_origen' => $ctx['lote']['origen'] ?? null,
+            'lote_suma' => $ctx['lote']['suma'] ?? false,
+            'lote_total' => $ctx['lote']['total'] ?? null,
+        ]);
+
+        return response()->json(['ok' => true]);
+    }
+
 
     /**
      * Display the specified resource.
@@ -74,7 +103,7 @@ class LeadController extends Controller
     public function update(Request $request, User $lead)
     {
         $request->validate([
-            'name'  => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $lead->id,
         ]);
 

@@ -6,12 +6,12 @@
 <body>
 
 	<style>
-        #mainNav .capturar{
-            display: none !important;
-        }
-    </style>
+		#mainNav .capturar {
+			display: none !important;
+		}
+	</style>
 
-	<x-header />
+	<x-header-resumen />
 
 	<div class="general-background">
 		<div class="seccion-casa">
@@ -42,39 +42,71 @@
 				</p>
 				<div class="mb-3">
 					<button class="btn btn-primary me-2" onclick="guardarFlujo()">Guardar</button>
-						<a href="/" class="btn btn-outline-primary">Crear otra</a>
+					<a href="/" class="btn btn-outline-primary">Crear otra</a>
 				</div>
 			</div>
 		</div>
-		<br>
 		<hr>
-		<br>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="custom-layout">
-					<div class="info-column col-12 info-box">
-						<div class="info-row"><span class="label">Estilo:</span> <span id="estilotabla"></span>
-						</div>
-						<div class="info-row"><span class="label">Recámaras:</span> <span id="recamarastabla">2</span>
-						</div>
-						<div class="info-row"><span class="label">Fachada:</span> <span id="fachadatabla">A</span>
-						</div>
-					</div>
+		<div class="row resumen-layout">
+
+			<!-- COLUMNA IZQUIERDA -->
+			<div class="col-md-5 resumen-info" style="margin-top: 20px">
+
+				<div class="info-row">
+					<span class="label">Estilo</span>
+					<span id="estilotabla"></span>
+				</div>
+
+				<div class="info-row">
+					<span class="label">Recámaras</span>
+					<span id="recamarastabla"></span>
+				</div>
+
+				<div class="info-row">
+					<span class="label">Fachada</span>
+					<span id="fachadatabla"></span>
+				</div>
+
+				<!-- LOTE -->
+				<div id="loteResumen" class="info-row d-none">
+					<span class="label">Lote</span>
+					<span id="lotePrecio"></span>
+				</div>
+
+				<!-- CASA -->
+				<div class="info-row">
+					<span class="label">Casa</span>
+					<span id="precioCasa"></span>
+				</div>
+
+				<div class="total-row">
+					<span>Total:</span>
+					<strong id="totalResumenTop">$0</strong>
+				</div>
+
+				<div class="apartado-row">
+					<span>Aparta hoy con:</span>
+					<strong>$5,000.00</strong>
+					<button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#modalAsesor">
+						Apartar ▶
+					</button>
+
+				</div>
+
+				<div class="text-resumen-note">
+					* Los precios aquí establecidos son en pesos mexicanos e incluyen Impuesto al Valor Agregado (I.V.A) e Impuesto sobre Adquisición de Propiedad (I.S.A.N. cuando aplique). Para mayor información sobre la disponibilidad, versiones, equipamientos y precios, se recomienda consultar con su Distribuidor autorizado EME DOS. Precios de accesorios Tequipment vigentes 1º de enero al 31 de diciembre 2024. El apartado es 100% reembolsable. 
 				</div>
 
 			</div>
 
-			<div class="container mt-4">
-				<div class="p-3 mb-4 rounded text-center" style=" margin-top: 20px;">
-					<h3 class="m-0">Total: <span id="totalResumenTop">$0</span></h3>
+			<!-- COLUMNA DERECHA -->
+			<div class="col-md-7 resumen-planos">
+				<div class="container" style="text-align: right;">
+					<img src="/img/1.png" alt="" srcset="" class="img-resumen-plano imagen-recamaras" width="550px">
 				</div>
-			</div>
-
-			<div class="container" style="text-align: center;">
-				<br><br>
-				<img src="/img/1.png" alt="" srcset="" class="img-resumen-plano imagen-recamaras" width="400px">
 			</div>
 		</div>
+
 		<br><br>
 		<h2 style="text-align: center;">Galería</h2>
 		<hr>
@@ -100,31 +132,51 @@
 	</div>
 
 	<br><br>
+
+	<x-modal-asesor />
+
+
+	<div id="galleryLightbox" class="gallery-lightbox d-none">
+		<div class="gallery-overlay"></div>
+
+		<div class="gallery-content">
+			<button class="gallery-close">&times;</button>
+
+			<button class="gallery-nav prev">&#10094;</button>
+			<button class="gallery-nav next">&#10095;</button>
+
+			<div id="galleryRender"></div>
+		</div>
+	</div>
+
 	<x-footer />
 	<x-scripts />
 
 	<script>
-	function guardarFlujo() {
+		function guardarFlujo() {
 
-		const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+			const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
 
-		if (!isLoggedIn) {
-			// Redirige a login con parámetro de retorno
-			window.location.href = "/inicio-sesion?redirect=guardar";
-			return;
+			if (!isLoggedIn) {
+				// Redirige a login con parámetro de retorno
+				window.location.href = "/inicio-sesion?redirect=guardar";
+				return;
+			}
+
+			// Si ya está logueado, guardar normalmente
+			saveConfiguration();
 		}
+	</script>
 
-		// Si ya está logueado, guardar normalmente
-		saveConfiguration();
-	}
-</script>
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+			@if(request('autoguardar') == 1)
+				saveConfiguration();
+			@endif
+		});
+	</script>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    @if(request('autoguardar') == 1)
-        saveConfiguration();
-    @endif
-});
-</script>
+	
 </body>
+
 </html>

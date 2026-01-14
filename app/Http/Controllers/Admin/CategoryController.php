@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\RequestException;
 
 class CategoryController extends Controller
 {
@@ -90,12 +91,31 @@ class CategoryController extends Controller
             });
         });
 
-        $stageId=19; // Piaro   
+        $stageId = 19; // Piaro   
 
-        $map = Http::get(
-            config('services.naboo.url') . 'api/masterplan/map',
-            ['stage_id' => $stageId]
-        )->json();
+
+        $map = [];
+
+        try {
+            $response = Http::timeout(5) // segundos
+                ->get(
+                    config('services.naboo.url') . 'api/masterplan/map',
+                    ['stage_id' => $stageId]
+                );
+
+            if ($response->successful()) {
+                $map = $response->json();
+            }
+
+        } catch (\Throwable $e) {
+            // Log opcional
+            logger()->warning('Naboo map no disponible', [
+                'error' => $e->getMessage(),
+            ]);
+
+            $map = []; // fallback seguro
+        }
+
 
         return view('test', compact('categories', 'style', 'baseImages', 'fachadas', 'rendersPorProducto', 'map'));
     }

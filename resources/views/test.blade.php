@@ -66,7 +66,19 @@
                                 <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#piaroCard" aria-expanded="true" aria-controls="piaroCard">
                                     <span class="textAcordeon">Piaro</span>
-                                    <span class="icon ms-auto">...</span>
+                                    <span class="icon ms-auto">
+                                        <!-- PLUS ICON -->
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            fill="currentColor" viewBox="0 0 16 16">
+                                            <path
+                                                d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <!-- MINUS ICON -->
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
+                                            height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
                                 </button>
                             </h2>
 
@@ -96,11 +108,6 @@
                                                     style="z-index:1000; display:none;">
                                                 </div>
                                             </div>
-
-                                            <button class="btn btn-primary btn-radius px-4" id="saveLotBtn">
-                                                Guardar
-                                            </button>
-
                                         </div>
 
                                         <hr>
@@ -112,7 +119,7 @@
 
                                         <button class="btn btn-outline-primary btn-radius w-100" data-bs-toggle="modal"
                                             data-bs-target="#modalPiaro">
-                                            Cotizar lote
+                                            Seleccionar lote en Piaro
                                         </button>
 
                                     </div>
@@ -134,7 +141,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mb-3">
+                                            <div class="row mb-3 " id="info-lote">
                                                 <div class="col-6">
                                                     <small class="">Precio m²</small>
                                                     <div class="fw-semibold" id="lotPriceM2"></div>
@@ -149,13 +156,11 @@
                                                 Esta simulación es sólo referencial.
                                             </p>
 
-                                            <button class="btn btn-outline-primary w-100" id="changeLotBtn">
+                                            <button class="btn btn-outline-primary w-100 btn-radius" id="changeLotBtn">
                                                 Seleccionar otro lote
                                             </button>
-
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -363,7 +368,8 @@
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-3">Financiamiento</h5>
                                 <div class="mb-3">
-                                    <span class="fs-3 fw-bold">$129,340.00</span>
+                                    <span id="mensualidad" class="fs-3 fw-bold">$0.00</span>
+
                                     <span class="text-primary">/mes estimado</span>
                                 </div>
 
@@ -372,28 +378,28 @@
                                 <div class="row mb-3">
                                     <div class="col-6">
                                         <small class="">Anticipo 30%</small>
-                                        <div class="fw-bold">$650,890.00</div>
+                                        <div id="anticipo" class="fw-bold">$0.00</div>
                                     </div>
                                     <div class="col-6">
                                         <small class="">Plazo</small>
-                                        <div class="fw-bold">12 Meses</div>
+                                        <div id="plazo" class="fw-bold">12 Meses</div>
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <div class="col-6">
                                         <small class="">% Tasa de interés fija anual</small>
-                                        <div class="fw-bold">11.99%</div>
+                                        <div id="tasa" class="fw-bold">11.99%</div>
                                     </div>
                                     <div class="col-6">
                                         <small class="">Monto financiado</small>
-                                        <div class="fw-bold">$1,787,056.00</div>
+                                        <div id="montoFinanciado" class="fw-bold">$0.00</div>
                                     </div>
                                 </div>
 
                                 <div class="mb-4">
                                     <small class="">Saldo contra entrega 20%</small>
-                                    <div class="fw-bold">$230,120.00</div>
+                                    <div id="saldoEntrega" class="fw-bold">$0.00</div>
                                 </div>
 
                                 <p class="small ">
@@ -413,7 +419,6 @@
                                         Hablar con un asesor
                                     </button>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -425,13 +430,29 @@
     <x-modal-asesor />
     <x-modal-piaro />
     <x-footer />
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         window.masterplanMap = @json($map);
         window.STAGE_ID = 19;
         window.API_URL = '{{ config('services.naboo.url') }}api/lots';
         window.lotsCache = [];
+
+        const FINANCIAMIENTO = {
+            anticipoPorcentaje: 0.30,        // 30%
+            saldoEntregaPorcentaje: 0.20,    // 20%
+            tasaAnual: 11.99,                // %
+            plazoMeses: 12                   // meses
+        };
+        window.leadContext = {
+            source: 'configurador', // o 'landing'
+            configuration: null,
+            miniaturas: null,
+            total: null,
+            lote: null
+        };
+
     </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/constantes.js"></script>
     <script src="/Minimalista.js"></script>

@@ -52,43 +52,42 @@
                     <div class="row g-3 mb-3">
                         <div class="col-6">
                             <label class="form-label small">Nombre*</label>
-                            <input type="text" class="form-control form-rounded" required>
+                            <input type="text" name="nombre" class="form-control form-rounded" required>
                         </div>
 
                         <div class="col-6">
                             <label class="form-label small">Apellido*</label>
-                            <input type="text" class="form-control form-rounded" required>
+                            <input type="text" name="apellido" class="form-control form-rounded" required>
                         </div>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-6">
                             <label class="form-label small">Correo*</label>
-                            <input type="email" class="form-control form-rounded" required>
+                            <input type="email" name="email" class="form-control form-rounded" required>
                         </div>
 
                         <div class="col-6">
                             <label class="form-label small">Celular*</label>
-                            <input type="tel" class="form-control form-rounded" required>
+                            <input type="tel" name="telefono" class="form-control form-rounded" required>
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label small">Mensaje</label>
-                        <textarea class="form-control form-rounded" rows="3"></textarea>
+                        <textarea name="mensaje" class="form-control form-rounded" rows="3"></textarea>
                     </div>
 
-                    <!-- BOTON PRINCIPAL -->
                     <button type="submit" class="btn btn-primary w-100 rounded-pill mb-3">
                         Confirmar y enviar
                     </button>
 
-                    <!-- BOTON REGRESAR -->
                     <button type="button" class="btn btn-outline-dark w-100 rounded-pill" data-bs-dismiss="modal">
                         Regresar
                     </button>
 
                 </form>
+
 
                 <!-- TEXTO LEGAL -->
                 <p class=" text-center small mt-4 mb-0">
@@ -97,8 +96,58 @@
                     <a href="#" class="text-decoration-none">Términos y Condiciones</a>.
                     Tus datos serán utilizados exclusivamente para fines relacionados con UONDR.
                 </p>
-
             </div>
         </div>
     </div>
 </div>
+
+
+<script>
+    document.getElementById('formAsesor')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        try {
+            const token = document.querySelector('meta[name="csrf-token"]')?.content;
+
+            const form = e.target;
+
+            const payload = {
+                lead: {
+                    nombre: form.querySelector('[name="nombre"]').value,
+                    apellido: form.querySelector('[name="apellido"]').value,
+                    email: form.querySelector('[name="email"]').value,
+                    telefono: form.querySelector('[name="telefono"]').value,
+                    mensaje: form.querySelector('textarea')?.value || '',
+                },
+                context: window.leadContext
+            };
+
+            const res = await fetch('/leads', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'X-CSRF-TOKEN': token } : {}),
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) throw new Error('Error al enviar');
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Enviado',
+                text: 'Un asesor se pondrá en contacto contigo.',
+                timer: 3000,
+                showConfirmButton: false
+            });
+
+            bootstrap.Modal.getInstance(
+                document.getElementById('modalAsesor')
+            )?.hide();
+
+        } catch (err) {
+            Swal.fire('Error', err.message, 'error');
+        }
+    });
+
+</script>

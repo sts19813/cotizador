@@ -14,7 +14,7 @@ const statusColors = {
     reserved: 'rgba(255, 200, 0, 0.6)',
     locked_sale: 'rgba(120,120,120,.9)'
 };
-
+let isSelectingLot = false;
 /*************************************************
  * ESPERAR LOTES
  *************************************************/
@@ -32,7 +32,6 @@ function waitForLots(callback) {
  * RENDER CARD LOTE SELECCIONADO
  *************************************************/
 function renderSelectedLot(lot) {
-
     debugger
 
     document.getElementById('lotTitle').textContent =
@@ -40,6 +39,7 @@ function renderSelectedLot(lot) {
 
     document.getElementById('lotName').textContent = lot.name;
     document.getElementById('lotArea').textContent = `${lot.area} m²`;
+
     document.getElementById('lotPriceM2').textContent =
         `$${Number(lot.price_square_meter).toLocaleString()}`;
     document.getElementById('lotTotal').textContent =
@@ -47,6 +47,14 @@ function renderSelectedLot(lot) {
 
     document.getElementById('piaroInitialContent')
         .classList.add('d-none');
+
+
+    if (!isSelectingLot) {
+        document.getElementById('info-lote').classList.remove('d-none');
+
+    } else {
+        document.getElementById('info-lote').classList.add('d-none');
+    }
 
     document.getElementById('selectedLotCard')
         .classList.remove('d-none');
@@ -82,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * AUTOCOMPLETE INPUT
      *************************************************/
     input.addEventListener('input', function () {
-
+        const allowedStatuses = ['sold', 'reserved'];
         const value = this.value.toLowerCase().trim();
         dropdown.innerHTML = '';
 
@@ -92,9 +100,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const matches = window.lotsCache.filter(l =>
+            allowedStatuses.includes(l.status) &&
             l.name.toLowerCase().includes(value)
         );
-
 
         if (!matches.length) {
             dropdown.style.display = 'none';
@@ -109,29 +117,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
             item.innerHTML = `
                 <strong>Lote ${lot.name}</strong>
-                <small class="d-block">
-                    ${lot.area} m² · $${Number(lot.total_price).toLocaleString()}
-                </small>
             `;
+            isSelectingLot = false;
 
             item.onclick = () => {
 
+                debugger
+                isSelectingLot = true;
                 input.value = lot.name;
                 hiddenLotId.value = lot.id;
                 dropdown.style.display = 'none';
 
                 window.selectedLote = lot;
-                localStorage.setItem('selected_lot', JSON.stringify(lot));
+
+                clearSelectedLot();
+
+                selections["lote"] = {
+                    id: lot.id,
+                    name: lot.name,
+                    area: lot.area,
+                    price_square_meter: lot.price_square_meter,
+                    total: lot.area * lot.price_square_meter,
+                    origen: 'input',
+                    suma: false
+                };
+                localStorage.setItem('selections', JSON.stringify(selections));
 
                 renderSelectedLot(lot);
-
-                const modal = bootstrap.Modal.getInstance(
-                    document.getElementById('modalPiaro')
-                );
-                if (modal) modal.hide();
             };
-
-
             dropdown.appendChild(item);
         });
 
@@ -144,12 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('saveLotBtn').onclick = () => {
 
-        if (!window.selectedLote) return;
-
-        renderSelectedLot(window.selectedLote);
-    };
 
 
     /*************************************************
@@ -177,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const fillColor = statusColors[status] ?? 'rgba(100,100,100,.8)';
             const isSelectable = status === 'for_sale';
 
-            svgElement.querySelectorAll('*').forEach(el =>
+            svgElement.querySelectorAll('svg *').forEach(el =>
                 el.style.setProperty('fill', fillColor, 'important')
             );
 
@@ -209,13 +217,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
             svgElement.addEventListener('click', e => {
                 e.preventDefault();
+                debugger
+                isSelectingLot = false;
 
                 window.selectedLote = matchedLot;
+
+                clearSelectedLot();
+
+                const loteTotal = matchedLot.area * matchedLot.price_square_meter;
+
+                selections["lote"] = {
+                    id: matchedLot.id,
+                    name: matchedLot.name,
+                    area: matchedLot.area,
+                    price_square_meter: matchedLot.price_square_meter,
+                    total: loteTotal,
+                    origen: 'svg',
+                    suma: true
+                };
+
+                localStorage.setItem('selections', JSON.stringify(selections));
+                recalcularPrecioTotal();
 
                 input.value = matchedLot.name;
                 hiddenLotId.value = matchedLot.id;
 
                 renderSelectedLot(matchedLot);
+
+                const modal = bootstrap.Modal.getInstance(
+                    document.getElementById('modalPiaro')
+                );
+                if (modal) modal.hide();
+
             });
         });
     });
@@ -227,11 +260,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (changeLotBtn) {
         changeLotBtn.onclick = () => {
 
-            document.getElementById('selectedLotCard')
-                .classList.add('d-none');
+            clearSelectedLot();
 
-            document.getElementById('piaroInitialContent')
-                .classList.remove('d-none');
+            document.getElementById('selectedLotCard').classList.add('d-none');
+
+            document.getElementById('piaroInitialContent').classList.remove('d-none');
 
             input.value = '';
             hiddenLotId.value = '';
@@ -240,3 +273,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 });
+
+
+function clearSelectedLot() {
+    if (selections["lote"]) {
+        delete selections["lote"];
+        localStorage.setItem('selections', JSON.stringify(selections));
+        recalcularPrecioTotal();
+    }
+}
+

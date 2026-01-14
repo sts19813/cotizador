@@ -146,6 +146,9 @@ Route::middleware(['auth', AdminMiddleware::class])
 | Otras rutas normales
 |--------------------------------------------------------------------------
 */
+
+Route::post('/leads', [LeadController::class, 'storeLead']);
+
 Route::view('/unauthorized', 'unauthorized')->name('unauthorized');
 Route::get('/resumen', [CategoryController::class, 'resumen']);
 Route::view('/registro', 'register');

@@ -18,16 +18,16 @@ function hideLoader() {
 }
 
 function actualizarPrecioPrincipal(precio) {
-    const precioEl = document.getElementById('precioTotal');
-    if (!precioEl) return;
+  const precioEl = document.getElementById('precioTotal');
+  if (!precioEl) return;
 
-    if (precio === 0) {
+  if (precio === 0) {
 
-    } else {
-        precioEl.textContent = '$' + Number(precio)
-            .toLocaleString('es-MX', { minimumFractionDigits: 2 }) + ' MXN';
-        precioEl.classList.remove("incluido");
-    }
+  } else {
+    precioEl.textContent = '$' + Number(precio)
+      .toLocaleString('es-MX', { minimumFractionDigits: 2 }) + ' MXN';
+    precioEl.classList.remove("incluido");
+  }
 }
 
 /**********************************************************
@@ -150,6 +150,36 @@ function cambiarImagen(index) {
   }
 }
 
+function actualizarFinanciamiento(total) {
+  if (!total || total <= 0) return;
+
+  const {
+    anticipoPorcentaje,
+    saldoEntregaPorcentaje,
+    tasaAnual,
+    plazoMeses
+  } = FINANCIAMIENTO;
+
+  const anticipo = total * anticipoPorcentaje;
+  const saldoEntrega = total * saldoEntregaPorcentaje;
+
+  const montoFinanciado = total - anticipo - saldoEntrega;
+
+  const tasaMensual = (tasaAnual / 100) / 12;
+
+  // Fórmula de pago mensual (amortización francesa)
+  const mensualidad = (montoFinanciado * tasaMensual) /
+    (1 - Math.pow(1 + tasaMensual, -plazoMeses));
+
+  // 🔹 UI
+  document.getElementById('mensualidad').textContent = formatoMXN(mensualidad);
+  document.getElementById('anticipo').textContent = formatoMXN(anticipo);
+  document.getElementById('saldoEntrega').textContent = formatoMXN(saldoEntrega);
+  document.getElementById('montoFinanciado').textContent = formatoMXN(montoFinanciado);
+  document.getElementById('plazo').textContent = `${plazoMeses} Meses`;
+  document.getElementById('tasa').textContent = `${tasaAnual}%`;
+}
+
 function recalcularPrecioTotal() {
   let total = 0;
 
@@ -161,6 +191,13 @@ function recalcularPrecioTotal() {
     const precioFachada = parseFloat(selections["precio_base_fachada"]);
     console.log("FACHADA:", precioFachada);
     total += precioFachada;
+  }
+
+  // 🟦 Lote de piaro
+  if (selections["lote"] && selections["lote"].suma === true) {
+      const loteTotal = parseFloat(selections["lote"].total) || 0;
+      console.log("LOTE:", loteTotal);
+      total += loteTotal;
   }
 
   // Productos (ignorar la key de fachada para no duplicar)
@@ -180,13 +217,14 @@ function recalcularPrecioTotal() {
   console.log("============================");
 
   actualizarPrecioPrincipal(total);
+  actualizarFinanciamiento(total);
 }
 
 function formatoMXN(numero) {
-    return numero.toLocaleString('es-MX', {
-        style: 'currency',
-        currency: 'MXN'
-    });
+  return numero.toLocaleString('es-MX', {
+    style: 'currency',
+    currency: 'MXN'
+  });
 }
 
 
@@ -236,38 +274,38 @@ function seleccionarOpcion(elemento) {
     const precioKey = 'precio_' + sufijo; // ej. 'precio_3a'
 
     document.querySelectorAll('.option-card').forEach(card => {
-    const nuevoPrecio = parseFloat(card.dataset[precioKey]) || parseFloat(card.dataset.precio) || 0;
-    const priceLabel = card.querySelector('.precio-producto');
+      const nuevoPrecio = parseFloat(card.dataset[precioKey]) || parseFloat(card.dataset.precio) || 0;
+      const priceLabel = card.querySelector('.precio-producto');
 
-    // Mostrar nuevo precio en UI
-    if (priceLabel) {
-      if (nuevoPrecio === 0) {     
-      } else {
-        priceLabel.textContent = formatoMXN(nuevoPrecio);
-        priceLabel.classList.remove("incluido");
+      // Mostrar nuevo precio en UI
+      if (priceLabel) {
+        if (nuevoPrecio === 0) {
+        } else {
+          priceLabel.textContent = formatoMXN(nuevoPrecio);
+          priceLabel.classList.remove("incluido");
+        }
       }
-    }
 
-    // Actualizar atributo para futuros clics
-    card.dataset.precio = nuevoPrecio;
+      // Actualizar atributo para futuros clics
+      card.dataset.precio = nuevoPrecio;
 
-    // 🔥 CORRECCIÓN IMPORTANTE:
-    // Si esta tarjeta está seleccionada, actualizar también selections[groupId].precio
-    if (card.classList.contains('selected')) {
-      const group = card.closest('.accordion-collapse');
-      const groupId = group?.id || 'sin-id';
+      // 🔥 CORRECCIÓN IMPORTANTE:
+      // Si esta tarjeta está seleccionada, actualizar también selections[groupId].precio
+      if (card.classList.contains('selected')) {
+        const group = card.closest('.accordion-collapse');
+        const groupId = group?.id || 'sin-id';
 
-      if (selections[groupId]) {
-        selections[groupId].precio = nuevoPrecio;
+        if (selections[groupId]) {
+          selections[groupId].precio = nuevoPrecio;
+        }
       }
-    }
-  });
+    });
 
-  // Guardar selections corregido
-  localStorage.setItem('selections', JSON.stringify(selections));
+    // Guardar selections corregido
+    localStorage.setItem('selections', JSON.stringify(selections));
 
-  // Recalcular total una vez que TODAS las selecciones tienen el precio correcto
-  recalcularPrecioTotal();
+    // Recalcular total una vez que TODAS las selecciones tienen el precio correcto
+    recalcularPrecioTotal();
 
 
     return;
@@ -415,15 +453,15 @@ document.querySelectorAll('.option-card').forEach(card => {
     // ----- Manejo especial para Fachada: no guardamos la fachada como selección de grupo -----
     if (data.categoria && data.categoria.toLowerCase() === 'fachada' || groupId === 'opciones-fachada') {
       //guarda la fachada para el resumen
-       selections["opciones-fachada"] = {
-          categoria: data.categoria,
-          valor: data.valor,
-          precio: data.precio,
-          id: data.id || null,
-          renders: data.renders || null,
-          fachada_renders: data.fachada_renders || null
+      selections["opciones-fachada"] = {
+        categoria: data.categoria,
+        valor: data.valor,
+        precio: data.precio,
+        id: data.id || null,
+        renders: data.renders || null,
+        fachada_renders: data.fachada_renders || null
       };
-      
+
       // Guardar solo el precio base de fachada (número) para evitar doble conteo
       selections["precio_base_fachada"] = data.precio || 0;
 
@@ -509,8 +547,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   setTimeout(() => {
-      const items = document.querySelectorAll('#owl-demo .item img.tumb-original');
-      CambioBases(items, 'Fachada 4A');
+    const items = document.querySelectorAll('#owl-demo .item img.tumb-original');
+    CambioBases(items, 'Fachada 4A');
   }, 400);
 });
 

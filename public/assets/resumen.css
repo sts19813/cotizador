@@ -224,13 +224,11 @@
     display: inline-block;
     width: 300px;
     /* ajusta al tamaño que necesites */
-    height: 200px;
-    /* ajusta al tamaño que necesites */
     overflow: hidden;
     /* RECORTA todo lo que sobresalga de la base */
     border-radius: 15px;
     /* opcional, para esquinas redondeadas */
-    margin: 20px;
+    margin: 10px;
 }
 
 .thumb-wrapper .tumb-original {
@@ -268,4 +266,190 @@
     color: #386EFA;
     font-weight: 400;
     font-family: 'Geologica', sans-serif;
+}
+
+.text-resumen-note {
+    font-size: 9px;
+    color: #555;
+    max-width: 800px;
+    margin: 20px auto 0 auto;
+    font-family: 'Geologica', sans-serif;
+    line-height: 1.4;
+}
+
+.resumen-layout {
+    align-items: flex-start;
+    margin-top: 40px;
+}
+
+.resumen-info {
+    font-family: 'Geologica', sans-serif;
+}
+
+.total-row {
+    font-size: 28px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.apartado-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.resumen-planos .plano {
+    position: relative;
+}
+
+.plano-label {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* =================================
+   MINIATURAS RESUMEN
+   ================================= */
+
+#miniaturasResumen {
+    display: flex;
+    gap: 2px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: nowrap;      /* una sola fila en desktop */
+}
+
+/* Wrapper de miniatura */
+#miniaturasResumen .thumb-wrapper {
+    position: relative;
+    width: 140px;           /* tamaño desktop */
+    aspect-ratio: 1 / 1;    /* mantiene proporción */
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* Imagen base */
+#miniaturasResumen .thumb-wrapper img.thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;    /* NO deformar */
+    border-radius: 12px;
+    display: block;
+}
+
+/* Overlays */
+#miniaturasResumen .thumb-wrapper img:not(.thumb) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+/* =========================
+   LIGHTBOX GALERÍA
+   ========================= */
+
+.gallery-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+}
+
+.gallery-lightbox .gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.85);
+}
+
+.gallery-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#galleryRender {
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+#galleryRender img {
+    width: 100%;
+    height: 100%;
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain; /* 🔑 CLAVE */
+    display: block;
+}
+
+/* Botones */
+.gallery-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 32px;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.gallery-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 40px;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.gallery-nav.prev { left: 20px; }
+.gallery-nav.next { right: 20px; }
+
+
+/* =================================
+   RESPONSIVE
+   ================================= */
+
+@media (max-width: 768px) {
+
+    #galleryRender {
+        max-width: 100vw;
+        max-height: 100vh;
+    }
+
+    #galleryRender img {
+        max-width: 100vw;
+        max-height: 100vh;
+    }
+
+    #miniaturasResumen {
+        flex-wrap: wrap;        /* permite varias filas */
+        justify-content: center;
+    }
+
+    #miniaturasResumen .thumb-wrapper {
+        width: 90px;
+    }
+
+    .gallery-content {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .gallery-nav.prev { left: 10px; }
+    .gallery-nav.next { right: 10px; }
 }

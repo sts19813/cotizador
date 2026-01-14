@@ -3,6 +3,9 @@
 // =======================
 const savedSelections = JSON.parse(localStorage.getItem('selections')) || {};
 const miniaturasData = JSON.parse(localStorage.getItem('miniaturasData') || '[]');
+let currentGalleryIndex = 0;
+const lightbox = document.getElementById('galleryLightbox');
+const galleryRender = document.getElementById('galleryRender');
 
 // =======================
 // TABLA RESUMEN
@@ -50,10 +53,10 @@ orderedEntries.forEach(([key, item]) => {
     </td>
     <td class="text-nowrap">${renderHTML}</td>
     <td>
-      ${precioFinal === 0 
-        ? '' 
-        : '$' + precioFinal.toLocaleString('es-MX')
-      }
+      ${precioFinal === 0
+      ? ''
+      : '$' + precioFinal.toLocaleString('es-MX')
+    }
     </td>
   </tr>
 `;
@@ -72,9 +75,40 @@ if (totalElemento) {
 }
 
 // Total duplicado arriba
+
+
+const loteEntry = savedSelections["lote"];
+
+if (loteEntry) {
+  const lotePrecio = document.getElementById('lotePrecio');
+  const loteResumen = document.getElementById('loteResumen');
+
+  if (lotePrecio && loteResumen) {
+    loteResumen.classList.remove('d-none');
+
+    // Siempre mostrar nombre del lote
+    let texto = `Lote ${loteEntry.name}`;
+
+    // Solo mostrar precio si suma === true
+    if (loteEntry.suma) {
+      texto += ` · $${loteEntry.total.toLocaleString('es-MX')}`;
+    }
+
+    lotePrecio.textContent = texto;
+  }
+}
+
+
+debugger
+const precioCasa = totalResumen;
+
+const precioCasaEl = document.getElementById('precioCasa');
+if (precioCasaEl) {
+  precioCasaEl.textContent = '$' + precioCasa.toLocaleString('es-MX');
+}
 const totalTop = document.querySelector('#totalResumenTop');
 if (totalTop) {
-  totalTop.textContent = "$" + totalResumen.toLocaleString("es-MX");
+  totalTop.textContent = "$" + (totalResumen + (savedSelections.lote?.suma ? savedSelections.lote.total : 0)).toLocaleString("es-MX");
 }
 // =======================
 // ACTUALIZACIÓN DE UI
@@ -136,10 +170,28 @@ async function saveConfiguration() {
       Object.entries(savedSelections).filter(([_, v]) => v && typeof v === 'object')
     );
 
+    // ==========================
+    // AJUSTE SOLO PARA LOTE
+    // ==========================
+    let precioFinal = totalResumen;
+
+    if (selectionsToSave.lote) {
+      selectionsToSave.lote = {
+        ...selectionsToSave.lote,
+        categoria:"Lote",
+        valor: selectionsToSave.lote.name,
+        precio: selectionsToSave.lote.suma === true ? selectionsToSave.lote.total : 0
+      };
+
+      if (selectionsToSave.lote.suma === true) {
+        precioFinal += selectionsToSave.lote.total;
+      }
+    }
+
     const dataToSave = {
       configuration: selectionsToSave,
       miniaturasData,
-      precioTotal: totalResumen,
+      precioTotal: precioFinal,
       fecha: new Date().toISOString(),
     };
 
@@ -180,45 +232,43 @@ async function saveConfiguration() {
   }
 }
 
+
 // =======================
 // MINIATURAS
 // =======================
 const container = document.querySelector('#miniaturasResumen');
+container.innerHTML = '';
 
-miniaturasData.forEach(item => {
+miniaturasData.forEach((item, index) => {
   const wrapper = document.createElement('div');
   wrapper.className = 'thumb-wrapper';
   wrapper.style.position = 'relative';
 
   const imgBase = document.createElement('img');
   imgBase.src = item.base;
-  imgBase.className = 'thumb tumb-original';
+  imgBase.className = 'thumb';
   wrapper.appendChild(imgBase);
 
-  if (item.overlays.length > 0) {
-    const overlayDiv = document.createElement('div');
-    overlayDiv.className = 'overlay-container';
-    overlayDiv.style.position = 'absolute';
-    overlayDiv.style.top = '0';
-    overlayDiv.style.left = '0';
-    overlayDiv.style.width = '100%';
-    overlayDiv.style.height = '100%';
-    overlayDiv.style.pointerEvents = 'none';
-
+  if (item.overlays.length) {
     item.overlays.forEach(src => {
-      const imgOverlay = document.createElement('img');
-      imgOverlay.src = src;
-      imgOverlay.className = 'thumb';
-      imgOverlay.style.width = '100%';
-      imgOverlay.style.height = '100%';
-      imgOverlay.style.position = 'absolute';
-      imgOverlay.style.top = '0';
-      imgOverlay.style.left = '0';
-      overlayDiv.appendChild(imgOverlay);
+      const overlay = document.createElement('img');
+      overlay.src = src;
+      overlay.style.position = 'absolute';
+      overlay.style.top = 0;
+      overlay.style.left = 0;
+      overlay.style.width = '100%';
+      overlay.style.height = '100%';
+      overlay.style.pointerEvents = 'none';
+      wrapper.appendChild(overlay);
     });
-
-    wrapper.appendChild(overlayDiv);
   }
+
+  // 🔥 CLICK CORRECTO
+  wrapper.addEventListener('click', () => {
+    currentGalleryIndex = index;
+    lightbox.classList.remove('d-none');
+    renderGalleryItem(currentGalleryIndex);
+  });
 
   container.appendChild(wrapper);
 });
@@ -256,6 +306,12 @@ if (miniaturasData.length > 1) {
       imgOverlay.style.height = '100%';
       imgOverlay.style.position = 'absolute';
       overlayDiv.appendChild(imgOverlay);
+
+      wrapper.addEventListener('click', () => {
+        currentGalleryIndex = miniaturasData.indexOf(item);
+        lightbox.classList.remove('d-none');
+        renderGalleryItem(currentGalleryIndex);
+      });
     });
 
     wrapper.appendChild(overlayDiv);
@@ -264,13 +320,23 @@ if (miniaturasData.length > 1) {
   principalRender.appendChild(wrapper);
 }
 
-// =======================
-// BOTÓN REGRESAR
-// =======================
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("btnRegresar");
-  if (btn) btn.href = "https://app.uondr.mx/";
-});
+
+document.querySelector('.gallery-close').onclick = () => {
+  lightbox.classList.add('d-none');
+};
+
+document.querySelector('.gallery-nav.next').onclick = () => {
+  currentGalleryIndex =
+    (currentGalleryIndex + 1) % miniaturasData.length;
+  renderGalleryItem(currentGalleryIndex);
+};
+
+document.querySelector('.gallery-nav.prev').onclick = () => {
+  currentGalleryIndex =
+    (currentGalleryIndex - 1 + miniaturasData.length) % miniaturasData.length;
+  renderGalleryItem(currentGalleryIndex);
+};
+
 
 // =======================
 // FUNCIONES DE PRECIOS
@@ -301,3 +367,44 @@ function getPrecioCorrecto(producto) {
 
   return parseFloat(producto.precio) || 0;
 }
+
+
+function renderGalleryItem(index) {
+  const item = miniaturasData[index];
+  if (!item) return;
+
+  galleryRender.innerHTML = '';
+
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'relative';
+
+  const base = document.createElement('img');
+  base.src = item.base;
+  wrapper.appendChild(base);
+
+  item.overlays.forEach(src => {
+    const overlay = document.createElement('img');
+    overlay.src = src;
+    overlay.style.position = 'absolute';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    wrapper.appendChild(overlay);
+  });
+
+  galleryRender.appendChild(wrapper);
+}
+
+
+document.querySelector('.apartado-row button').addEventListener('click', () => {
+
+    window.leadContext = {
+        source: 'configurador',
+        configuration: savedSelections,
+        miniaturas: miniaturasData,
+        total: totalResumen,
+        lote: savedSelections.lote ?? null
+    };
+
+});
