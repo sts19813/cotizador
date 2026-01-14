@@ -185,9 +185,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const fillColor = statusColors[status] ?? 'rgba(100,100,100,.8)';
             const isSelectable = status === 'for_sale';
 
-            svgElement.querySelectorAll('svg *').forEach(el =>
-                el.style.setProperty('fill', fillColor, 'important')
-            );
+            /* ===============================
+               PINTADO INICIAL (FIX CLAVE)
+               =============================== */
+            paintSvg(svgElement, fillColor);
 
             svgElement.dataset.loteInfo = JSON.stringify(matchedLot);
             svgElement.style.cursor = isSelectable ? 'pointer' : 'not-allowed';
@@ -203,30 +204,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!isSelectable) return;
 
+            /* ===============================
+               HOVER
+               =============================== */
             svgElement.addEventListener('mouseenter', () => {
-                svgElement.querySelectorAll('*').forEach(el =>
-                    el.style.setProperty('fill', 'rgba(0,120,255,.8)', 'important')
-                );
+                paintSvg(svgElement, 'rgba(0,120,255,.8)');
             });
 
             svgElement.addEventListener('mouseleave', () => {
-                svgElement.querySelectorAll('*').forEach(el =>
-                    el.style.setProperty('fill', fillColor, 'important')
-                );
+                paintSvg(svgElement, fillColor);
             });
 
+            /* ===============================
+               CLICK
+               =============================== */
             svgElement.addEventListener('click', e => {
                 e.preventDefault();
-                debugger
-                isSelectingLot = false;
 
+                isSelectingLot = false;
                 window.selectedLote = matchedLot;
 
                 clearSelectedLot();
 
                 const loteTotal = matchedLot.area * matchedLot.price_square_meter;
 
-                selections["lote"] = {
+                selections.lote = {
                     id: matchedLot.id,
                     name: matchedLot.name,
                     area: matchedLot.area,
@@ -244,14 +246,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 renderSelectedLot(matchedLot);
 
-                const modal = bootstrap.Modal.getInstance(
-                    document.getElementById('modalPiaro')
-                );
+                const modalEl = document.getElementById('modalPiaro');
+                const modal = bootstrap.Modal.getInstance(modalEl);
                 if (modal) modal.hide();
-
             });
         });
     });
+
 
 
     /*************************************************
@@ -283,3 +284,14 @@ function clearSelectedLot() {
     }
 }
 
+function paintSvg(el, color) {
+    if (!el) return;
+
+    // Pinta el elemento base (por si es <path>)
+    el.style.setProperty('fill', color, 'important');
+
+    // Pinta todos los hijos (por si es <a> o <g>)
+    el.querySelectorAll('*').forEach(child =>
+        child.style.setProperty('fill', color, 'important')
+    );
+}
