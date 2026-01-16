@@ -1,11 +1,13 @@
 <style>
-    /* Modal asesor */
+    /* ============================= */
+    /* Modal Asesor – Base desktop   */
+    /* ============================= */
+
     .asesor-modal {
         border-radius: 20px;
-        margin: auto;
     }
 
-    /* Inputs redondeados */
+    /* Inputs */
     .form-rounded {
         border-radius: 14px;
         padding: 12px 14px;
@@ -18,15 +20,102 @@
         border-color: #3F6DF6;
     }
 
-    /* Texto */
-    .modal-body h5 {
-        line-height: 1.4;
+    /* 🔴 OCULTAR botón custom en desktop */
+    .asesor-close {
+        display: none;
+    }
+
+    /* ============================= */
+    /* Modal Asesor – DESKTOP FIX    */
+    /* ============================= */
+    @media (min-width: 768px) {
+        #modalAsesor .modal-dialog {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        #modalAsesor .modal-content {
+            border-radius: 20px;
+        }
+    }
+
+    /* ============================= */
+    /* Modal Asesor – SOLO MÓVIL     */
+    /* ============================= */
+    @media (max-width: 767px) {
+
+        #modalAsesor .modal-dialog {
+            margin: 12px;
+            width: fit-content !important;
+            min-width: auto;
+        }
+
+        #modalAsesor .modal-content {
+            border-radius: 16px;
+            max-height: 90vh;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+        }
+
+        /* BOTÓN CERRAR estilo UONDR */
+        .asesor-close {
+            display: block;
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Scroll interno SOLO móvil */
+        #modalAsesor .modal-body {
+            overflow-y: auto;
+            max-height: 90vh;
+            -webkit-overflow-scrolling: touch;
+            padding: 22px 16px 18px;
+        }
+
+        /* Tipografía */
+        #modalAsesor h5 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        #modalAsesor p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Grid a una columna */
+        #modalAsesor .row.g-3>.col-6 {
+            width: 100%;
+        }
+
+        /* Botones */
+        #modalAsesor .btn {
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        /* Legal */
+        #modalAsesor .modal-body p.small {
+            font-size: 12px;
+            line-height: 1.4;
+        }
     }
 </style>
 
 <div class="modal fade" id="modalAsesor" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="min-width: 800px">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content asesor-modal border-0">
+
+            <!-- BOTÓN CERRAR (SOLO MÓVIL) -->
+            <button type="button" class="asesor-close" data-bs-dismiss="modal">&times;</button>
 
             <div class="modal-body p-4 p-md-5">
 
@@ -42,8 +131,8 @@
 
                 <p class="text-center small mb-4">
                     Estamos listos para ayudarte a llevar tu proyecto al siguiente nivel.
-                    Al enviar tus datos, un asesor revisará la casa y el lote que configuraste
-                    para orientarte sobre precios, financiamiento y disponibilidad.
+                    Un asesor revisará tu configuración y te orientará sobre precios,
+                    financiamiento y disponibilidad.
                 </p>
 
                 <!-- FORM -->
@@ -88,9 +177,8 @@
 
                 </form>
 
-
                 <!-- TEXTO LEGAL -->
-                <p class=" text-center small mt-4 mb-0">
+                <p class="text-center small mt-4 mb-0">
                     Al enviar este formulario aceptas nuestras
                     <a href="#" class="text-decoration-none">Políticas de Privacidad</a> y
                     <a href="#" class="text-decoration-none">Términos y Condiciones</a>.

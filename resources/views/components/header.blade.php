@@ -14,82 +14,151 @@
         transform: translateY(-100%);
     }
     .uondr-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.65);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
 
-.uondr-modal.show {
-    display: flex;
-}
+    .uondr-modal.show {
+        display: flex;
+    }
 
-.uondr-modal-content {
-    background: #fff;
-    max-width: 720px;
-    width: 90%;
-    padding: 40px;
-    border-radius: 16px;
-    position: relative;
-    font-family: 'Inter', sans-serif;
-}
+    .uondr-modal-content {
+        background: #fff;
+        max-width: 720px;
+        width: 90%;
+        padding: 40px;
+        border-radius: 16px;
+        position: relative;
+        font-family: 'Inter', sans-serif;
+    }
 
-.uondr-close {
-    position: absolute;
-    top: 18px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
-}
+    .uondr-close {
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+    }
 
-.uondr-header {
-    text-align: center;
-    margin-bottom: 25px;
-}
+    .uondr-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
 
-.uondr-logo {
-    height: 40px;
-    margin-bottom: 10px;
-}
+    .uondr-logo {
+        height: 40px;
+        margin-bottom: 10px;
+    }
 
-.uondr-header h2 {
-    font-size: 22px;
-    font-weight: 700;
-}
+    .uondr-header h2 {
+        font-size: 22px;
+        font-weight: 700;
+    }
 
-.uondr-body {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #333;
-}
+    .uondr-body {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #333;
+    }
 
-.uondr-body .intro {
-    margin-bottom: 15px;
-}
+    .uondr-body .intro {
+        margin-bottom: 15px;
+    }
 
-.uondr-body ol {
-    padding-left: 18px;
-}
+    .uondr-body ol {
+        padding-left: 18px;
+    }
 
-.uondr-body li {
-    margin-bottom: 15px;
-}
+    .uondr-body li {
+        margin-bottom: 15px;
+    }
 
-.uondr-body strong {
-    font-weight: 700;
-}
+    .uondr-body strong {
+        font-weight: 700;
+    }
 
-.footer-text {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #555;
-}
+    .footer-text {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #555;
+    }
 
+    /* ============================= */
+    /* UONDR – modal limpio móvil */
+    /* ============================= */
+    @media (max-width: 767px) {
+
+        .uondr-modal {
+            align-items: center;
+            padding: 12px;
+        }
+
+        .uondr-modal-content {
+            width: 100%;
+            max-width: 100%;
+            max-height: 90vh;
+            padding: 18px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+        }
+
+        /* Header */
+        .uondr-header {
+            margin-bottom: 12px;
+        }
+
+        .uondr-logo {
+            height: 36px;
+            margin-bottom: 6px;
+        }
+
+        .uondr-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Body con scroll real */
+        .uondr-body {
+            overflow-y: auto;
+            max-height: calc(90vh - 140px);
+            -webkit-overflow-scrolling: touch;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .uondr-body ol {
+            padding-left: 18px;
+        }
+
+        .uondr-body li {
+            margin-bottom: 12px;
+        }
+
+        .uondr-body strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .footer-text {
+            font-size: 13px;
+            color: #555;
+        }
+
+        /* Botón cerrar */
+        .uondr-close {
+            top: 12px;
+            right: 12px;
+            font-size: 28px;
+        }
+    }
 </style>
 <nav id="mainNav" class="navbar fixed-top bg-white shadow-sm px-3 py-2 z-3">
     <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
@@ -126,7 +195,7 @@
 
 
             <a href="#" class="modal-info">
-                    <img src="/assets/iconos/info.svg" alt="icono de info" width="34px">
+                <img src="/assets/iconos/info.svg" alt="icono de info" width="34px">
             </a>
             <!--
             @auth
@@ -274,7 +343,8 @@
             </ol>
 
             <p class="footer-text">
-                Durante esta etapa podrás apartar tu lote y cotizar tu casa, asegurando precios y disponibilidad vigentes.
+                Durante esta etapa podrás apartar tu lote y cotizar tu casa, asegurando precios y disponibilidad
+                vigentes.
             </p>
         </div>
     </div>
