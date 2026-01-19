@@ -178,7 +178,7 @@ async function saveConfiguration() {
     if (selectionsToSave.lote) {
       selectionsToSave.lote = {
         ...selectionsToSave.lote,
-        categoria:"Lote",
+        categoria: "Lote",
         valor: selectionsToSave.lote.name,
         precio: selectionsToSave.lote.suma === true ? selectionsToSave.lote.total : 0
       };
@@ -398,13 +398,32 @@ function renderGalleryItem(index) {
 
 
 document.querySelector('.apartado-row button').addEventListener('click', () => {
-
-    window.leadContext = {
-        source: 'configurador',
-        configuration: savedSelections,
-        miniaturas: miniaturasData,
-        total: totalResumen,
-        lote: savedSelections.lote ?? null
-    };
+  const loteNormalizado = normalizarLote(savedSelections.lote);
+  savedSelections.lote = loteNormalizado;
+  window.leadContext = {
+    source: 'configurador',
+    configuration: savedSelections,
+    miniaturas: miniaturasData,
+    total: totalResumen,
+    lote: savedSelections.lote ?? null
+  };
 
 });
+
+
+function normalizarLote(lote) {
+  if (!lote || typeof lote !== 'object') return null;
+
+  return {
+    id: lote.id ?? null,
+    name : lote.name ?? null,
+    categoria: 'Lote',
+    valor: lote.name ?? lote.valor ?? '',
+    precio: lote.suma === true ? Number(lote.total || 0) : 0,
+    origen: lote.origen ?? null,
+    suma: Boolean(lote.suma),
+    total: Number(lote.total || 0),
+    area: lote.area ?? null,
+    price_square_meter: lote.price_square_meter ?? null
+  };
+}

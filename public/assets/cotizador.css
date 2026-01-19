@@ -254,6 +254,10 @@
     padding: 10px;
 }
 
+.financing-card{
+	border-radius: 25px !important;
+	margin-bottom: 90px !important;
+}
 
 @media (max-width: 768px) {
     #owl-demo .item img {

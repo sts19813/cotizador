@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UondrMailNuevaCotizacion;
 use Illuminate\Http\Request;
-
+use App\Models\Lead;
 
 class HouseConfigurationController extends Controller
 {
@@ -24,6 +24,21 @@ class HouseConfigurationController extends Controller
         $configurations = HouseConfiguration::with('user')->latest()->get();
 
         return view('admin.houses.index', compact('configurations'));
+    }
+
+    //funcion para visualizar las solicitudes de contacto
+    public function requests()
+    {
+
+        $user = Auth::user();
+
+        if (!$user || !$user->isAdmin()) {
+            abort(403);
+        }
+
+        $leads = Lead::latest()->get();
+
+        return view('admin.houses.requests', compact('leads'));
     }
 
     public function store(Request $request)
@@ -49,7 +64,7 @@ class HouseConfigurationController extends Controller
             'precio_total' => $precioTotal ?? 0,
             'fecha' => $fecha ?? now(),
         ]);
- 
+
         Mail::to([
             'sts19813@gmail.com',
             'hi@davidsabido.com',

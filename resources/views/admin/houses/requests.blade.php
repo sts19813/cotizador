@@ -16,7 +16,10 @@
 
         .carousel-overlay {
             position: absolute;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
         }
 
@@ -26,7 +29,7 @@
             height: 100%;
         }
 
-        /* Flechas negras */
+        /* Flechas negras para Carousel Bootstrap */
         .carousel-control-prev-icon,
         .carousel-control-next-icon {
             background-image: none;
@@ -53,43 +56,41 @@
         }
     </style>
 
-    <h2>Casas Creadas</h2>
-    <p class="text-muted">Visualiza todas las casas creadas en el cotizador</p>
+    <h2>Leads del Cotizador</h2>
+    <p class="text-muted">Visualiza todos los leads generados desde el cotizador</p>
 
     <table id="configurationsTable" class="table table-striped table-hover table-bordered align-middle">
         <thead>
             <tr>
-                <th>ID Casa</th>
+                <th>ID</th>
                 <th>Nombre</th>
                 <th>Email</th>
-                <th>Items Seleccionados</th>
-                <th>Total Estimado</th>
-                <th>Estatus</th>
-                <th>Fecha Creación</th>
+                <th>Teléfono</th>
+                <th>Lote</th>
+                <th>Resumen</th>
+                <th>Total</th>
+                <th>Fecha</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($configurations as $index => $config)
+            @foreach ($leads as $index => $lead)
                 <tr>
-                    <td>MIN{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
-                    <td>{{ $config->user->name }}</td>
-                    <td>{{ $config->user->email }}</td>
+                    <td>LEAD{{ str_pad($index + 1, 3, '0', STR_PAD_LEFT) }}</td>
+                    <td>{{ $lead->nombre }} {{ $lead->apellido }}</td>
+                    <td>{{ $lead->email }}</td>
+                    <td>{{ $lead->telefono }}</td>
+                    <td>{{ $lead->lote_nombre }}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary ver-resumen-btn"
-                            data-configuration='@json($config->configuration)' data-miniaturas='@json($config->miniaturas_data)'
-                            data-precio="{{ $config->precio_total }}">
+                            data-configuration='@json($lead->configuration)' data-miniaturas='@json($lead->miniaturas)'
+                            data-precio="{{ $lead->total }}">
                             Ver resumen
                         </button>
                     </td>
                     <td class="fw-bold text-success">
-                        ${{ number_format($config->precio_total, 0, '.', ',') }}
+                        ${{ number_format($lead->total, 0, '.', ',') }}
                     </td>
-                    <td>
-                        <span class="badge bg-{{ $config->status === 'Solicitada' ? 'primary' : 'secondary' }}">
-                            {{ $config->status }}
-                        </span>
-                    </td>
-                    <td>{{ $config->created_at->format('d/m/Y h:i A') }}</td>
+                    <td>{{ $lead->created_at->format('d/m/Y h:i A') }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -109,6 +110,7 @@
 
                     <h5 class="mb-3">Galería</h5>
 
+                    {{-- CAROUSEL --}}
                     <div id="carouselResumen" class="carousel slide mb-4" data-bs-ride="false">
                         <div class="carousel-inner" id="carouselResumenInner"></div>
 
@@ -153,7 +155,6 @@
         $(document).ready(function () {
             $('#configurationsTable').DataTable({
                 responsive: true,
-                autoWidth: false,
                 language: {
                     url: '//cdn.datatables.net/plug-ins/2.3.2/i18n/es-MX.json'
                 }
@@ -182,7 +183,7 @@
                         "$" + Number(total).toLocaleString("es-MX");
 
                     // ======================
-                    // CAROUSEL BASE + OVERLAYS
+                    // CAROUSEL DE RENDERS
                     // ======================
                     miniaturas.forEach((item, index) => {
 

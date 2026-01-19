@@ -6,6 +6,7 @@ return [
     'products' => 'Products',
     'leads' => 'Leads',
     'houses_created' => 'Created Houses',
+    'requests' => 'Requests Contact',
     'base_prices' => 'Base Prices',
     'renders' => 'Renders',
     'renders_minimalist' => 'Minimalist',

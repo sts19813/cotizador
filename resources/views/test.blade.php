@@ -364,7 +364,7 @@
                         @endforeach
 
 
-                        <div class="card shadow-sm border-0 mt-5 financing-card">
+                        <div class="card shadow-sm border-0 financing-card">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-3">Financiamiento</h5>
                                 <div class="mb-3">
@@ -416,7 +416,7 @@
 
                                     <button class="btn btn-outline-primary btn-lg btn-radius" data-bs-toggle="modal"
                                         data-bs-target="#modalAsesor">
-                                        Hablar con un asesor
+                                        Apartar 
                                     </button>
                                 </div>
                             </div>

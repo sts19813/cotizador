@@ -13,4 +13,5 @@ return [
     'renders_mexican' => 'Mexicano',
     'style_prices' => 'Precios por Estilo',
     'categories' => 'Categorías',
+    'requests' => 'Solicitudes de Contacto',
 ];

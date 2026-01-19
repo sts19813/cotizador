@@ -118,6 +118,8 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::resource('leads', LeadController::class)->names('leads');
         Route::get('/casas-creadas', [HouseConfigurationController::class, 'index'])->name('houses.index');
 
+        Route::get('/solicitudes', [HouseConfigurationController::class, 'requests'])->name('houses.requests');
+
         // Mostrar productos por estilo para edición masiva
         Route::get('products/prices/{style}', [ProductController::class, 'showByStyle'])
             ->name('products.prices.byStyle');
@@ -148,7 +150,6 @@ Route::middleware(['auth', AdminMiddleware::class])
 */
 
 Route::post('/leads', [LeadController::class, 'storeLead']);
-
 Route::view('/unauthorized', 'unauthorized')->name('unauthorized');
 Route::get('/resumen', [CategoryController::class, 'resumen']);
 Route::view('/registro', 'register');
