@@ -6,7 +6,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\HouseConfigurationController;
-use App\Http\Controllers\AdminController; 
+use App\Http\Controllers\AdminController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RenderController;
@@ -84,9 +84,7 @@ Route::middleware('guest')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [HouseConfigurationController::class, 'list'])->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -111,7 +109,6 @@ Route::middleware(['auth', AdminMiddleware::class])
             ->name('renders.index');
 
         Route::put('renders/{id}', [RenderController::class, 'update'])->name('renders.update');
-    
         Route::resource('categories', CategoryController::class)->names('categories');
         Route::post('categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
 
