@@ -377,12 +377,12 @@
 
                                 <div class="row mb-3">
                                     <div class="col-6">
-                                        <small class="">Anticipo 30%</small>
+                                        <small class="">Anticipo 20%</small>
                                         <div id="anticipo" class="fw-bold">$0.00</div>
                                     </div>
                                     <div class="col-6">
                                         <small class="">Plazo</small>
-                                        <div id="plazo" class="fw-bold">12 Meses</div>
+                                        <div id="plazo" class="fw-bold">300 Meses</div>
                                     </div>
                                 </div>
 
@@ -397,7 +397,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-4">
+                                <div class="mb-4 d-none">
                                     <small class="">Saldo contra entrega 20%</small>
                                     <div id="saldoEntrega" class="fw-bold">$0.00</div>
                                 </div>
@@ -438,10 +438,10 @@
         window.lotsCache = [];
 
         const FINANCIAMIENTO = {
-            anticipoPorcentaje: 0.30,        // 30%
-            saldoEntregaPorcentaje: 0.20,    // 20%
+            anticipoPorcentaje: 0.20,        // 30%
+            saldoEntregaPorcentaje: 0.0,    // 20%
             tasaAnual: 11.99,                // %
-            plazoMeses: 12                   // meses
+            plazoMeses: 300                   // meses
         };
         window.leadContext = {
             source: 'configurador', // o 'landing'
