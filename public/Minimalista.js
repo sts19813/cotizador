@@ -153,31 +153,29 @@ function cambiarImagen(index) {
 function actualizarFinanciamiento(total) {
   if (!total || total <= 0) return;
 
+  window.precioTotalActual = total;
+
   const {
     anticipoPorcentaje,
-    saldoEntregaPorcentaje,
     tasaAnual,
-    plazoMeses
+    plazoAnios
   } = FINANCIAMIENTO;
 
-  const anticipo = total * anticipoPorcentaje;
-  const saldoEntrega = total * saldoEntregaPorcentaje;
+  const plazoMeses = plazoAnios * 12;
 
-  const montoFinanciado = total - anticipo - saldoEntrega;
+  const anticipo = total * anticipoPorcentaje;
+  const montoFinanciado = total - anticipo;
 
   const tasaMensual = (tasaAnual / 100) / 12;
 
-  // Fórmula de pago mensual (amortización francesa)
+  // Amortización francesa
   const mensualidad = (montoFinanciado * tasaMensual) /
     (1 - Math.pow(1 + tasaMensual, -plazoMeses));
 
-  // 🔹 UI
+  // UI
   document.getElementById('mensualidad').textContent = formatoMXN(mensualidad);
-  document.getElementById('anticipo').textContent = formatoMXN(anticipo);
-  document.getElementById('saldoEntrega').textContent = formatoMXN(saldoEntrega);
   document.getElementById('montoFinanciado').textContent = formatoMXN(montoFinanciado);
-  document.getElementById('plazo').textContent = `${plazoMeses} Meses`;
-  document.getElementById('tasa').textContent = `${tasaAnual}%`;
+  document.getElementById('anticipo').textContent = formatoMXN(anticipo);
 }
 
 function recalcularPrecioTotal() {
@@ -195,9 +193,9 @@ function recalcularPrecioTotal() {
 
   // 🟦 Lote de piaro
   if (selections["lote"] && selections["lote"].suma === true) {
-      const loteTotal = parseFloat(selections["lote"].total) || 0;
-      console.log("LOTE:", loteTotal);
-      total += loteTotal;
+    const loteTotal = parseFloat(selections["lote"].total) || 0;
+    console.log("LOTE:", loteTotal);
+    total += loteTotal;
   }
 
   // Productos (ignorar la key de fachada para no duplicar)
@@ -500,6 +498,17 @@ document.querySelectorAll('.option-card').forEach(card => {
  * AUTO-SELECCIÓN AL CARGAR
  **********************************************************/
 document.addEventListener('DOMContentLoaded', function () {
+
+  document.getElementById('selectEnganche').addEventListener('change', e => {
+    FINANCIAMIENTO.anticipoPorcentaje = parseFloat(e.target.value);
+    actualizarFinanciamiento(window.precioTotalActual);
+  });
+
+  document.getElementById('selectPlazo').addEventListener('change', e => {
+    FINANCIAMIENTO.plazoAnios = parseInt(e.target.value);
+    actualizarFinanciamiento(window.precioTotalActual);
+  });
+
   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
     if (row.id === 'opciones-casas') return;
     const firstOption = row.querySelector('.option-card');

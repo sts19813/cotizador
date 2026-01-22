@@ -377,25 +377,42 @@
 
                                 <div class="row mb-3">
                                     <div class="col-6">
-                                        <small class="">Anticipo 20%</small>
-                                        <div id="anticipo" class="fw-bold">$0.00</div>
-                                    </div>
+                                        <label class="form-label small">Enganche</label>
+                                        <select id="selectEnganche" class="form-select">
+                                            <option value="0.10">10%</option>
+                                            <option value="0.15">15%</option>
+                                            <option value="0.20" selected>20%</option>
+                                            <option value="0.25">25%</option>
+                                        </select>
+                                    </div>                              
                                     <div class="col-6">
-                                        <small class="">Plazo</small>
-                                        <div id="plazo" class="fw-bold">300 Meses</div>
+                                        <label class="form-label small">Plazo</label>
+                                        <select id="selectPlazo" class="form-select">
+                                            <option value="10">10 años</option>
+                                            <option value="15">15 años</option>
+                                            <option value="20">20 años</option>
+                                            <option value="25" selected>25 años</option>
+                                        </select>
                                     </div>
                                 </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-6">
-                                        <small class="">% Tasa de interés fija anual</small>
-                                        <div id="tasa" class="fw-bold">11.99%</div>
+                                <div class="row mb-3 g-2 text-center text-md-start">
+                                    <div class="col-12 col-md-5">
+                                        <small >% Tasa de interés fija anual</small>
+                                        <div id="tasa" class="fw-bold fs-6 fs-md-6">11.99%</div>
                                     </div>
-                                    <div class="col-6">
-                                        <small class="">Monto financiado</small>
-                                        <div id="montoFinanciado" class="fw-bold">$0.00</div>
+
+                                    <div class="col-6 col-md-3">
+                                        <small >Enganche</small>
+                                        <div id="anticipo" class="fw-bold fs-6 fs-md-6">$0.00</div>
+                                    </div>
+
+                                    <div class="col-6 col-md-4">
+                                        <small >Monto financiado</small>
+                                        <div id="montoFinanciado" class="fw-bold fs-6 fs-md-6">$0.00</div>
                                     </div>
                                 </div>
+
 
                                 <div class="mb-4 d-none">
                                     <small class="">Saldo contra entrega 20%</small>
@@ -403,8 +420,7 @@
                                 </div>
 
                                 <p class="small ">
-                                    Esta simulación es sólo referencial del crédito otorgado por Banco Santander México
-                                    S.A.
+                                    Esta simulación es sólo referencial del crédito otorgado por Banco Banregio Banco Regional, S.A.
                                     La aprobación final está sujeta a evaluación crediticia.
                                 </p>
 
@@ -416,7 +432,7 @@
 
                                     <button class="btn btn-outline-primary btn-lg btn-radius" data-bs-toggle="modal"
                                         data-bs-target="#modalAsesor">
-                                        Apartar 
+                                        Apartar
                                     </button>
                                 </div>
                             </div>
@@ -438,10 +454,9 @@
         window.lotsCache = [];
 
         const FINANCIAMIENTO = {
-            anticipoPorcentaje: 0.20,        // 30%
-            saldoEntregaPorcentaje: 0.0,    // 20%
-            tasaAnual: 11.99,                // %
-            plazoMeses: 300                   // meses
+            anticipoPorcentaje: 0.20, // default 20%
+            tasaAnual: 11.99,         // fija
+            plazoAnios: 25            // default 25 años
         };
         window.leadContext = {
             source: 'configurador', // o 'landing'
