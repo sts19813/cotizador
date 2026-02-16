@@ -9,6 +9,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const open = () => modal.classList.add('show');
     const close = () => modal.classList.remove('show');
 
+    // Fecha actual en formato YYYY-MM-DD
+    const today = new Date().toISOString().split('T')[0];
+
+    // Clave única para el modal
+    const storageKey = 'uondrModalLastShown';
+
+    // Revisar si ya se mostró hoy
+    const lastShown = localStorage.getItem(storageKey);
+
+    if (lastShown !== today) {
+        open();
+        localStorage.setItem(storageKey, today);
+    }
+
+    // Botón manual (siempre permite abrir)
     openBtn?.addEventListener('click', e => {
         e.preventDefault();
         open();
@@ -20,6 +35,4 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modal) close();
     });
 
-    // auto-open primera vez
-    open();
 });

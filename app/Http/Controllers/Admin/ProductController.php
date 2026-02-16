@@ -76,6 +76,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'style' => 'required|in:Minimalista,Tulum,Mexicano',
@@ -99,6 +100,7 @@ class ProductController extends Controller
         ]);
 
         $data = $request->all();
+        $data['is_visible'] = true;
 
         // Guardar archivos si existen
         if ($request->hasFile('image_file')) {
@@ -160,6 +162,8 @@ class ProductController extends Controller
         ]);
 
         $data = $request->all();
+
+        $data['is_visible'] = $request->has('is_visible');
 
         // Guardar archivos si existen
         if ($request->hasFile('image_file')) {

@@ -420,8 +420,7 @@
                                 </div>
 
                                 <p class="small ">
-                                    Esta simulación es sólo referencial del crédito otorgado por Banco Banregio Banco Regional, S.A.
-                                    La aprobación final está sujeta a evaluación crediticia.
+                                    Esta simulación es únicamente de carácter referencial. La aprobación final del crédito está sujeta a la evaluación y autorización de la institución financiera correspondiente.
                                 </p>
 
                                 {{-- BOTONES --}}

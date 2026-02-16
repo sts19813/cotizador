@@ -57,7 +57,8 @@ class CategoryController extends Controller
         // Categorías activas con productos y sus renders generales
         $categories = Category::with([
             'products' => function ($q) {
-                $q->orderBy('fachada_7_price', 'asc');
+                $q->where('is_visible', true) // 👈 filtro clave
+                    ->orderBy('fachada_7_price', 'asc');
             },
             'products.renders'
         ])

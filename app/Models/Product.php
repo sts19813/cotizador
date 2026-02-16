@@ -21,6 +21,7 @@ class Product extends Model
         'base_price',
         'image_url',
         'product_url',
+        'is_visible',
 
         'fachada_1_price',
         'fachada_2_price',
@@ -33,6 +34,7 @@ class Product extends Model
 
     protected $casts = [
         'base_price' => 'float',
+        'is_visible' => 'boolean',
 
         'fachada_1_price' => 'float',
         'fachada_2_price' => 'float',

@@ -29,10 +29,15 @@ $(document).on('click', '.btn-edit-product', function() {
     const button = $(this);
     const form = $('#editForm');
 
+    // Reset previo (evita residuos si abres varios productos)
+    form.trigger('reset');
+
     // Actualizar acción del formulario
     form.attr('action', `/admin/products/${button.data('id')}`);
 
+    // ==========================
     // Campos principales
+    // ==========================
     form.find('[name="category_id"]').val(button.data('category_id'));
     form.find('[name="style"]').val(button.data('style'));
     form.find('[name="pre_code"]').val(button.data('pre_code'));
@@ -42,20 +47,49 @@ $(document).on('click', '.btn-edit-product', function() {
     form.find('[name="description"]').val(button.data('description'));
     form.find('[name="brand"]').val(button.data('brand'));
     form.find('[name="base_price"]').val(button.data('base_price'));
-    form.find('[name="image_url"]').val(button.data('image_url'));
-    form.find('[name="product_url"]').val(button.data('product_url'));
 
+    // ==========================
+    // Switch visibilidad
+    // ==========================
+    const isVisible = button.data('is_visible');
+
+    // Convertir correctamente a boolean
+    $('#is_visible_switch').prop('checked', 
+        isVisible === true || 
+        isVisible === 1 || 
+        isVisible === "1"
+    );
+
+    // ==========================
     // Precios por fachadas
+    // ==========================
     for (let i = 1; i <= 7; i++) {
-        form.find(`[name="fachada_${i}_price"]`).val(button.data(`fachada_${i}_price`));
+        form.find(`[name="fachada_${i}_price"]`)
+            .val(button.data(`fachada_${i}_price`));
     }
 
+    // ==========================
     // Preview imagen
-    form.find('#productImagePreview').attr('src', '/' + button.data('image_url'));
+    // ==========================
+    const imageUrl = button.data('image_url');
 
-    // Cambiar texto del botón
-    form.find('button[type="submit"]').text('Actualizar Producto');
+    if (imageUrl) {
+        $('#productImagePreview')
+            .attr('src', '/' + imageUrl)
+            .show();
+    } else {
+        $('#productImagePreview')
+            .attr('src', '')
+            .hide();
+    }
+
+    // ==========================
+    // Texto botón submit
+    // ==========================
+    form.find('button[type="submit"]')
+        .text('Actualizar Producto');
 });
+
 
 /**
  * ===============================================================

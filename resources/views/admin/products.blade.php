@@ -49,6 +49,7 @@
                     data-base_price="{{ $product->base_price }}"
                     data-image_url="{{ $product->image_url }}"
                     data-product_url="{{ $product->product_url }}"
+                    data-is_visible="{{ $product->is_visible ? 1 : 0 }}"
                     data-fachada_1_price="{{ $product->fachada_1_price }}"
                     data-fachada_2_price="{{ $product->fachada_2_price }}"
                     data-fachada_3_price="{{ $product->fachada_3_price }}"
@@ -225,6 +226,20 @@
           <div class="col-md-6">
             <label>Archivo o Link del Producto</label>
             <input type="file" name="product_file" class="form-control">
+          </div>
+          <div class="col-12">
+              <label class="fw-bold d-block mb-2">Visibilidad</label>
+
+              <div class="form-check form-switch">
+                  <input class="form-check-input" 
+                        type="checkbox" 
+                        name="is_visible" 
+                        id="is_visible_switch"
+                        {{ isset($product) && $product->is_visible ? 'checked' : '' }}>
+                  <label class="form-check-label" for="is_visible_switch">
+                      Producto visible en catálogo
+                  </label>
+              </div>
           </div>
 
           <!-- Precios por Fachadas -->

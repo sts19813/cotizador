@@ -368,12 +368,29 @@ $(() => {
     items: 10,
     margin: 10,
     nav: true,
+
+    mouseDrag: true,     // arrastre con mouse
+    touchDrag: true,     // arrastre táctil
+    pullDrag: true,
+
     dots: false,
     navText: [
       '<img src="/img/Vector.svg" alt="prev" style="width:24px;transform: rotate(180deg);">',
       '<img src="/img/Vector.svg" alt="next" style="width:24px;">'
     ],
     autoWidth: true,
+  });
+
+  // Soporte trackpad
+  $carousel.on('wheel', function (e) {
+    if (e.originalEvent.deltaX !== 0) {
+      e.preventDefault();
+      if (e.originalEvent.deltaX > 0) {
+        $carousel.trigger('next.owl');
+      } else {
+        $carousel.trigger('prev.owl');
+      }
+    }
   });
 
   $carousel.on('click', '.thumb', function () {
