@@ -94,7 +94,7 @@
 				</div>
 
 				<div class="text-resumen-note">
-					* Los precios aquí establecidos son en pesos mexicanos e incluyen Impuesto al Valor Agregado (I.V.A) e Impuesto sobre Adquisición de Propiedad (I.S.A.N. cuando aplique). Para mayor información sobre la disponibilidad, versiones, equipamientos y precios, se recomienda consultar con su Distribuidor autorizado EME DOS. Precios de accesorios Tequipment vigentes 1º de enero al 31 de diciembre 2024. El apartado es 100% reembolsable. 
+					Los precios indicados están expresados en pesos mexicanos (MXN) e incluyen el I.V.A. aplicable a la construcción. Los gastos notariales, derechos e Impuesto sobre Adquisición de Inmuebles (ISAI) no están incluidos en el Precio Total. Los modelos mostrados son representaciones visuales paramétricas con diseños previamente autorizados por el desarrollo. Debido a las características del subsuelo en la región, en caso fortuito de hallazgo de cavernas u oquedades durante la excavación, los trabajos de remediación estructural generarán un costo adicional independiente. El pago del apartado de $5,000.00 MXN bloquea la disponibilidad del lote y congela el Precio Total configurado por un periodo estricto de 30 días naturales, tiempo destinado para la autorización del crédito y la firma del contrato. Dicho apartado es 100% reembolsable. El cálculo hipotecario mostrado es un simulador referencial; las condiciones finales están sujetas a la evaluación y autorización de la institución financiera.
 				</div>
 
 			</div>

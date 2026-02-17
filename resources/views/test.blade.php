@@ -295,7 +295,7 @@
                         </div>
 
                         @foreach ($categories as $category)
-                            <div class="accordion-item hover-shadow mb-4">
+                            <div class="accordion-item hover-shadow mb-4" id="item-{{ $category->id }}">
                                 <h2 class="accordion-header" id="heading-{{ $category->id }}">
                                     <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#collapse-{{ $category->id }}" aria-expanded="true"
@@ -353,7 +353,6 @@
                                                                 {{ number_format($product->fachada_7_price, 2, '.', ',') }}
                                                             @endif
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -363,13 +362,11 @@
                             </div>
                         @endforeach
 
-
                         <div class="card shadow-sm border-0 financing-card">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-3">Financiamiento</h5>
                                 <div class="mb-3">
                                     <span id="mensualidad" class="fs-3 fw-bold">$0.00</span>
-
                                     <span class="text-primary">/mes estimado</span>
                                 </div>
 

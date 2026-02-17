@@ -83,4 +83,94 @@ function CambioBases(items, valor) {
         }
     });
     cambiarImagen(0);
+
+    cambiotitle();
+}
+
+
+/**
+ * Cambia los títulos de los acordeones según la combinación de habitación y fachada
+ */
+function cambiotitle() {
+    const habitaciones = document.querySelector('#opciones-habitaciones .option-card.selected');
+    const fachada = document.querySelector('#opciones-fachada .option-card.selected');
+
+    const habitacionesId = habitaciones?.dataset.id || "";
+    const valorFachada = fachada?.dataset.valor?.toLowerCase() || "";
+
+    const item31 = document.getElementById("item-31");
+
+    const heading29 = document.querySelector("#heading-29 .textAcordeon");
+    const heading30 = document.querySelector("#heading-30 .textAcordeon");
+    const heading31 = document.querySelector("#heading-31 .textAcordeon");
+
+    const setHeadings = (h29 = "", h30 = "", h31 = "", showItem31 = false) => {
+        if (heading29) heading29.textContent = h29;
+        if (heading30) heading30.textContent = h30;
+        if (heading31) heading31.textContent = h31;
+
+        if (item31) {
+            item31.classList.toggle("d-none", !showItem31);
+        }
+    };
+
+    switch (true) {
+
+        case (habitacionesId === "3Recamaras" && typeof es3A !== "undefined" && es3A):
+            setHeadings(
+                "Planta alta secundario",
+                "Planta alta",
+                "Planta baja",
+                true
+            );
+            break;
+
+        case (habitacionesId === "4Recamaras" && valorFachada.includes("3a")):
+            setHeadings(
+                "Planta alta",
+                "Planta baja",
+                "",
+                false
+            );
+            break;
+
+        case (habitacionesId === "2Recamaras" && valorFachada.includes("2a")):
+            setHeadings(
+                "Planta alta",
+                "Roof",
+                "Planta baja",
+                true
+            );
+            break;
+
+        case (
+            (habitacionesId === "2Recamaras" && valorFachada.includes("b")) ||
+            (habitacionesId === "1Recamara" && valorFachada.includes("b"))
+        ):
+            setHeadings(
+                "Planta alta",
+                "Planta baja",
+                "Planta baja",
+                false
+            );
+            break;
+
+        case (habitacionesId === "1Recamara" && valorFachada.includes("a")):
+            setHeadings(
+                "Planta Baja",
+                "Planta baja",
+                "Planta baja",
+                false
+            );
+            break;
+
+        default:
+            console.log(habitacionesId, valorFachada);
+            setHeadings(
+                "Planta alta",
+                "Planta baja",
+                "",
+                false
+            );
+    }
 }
