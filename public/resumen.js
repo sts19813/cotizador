@@ -7,6 +7,53 @@ let currentGalleryIndex = 0;
 const lightbox = document.getElementById('galleryLightbox');
 const galleryRender = document.getElementById('galleryRender');
 
+function quitarAcentos(texto = '') {
+  return texto
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+function normalizarEstilo(valor = '') {
+  const limpio = quitarAcentos(valor).toLowerCase().trim();
+
+  if (limpio.includes('minimalista')) return 'minimalista';
+  if (limpio.includes('tulum')) return 'tulum';
+  if (limpio.includes('mexican')) return 'mexicana';
+
+  return null;
+}
+
+function normalizarFachada(valor = '') {
+  const limpio = quitarAcentos(valor).toLowerCase().trim();
+  const match = limpio.match(/([ab])\s*$/i);
+  return match ? match[1].toLowerCase() : null;
+}
+
+function obtenerNumeroRecamaras(valor = '') {
+  const match = valor.toString().match(/\d+/);
+  return match ? Number(match[0]) : null;
+}
+
+function obtenerConstruccionM2(estilo, fachada, recamaras) {
+  const estiloKey = normalizarEstilo(estilo);
+  const fachadaKey = normalizarFachada(fachada);
+  const recamarasKey = obtenerNumeroRecamaras(recamaras);
+  const tabla = typeof tablaConstruccionM2 !== 'undefined' ? tablaConstruccionM2 : {};
+
+  if (!estiloKey || !fachadaKey || !recamarasKey) return null;
+
+  const valor = tabla[estiloKey]?.[fachadaKey]?.[recamarasKey];
+  return typeof valor === 'number' ? valor : null;
+}
+
+function formatearM2(valor) {
+  return Number(valor).toLocaleString('es-MX', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
 // =======================
 // TABLA RESUMEN
 // =======================
@@ -82,6 +129,8 @@ const loteEntry = savedSelections["lote"];
 if (loteEntry) {
   const lotePrecio = document.getElementById('lotePrecio');
   const loteResumen = document.getElementById('loteResumen');
+  const loteAreaResumen = document.getElementById('loteAreaResumen');
+  const loteArea = document.getElementById('loteArea');
 
   if (lotePrecio && loteResumen) {
     loteResumen.classList.remove('d-none');
@@ -96,10 +145,17 @@ if (loteEntry) {
 
     lotePrecio.textContent = texto;
   }
+
+  if (loteArea && loteAreaResumen) {
+    loteAreaResumen.classList.remove('d-none');
+    loteArea.textContent =
+      loteEntry.area !== undefined && loteEntry.area !== null && loteEntry.area !== ''
+        ? `${loteEntry.area} m²`
+        : 'N/D';
+  }
 }
 
 
-debugger
 const precioCasa = totalResumen;
 
 const precioCasaEl = document.getElementById('precioCasa');
@@ -113,18 +169,37 @@ if (totalTop) {
 // =======================
 // ACTUALIZACIÓN DE UI
 // =======================
+const recamarasSeleccionadas = savedSelections.Habitaciones?.valor || '';
 if (savedSelections.Habitaciones) {
-  document.querySelector('.texto-fondo').textContent = savedSelections.Habitaciones.valor;
-  document.querySelector('#recamarastabla').textContent = savedSelections.Habitaciones.valor;
+  document.querySelector('.texto-fondo').textContent = recamarasSeleccionadas;
+  document.querySelector('#recamarastabla').textContent = recamarasSeleccionadas;
 }
 
 const fachadaEntry = Object.values(savedSelections).find(item => item.categoria === "Fachada");
+const fachadaSeleccionada = fachadaEntry?.valor || '';
 if (fachadaEntry) {
-  document.querySelector('#fachadatabla').textContent = fachadaEntry.valor;
+  document.querySelector('#fachadatabla').textContent = fachadaSeleccionada;
 }
 
-if (savedSelections["opciones-casas"]) {
-  document.querySelector('#estilotabla').textContent = savedSelections["opciones-casas"].valor;
+const estiloSeleccionado =
+  savedSelections["opciones-casas"]?.valor ||
+  estiloEntry?.[1]?.valor ||
+  '';
+
+if (estiloSeleccionado) {
+  document.querySelector('#estilotabla').textContent = estiloSeleccionado;
+}
+
+const construccionM2 = obtenerConstruccionM2(
+  estiloSeleccionado,
+  fachadaSeleccionada,
+  recamarasSeleccionadas
+);
+const construccionTabla = document.querySelector('#construcciontabla');
+if (construccionTabla) {
+  construccionTabla.textContent = construccionM2 !== null
+    ? `${formatearM2(construccionM2)} m²`
+    : 'N/D';
 }
 
 if (savedSelections["collapse-21"]?.valor === "Fachada B") {

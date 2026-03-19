@@ -465,15 +465,15 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/constantes.js"></script>
-    <script src="/Minimalista.js"></script>
-    <script src="/cambioBasesFachadas.js"></script>
-    <script src="/assets/js/core/globals.js"></script>
-    <script src="/assets/js/ui/capture.js"></script>
-    <script src="/assets/js/ui/reload-modal.js"></script>
-    <script src="/assets/js/ui/info-modal.js"></script>
-    <script src="/assets/js/piaro-map.js"></script>
-    <script src="/assets/js/app.js"></script>
+    <script src="/constantes.js?v={{ filemtime(public_path('constantes.js')) }}"></script>
+    <script src="/Minimalista.js?v={{ filemtime(public_path('Minimalista.js')) }}"></script>
+    <script src="/cambioBasesFachadas.js?v={{ filemtime(public_path('cambioBasesFachadas.js')) }}"></script>
+    <script src="/assets/js/core/globals.js?v={{ filemtime(public_path('assets/js/core/globals.js')) }}"></script>
+    <script src="/assets/js/ui/capture.js?v={{ filemtime(public_path('assets/js/ui/capture.js')) }}"></script>
+    <script src="/assets/js/ui/reload-modal.js?v={{ filemtime(public_path('assets/js/ui/reload-modal.js')) }}"></script>
+    <script src="/assets/js/ui/info-modal.js?v={{ filemtime(public_path('assets/js/ui/info-modal.js')) }}"></script>
+    <script src="/assets/js/piaro-map.js?v={{ filemtime(public_path('assets/js/piaro-map.js')) }}"></script>
+    <script src="/assets/js/app.js?v={{ filemtime(public_path('assets/js/app.js')) }}"></script>
 </body>
 
 </html>

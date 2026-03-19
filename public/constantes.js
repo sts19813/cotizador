@@ -60,3 +60,19 @@ const secciones = [
   { id: '#heading-53', carouselIndex: 7 },
   { id: '#heading-54', carouselIndex: 7 },
 ];
+
+// Tabla de construccion (m2) por estilo/fachada/recamaras.
+const tablaConstruccionM2 = {
+  mexicana: {
+    a: { 1: 82.29, 2: 140.66, 3: 159.13, 4: 181.09 },
+    b: { 1: 120.32, 2: 139.01, 3: 158.45 }
+  },
+  minimalista: {
+    a: { 1: 82.29, 2: 133.67, 3: 159.15, 4: 181.17 },
+    b: { 1: 118.43, 2: 139.51, 3: 158.58 }
+  },
+  tulum: {
+    a: { 1: 78.81, 2: 132.48, 3: 164.70, 4: 180.15 },
+    b: { 1: 118.80, 2: 139.80, 3: 158.77 }
+  }
+};

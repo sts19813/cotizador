@@ -58,6 +58,11 @@
 				</div>
 
 				<div class="info-row">
+					<span class="label">Construcción</span>
+					<span id="construcciontabla"></span>
+				</div>
+
+				<div class="info-row">
 					<span class="label">Recámaras</span>
 					<span id="recamarastabla"></span>
 				</div>
@@ -71,6 +76,11 @@
 				<div id="loteResumen" class="info-row d-none">
 					<span class="label">Lote</span>
 					<span id="lotePrecio"></span>
+				</div>
+
+				<div id="loteAreaResumen" class="info-row d-none">
+					<span class="label">Área</span>
+					<span id="loteArea"></span>
 				</div>
 
 				<!-- CASA -->
