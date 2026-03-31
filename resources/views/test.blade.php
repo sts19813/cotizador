@@ -89,10 +89,9 @@
                                     <!-- CONTENIDO INICIAL (SE OCULTA) -->
                                     <div id="piaroInitialContent">
 
-                                        <h5 class="fw-bold mb-2">¿Ya eres parte de Piaro?</h5>
+                                        <h5 class="fw-bold mb-2">¿Ya tienes un lote en alguno de nuestros desarrollos?</h5>
                                         <p class="mb-3">
-                                            Si ya cuentas con un lote en Piaro, indícanos tu número de lote
-                                            para brindarte una asesoría personalizada y continuar con tu proyecto.
+                                            Si ya cuentas con un lote, indícanos su número para brindarte una asesoría personalizada y continuar con tu proyecto.
                                         </p>
 
                                         <div class="d-flex gap-2 mb-4">
@@ -112,14 +111,14 @@
 
                                         <hr>
 
-                                        <h6 class="fw-bold mt-3">¿Aún no tienes lote en Piaro?</h6>
+                                        <h6 class="fw-bold mt-3">¿Aún no tienes lote?</h6>
                                         <p class="mb-3">
-                                            Actualmente, UONDR desarrolla proyectos exclusivamente dentro de Piaro.
+                                            Selecciona un lote dentro de Piaró, Paseo Península o Ahawell.
                                         </p>
 
                                         <button class="btn btn-outline-primary btn-radius w-100" data-bs-toggle="modal"
                                             data-bs-target="#modalPiaro">
-                                            Seleccionar lote en Piaro
+                                            Seleccionar lote
                                         </button>
 
                                     </div>
@@ -444,9 +443,9 @@
     <x-footer />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        window.masterplanMap = @json($map);
-        window.STAGE_ID = 19;
-        window.API_URL = '{{ config('services.naboo.url') }}api/lots';
+        window.DESARROLLOS_API_URL = 'https://lotes.beskar.mx/api/desarrollos';
+        window.LOTS_API_URL = '{{ config('services.naboo.url') }}api/lots';
+        window.NABOO_ASSET_BASE_URL = 'https://lotes.beskar.mx';
         window.lotsCache = [];
 
         const FINANCIAMIENTO = {
