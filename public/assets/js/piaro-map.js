@@ -1,6 +1,3 @@
-/*************************************************
- * MAPAS DE ESTADO
- *************************************************/
 const statusMap = {
     for_sale: "Disponible",
     sold: "Vendido",
@@ -14,81 +11,210 @@ const statusColors = {
     reserved: 'rgba(255, 200, 0, 0.6)',
     locked_sale: 'rgba(120,120,120,.9)'
 };
+
 let isSelectingLot = false;
-/*************************************************
- * ESPERAR LOTES
- *************************************************/
-function waitForLots(callback) {
-    const interval = setInterval(() => {
-        if (Array.isArray(window.lotsCache) && window.lotsCache.length > 0) {
-            clearInterval(interval);
-            callback();
-        }
-    }, 100);
+window.currentLotsByDevelopment = {};
+
+function getDevelopmentById(id) {
+    return window.developmentsData?.[id] || null;
 }
 
+function loadLotsForDevelopment(development) {
+    if (!development?.stage_id) return Promise.resolve([]);
 
-/*************************************************
- * RENDER CARD LOTE SELECCIONADO
- *************************************************/
+    if (window.currentLotsByDevelopment[development.id]) {
+        window.lotsCache = window.currentLotsByDevelopment[development.id];
+        return Promise.resolve(window.lotsCache);
+    }
+
+    return fetch(`${window.API_URL}?stage_id=${development.stage_id}`)
+        .then(res => res.json())
+        .then(data => {
+            window.currentLotsByDevelopment[development.id] = data;
+            window.lotsCache = data;
+            return data;
+        })
+        .catch(() => {
+            window.lotsCache = [];
+            return [];
+        });
+}
+
 function renderSelectedLot(lot) {
-    debugger
+    const development = getDevelopmentById(window.currentDevelopmentId);
+    const developmentName = development?.name || 'Desarrollo';
 
-    document.getElementById('lotTitle').textContent =
-        'Lote Piaro Tropical Living';
-
+    document.getElementById('lotTitle').textContent = `Lote ${developmentName}`;
     document.getElementById('lotName').textContent = lot.name;
     document.getElementById('lotArea').textContent = `${lot.area} m²`;
+    document.getElementById('lotPriceM2').textContent = `$${Number(lot.price_square_meter).toLocaleString()}`;
+    document.getElementById('lotTotal').textContent = `$${Number(lot.area * lot.price_square_meter).toLocaleString()}`;
 
-    document.getElementById('lotPriceM2').textContent =
-        `$${Number(lot.price_square_meter).toLocaleString()}`;
-    document.getElementById('lotTotal').textContent =
-        `$${Number(lot.area * lot.price_square_meter).toLocaleString()}`;
-
-    document.getElementById('piaroInitialContent')
-        .classList.add('d-none');
-
+    document.getElementById('piaroInitialContent').classList.add('d-none');
 
     if (!isSelectingLot) {
         document.getElementById('info-lote').classList.remove('d-none');
-
     } else {
         document.getElementById('info-lote').classList.add('d-none');
     }
 
-    document.getElementById('selectedLotCard')
-        .classList.remove('d-none');
+    document.getElementById('selectedLotCard').classList.remove('d-none');
 }
 
+function clearSelectedLot() {
+    if (selections["lote"]) {
+        delete selections["lote"];
+        localStorage.setItem('selections', JSON.stringify(selections));
+        recalcularPrecioTotal();
+    }
+}
 
-/*************************************************
- * DOM READY
- *************************************************/
+function paintSvg(el, color) {
+    if (!el) return;
+    el.style.setProperty('fill', color, 'important');
+    el.querySelectorAll('*').forEach(child => child.style.setProperty('fill', color, 'important'));
+}
+
+function bindMapInteractions() {
+    const svgLayer = document.querySelector('.svg-layer');
+    if (!svgLayer || !Array.isArray(window.masterplanMap)) return;
+
+    window.masterplanMap.forEach(item => {
+        if (!item.selectorSVG || !item.lote_id) return;
+
+        const matchedLot = window.lotsCache.find(l =>
+            String(l.id) === String(item.lote_id) ||
+            String(l.id_lote) === String(item.lote_id)
+        );
+
+        if (!matchedLot) return;
+
+        const svgElement = svgLayer.querySelector(`#${item.selectorSVG}`);
+        if (!svgElement) return;
+
+        const status = matchedLot.status;
+        const fillColor = statusColors[status] ?? 'rgba(100,100,100,.8)';
+        const isSelectable = status === 'for_sale';
+
+        paintSvg(svgElement, fillColor);
+        svgElement.style.cursor = isSelectable ? 'pointer' : 'not-allowed';
+
+        new bootstrap.Tooltip(svgElement, {
+            html: true,
+            title: `Lote ${matchedLot.name}<br>${statusMap[status]}<br>Área: ${matchedLot.area} m²`
+        });
+
+        if (!isSelectable) return;
+
+        svgElement.addEventListener('mouseenter', () => paintSvg(svgElement, 'rgba(0,120,255,.8)'));
+        svgElement.addEventListener('mouseleave', () => paintSvg(svgElement, fillColor));
+
+        svgElement.addEventListener('click', e => {
+            e.preventDefault();
+            isSelectingLot = false;
+            window.selectedLote = matchedLot;
+
+            clearSelectedLot();
+
+            const development = getDevelopmentById(window.currentDevelopmentId);
+            const loteTotal = matchedLot.area * matchedLot.price_square_meter;
+
+            selections.lote = {
+                id: matchedLot.id,
+                name: `${development?.name || 'Desarrollo'} - Lote ${matchedLot.name}`,
+                area: matchedLot.area,
+                price_square_meter: matchedLot.price_square_meter,
+                total: loteTotal,
+                origen: 'svg',
+                suma: true,
+                development_id: development?.id
+            };
+
+            localStorage.setItem('selections', JSON.stringify(selections));
+            recalcularPrecioTotal();
+
+            document.getElementById('lotInput').value = matchedLot.name;
+            document.getElementById('lotId').value = matchedLot.id;
+
+            renderSelectedLot(matchedLot);
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalPiaro'));
+            if (modal) modal.hide();
+        });
+    });
+}
+
+function applyDevelopmentContext(developmentId) {
+    const development = getDevelopmentById(developmentId);
+    if (!development) return;
+
+    window.currentDevelopmentId = development.id;
+    window.masterplanMap = development.map || [];
+
+    document.getElementById('selectedDevelopmentName').textContent = development.name;
+    document.getElementById('selectedDevelopmentNameSecondary').textContent = development.name;
+    document.getElementById('modalDevelopmentName').textContent = development.name;
+    document.getElementById('modalFooterText').textContent = `¿Quieres conocer más acerca de ${development.name}?`;
+
+    const bg = document.getElementById('masterplanBackground');
+    const svgLayer = document.getElementById('piaroLotsLayer');
+
+    const baseUrl = (window.API_URL || '').replace('api/lots', 'storage/');
+    bg.src = development.png_image ? `${baseUrl}${development.png_image}` : '';
+    svgLayer.innerHTML = development.svg_inline || '';
+
+    loadLotsForDevelopment(development).then(() => bindMapInteractions());
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-
     const input = document.getElementById('lotInput');
     const dropdown = document.getElementById('lotDropdown');
     const hiddenLotId = document.getElementById('lotId');
-    const svgLayer = document.querySelector('.svg-layer');
     const changeLotBtn = document.getElementById('changeLotBtn');
+    const openDevelopmentModalBtn = document.getElementById('openDevelopmentModalBtn');
+    const subDevelopmentsModalEl = document.getElementById('modalSubDevelopments');
+    const subDevelopmentsList = document.getElementById('subDevelopmentsList');
+    const subDevelopmentsModal = subDevelopmentsModalEl ? new bootstrap.Modal(subDevelopmentsModalEl) : null;
 
-    const STAGE_ID = 19;
-    const API_URL = window.API_URL;
+    applyDevelopmentContext(window.currentDevelopmentId || 33);
 
-    /*************************************************
-     * CARGAR LOTES
-     *************************************************/
-    fetch(`${API_URL}?stage_id=${STAGE_ID}`)
-        .then(res => res.json())
-        .then(data => {
-            window.lotsCache = data;
-        })
-        .catch(console.error);
+    document.querySelectorAll('.development-trigger').forEach(btn => {
+        btn.addEventListener('click', () => {
+            applyDevelopmentContext(Number(btn.dataset.developmentId));
+        });
+    });
 
+    if (openDevelopmentModalBtn) {
+        openDevelopmentModalBtn.addEventListener('click', e => {
+            const currentBtn = document.querySelector(`.development-trigger[data-development-id="${window.currentDevelopmentId}"]`);
+            const childIds = currentBtn ? JSON.parse(currentBtn.dataset.childIds || '[]') : [];
 
-    /*************************************************
-     * AUTOCOMPLETE INPUT
-     *************************************************/
+            if (!childIds.length) return;
+
+            e.preventDefault();
+            subDevelopmentsList.innerHTML = '';
+
+            childIds.forEach(id => {
+                const dev = getDevelopmentById(id);
+                if (!dev) return;
+
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'btn btn-outline-primary w-100 mb-2';
+                button.textContent = dev.name;
+                button.addEventListener('click', () => {
+                    applyDevelopmentContext(dev.id);
+                    subDevelopmentsModal.hide();
+                    const mapModal = new bootstrap.Modal(document.getElementById('modalPiaro'));
+                    mapModal.show();
+                });
+                subDevelopmentsList.appendChild(button);
+            });
+
+            subDevelopmentsModal.show();
+        });
+    }
+
     input.addEventListener('input', function () {
         const allowedStatuses = ['sold', 'reserved'];
         const value = this.value.toLowerCase().trim();
@@ -110,36 +236,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         matches.forEach(lot => {
-
             const item = document.createElement('button');
             item.type = 'button';
             item.className = 'list-group-item list-group-item-action';
-
-            item.innerHTML = `
-                <strong>Lote ${lot.name}</strong>
-            `;
-            isSelectingLot = false;
+            item.innerHTML = `<strong>Lote ${lot.name}</strong>`;
 
             item.onclick = () => {
-
-                debugger
                 isSelectingLot = true;
                 input.value = lot.name;
                 hiddenLotId.value = lot.id;
                 dropdown.style.display = 'none';
 
-                window.selectedLote = lot;
-
                 clearSelectedLot();
 
-                selections["lote"] = {
+                const development = getDevelopmentById(window.currentDevelopmentId);
+                selections.lote = {
                     id: lot.id,
-                    name: lot.name,
+                    name: `${development?.name || 'Desarrollo'} - Lote ${lot.name}`,
                     area: lot.area,
                     price_square_meter: lot.price_square_meter,
                     total: lot.area * lot.price_square_meter,
                     origen: 'input',
-                    suma: false
+                    suma: false,
+                    development_id: development?.id
                 };
                 localStorage.setItem('selections', JSON.stringify(selections));
 
@@ -157,141 +276,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
-
-
-    /*************************************************
-     * SVG INTERACTIVO
-     *************************************************/
-    if (!svgLayer || !window.masterplanMap) return;
-
-    waitForLots(() => {
-
-        window.masterplanMap.forEach(item => {
-
-            if (!item.selectorSVG || !item.lote_id) return;
-
-            const matchedLot = window.lotsCache.find(l =>
-                String(l.id) === String(item.lote_id) ||
-                String(l.id_lote) === String(item.lote_id)
-            );
-
-            if (!matchedLot) return;
-
-            const svgElement = svgLayer.querySelector(`#${item.selectorSVG}`);
-            if (!svgElement) return;
-
-            const status = matchedLot.status;
-            const fillColor = statusColors[status] ?? 'rgba(100,100,100,.8)';
-            const isSelectable = status === 'for_sale';
-
-            /* ===============================
-               PINTADO INICIAL (FIX CLAVE)
-               =============================== */
-            paintSvg(svgElement, fillColor);
-
-            svgElement.dataset.loteInfo = JSON.stringify(matchedLot);
-            svgElement.style.cursor = isSelectable ? 'pointer' : 'not-allowed';
-
-            new bootstrap.Tooltip(svgElement, {
-                html: true,
-                title: `
-                Lote ${matchedLot.name}<br>
-                ${statusMap[status]}<br>
-                Área: ${matchedLot.area} m²
-            `
-            });
-
-            if (!isSelectable) return;
-
-            /* ===============================
-               HOVER
-               =============================== */
-            svgElement.addEventListener('mouseenter', () => {
-                paintSvg(svgElement, 'rgba(0,120,255,.8)');
-            });
-
-            svgElement.addEventListener('mouseleave', () => {
-                paintSvg(svgElement, fillColor);
-            });
-
-            /* ===============================
-               CLICK
-               =============================== */
-            svgElement.addEventListener('click', e => {
-                e.preventDefault();
-
-                isSelectingLot = false;
-                window.selectedLote = matchedLot;
-
-                clearSelectedLot();
-
-                const loteTotal = matchedLot.area * matchedLot.price_square_meter;
-
-                selections.lote = {
-                    id: matchedLot.id,
-                    name: matchedLot.name,
-                    area: matchedLot.area,
-                    price_square_meter: matchedLot.price_square_meter,
-                    total: loteTotal,
-                    origen: 'svg',
-                    suma: true
-                };
-
-                localStorage.setItem('selections', JSON.stringify(selections));
-                recalcularPrecioTotal();
-
-                input.value = matchedLot.name;
-                hiddenLotId.value = matchedLot.id;
-
-                renderSelectedLot(matchedLot);
-
-                const modalEl = document.getElementById('modalPiaro');
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
-            });
-        });
-    });
-
-
-
-    /*************************************************
-     * CAMBIAR LOTE
-     *************************************************/
     if (changeLotBtn) {
         changeLotBtn.onclick = () => {
-
             clearSelectedLot();
-
             document.getElementById('selectedLotCard').classList.add('d-none');
-
             document.getElementById('piaroInitialContent').classList.remove('d-none');
-
             input.value = '';
             hiddenLotId.value = '';
             window.selectedLote = null;
         };
-
     }
 });
-
-
-function clearSelectedLot() {
-    if (selections["lote"]) {
-        delete selections["lote"];
-        localStorage.setItem('selections', JSON.stringify(selections));
-        recalcularPrecioTotal();
-    }
-}
-
-function paintSvg(el, color) {
-    if (!el) return;
-
-    // Pinta el elemento base (por si es <path>)
-    el.style.setProperty('fill', color, 'important');
-
-    // Pinta todos los hijos (por si es <a> o <g>)
-    el.querySelectorAll('*').forEach(child =>
-        child.style.setProperty('fill', color, 'important')
-    );
-}

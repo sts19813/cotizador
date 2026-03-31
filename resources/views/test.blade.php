@@ -61,106 +61,93 @@
                     <div class="accordion " id="configAccordion">
 
                         <div class="accordion-item hover-shadow mb-4">
-
-                            <h2 class="accordion-header" id="headingPiaro">
+                            <h2 class="accordion-header" id="headingDevelopments">
                                 <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#piaroCard" aria-expanded="true" aria-controls="piaroCard">
-                                    <span class="textAcordeon">Piaro</span>
+                                    data-bs-target="#developmentCard" aria-expanded="true" aria-controls="developmentCard">
+                                    <span class="textAcordeon">Selecciona un Desarrollo</span>
                                     <span class="icon ms-auto">
-                                        <!-- PLUS ICON -->
-                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
                                         </svg>
-                                        <!-- MINUS ICON -->
-                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                                             <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
                                         </svg>
                                     </span>
                                 </button>
                             </h2>
 
-                            <div id="piaroCard" class="accordion-collapse collapse show">
-
+                            <div id="developmentCard" class="accordion-collapse collapse show">
                                 <div class="accordion-body">
+                                    <div class="d-flex flex-column gap-2 mb-3" id="developmentSelector">
+                                        @foreach ($developmentTree as $node)
+                                            <button
+                                                type="button"
+                                                class="btn btn-light border d-flex justify-content-between align-items-center p-3 development-trigger"
+                                                data-development-id="{{ $node['id'] }}"
+                                                data-development-name="{{ $node['name'] }}"
+                                                data-has-children="{{ count($node['children']) ? 1 : 0 }}"
+                                                data-child-ids='@json($node['children'])'>
+                                                <span class="fw-bold">{{ $node['name'] }}</span>
+                                                <span class="badge rounded-pill {{ $node['badge_class'] }}">{{ $node['badge'] }}</span>
+                                            </button>
+                                        @endforeach
+                                    </div>
 
-                                    <!-- CONTENIDO INICIAL (SE OCULTA) -->
                                     <div id="piaroInitialContent">
-
-                                        <h5 class="fw-bold mb-2">¿Ya eres parte de Piaro?</h5>
-                                        <p class="mb-3">
-                                            Si ya cuentas con un lote en Piaro, indícanos tu número de lote
-                                            para brindarte una asesoría personalizada y continuar con tu proyecto.
+                                        <h5 class="fw-bold mb-2">¿Ya eres parte de <span id="selectedDevelopmentName">Piaro</span>?</h5>
+                                        <p class="mb-3" id="selectedDevelopmentDescription">
+                                            Si ya cuentas con un lote, indícanos tu número de lote para brindarte una asesoría personalizada y continuar con tu proyecto.
                                         </p>
 
                                         <div class="d-flex gap-2 mb-4">
-
                                             <div class="position-relative flex-grow-1">
-                                                <input type="text" id="lotInput" class="form-control"
-                                                    placeholder="Num. de lote" autocomplete="off">
-
+                                                <input type="text" id="lotInput" class="form-control" placeholder="Num. de lote" autocomplete="off">
                                                 <input type="hidden" id="lotId">
-
-                                                <div id="lotDropdown"
-                                                    class="list-group position-absolute w-100 shadow-sm"
-                                                    style="z-index:1000; display:none;">
-                                                </div>
+                                                <div id="lotDropdown" class="list-group position-absolute w-100 shadow-sm" style="z-index:1000; display:none;"></div>
                                             </div>
                                         </div>
 
                                         <hr>
 
-                                        <h6 class="fw-bold mt-3">¿Aún no tienes lote en Piaro?</h6>
-                                        <p class="mb-3">
-                                            Actualmente, UONDR desarrolla proyectos exclusivamente dentro de Piaro.
+                                        <h6 class="fw-bold mt-3">¿Aún no tienes lote en <span id="selectedDevelopmentNameSecondary">Piaro</span>?</h6>
+                                        <p class="mb-3" id="selectedDevelopmentProjectText">
+                                            Actualmente, UONDR desarrolla proyectos exclusivamente dentro de este desarrollo.
                                         </p>
 
-                                        <button class="btn btn-outline-primary btn-radius w-100" data-bs-toggle="modal"
-                                            data-bs-target="#modalPiaro">
-                                            Seleccionar lote en Piaro
+                                        <button class="btn btn-outline-primary btn-radius w-100" id="openDevelopmentModalBtn" data-bs-toggle="modal" data-bs-target="#modalPiaro">
+                                            Seleccionar lote
                                         </button>
-
                                     </div>
 
-                                    <!-- CARD LOTE SELECCIONADO -->
                                     <div id="selectedLotCard" class="d-none">
                                         <div class="card-body">
-
                                             <h5 class="fw-bold mb-3" id="lotTitle"></h5>
-
                                             <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <small class="">Lote</small>
-                                                    <div class="fw-semibold" id="lotName"></div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="">Área</small>
-                                                    <div class="fw-semibold" id="lotArea"></div>
-                                                </div>
+                                                <div class="col-6"><small>Lote</small><div class="fw-semibold" id="lotName"></div></div>
+                                                <div class="col-6"><small>Área</small><div class="fw-semibold" id="lotArea"></div></div>
                                             </div>
 
-                                            <div class="row mb-3 " id="info-lote">
-                                                <div class="col-6">
-                                                    <small class="">Precio m²</small>
-                                                    <div class="fw-semibold" id="lotPriceM2"></div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="">Precio Total</small>
-                                                    <div class="fw-semibold" id="lotTotal"></div>
-                                                </div>
+                                            <div class="row mb-3" id="info-lote">
+                                                <div class="col-6"><small>Precio m²</small><div class="fw-semibold" id="lotPriceM2"></div></div>
+                                                <div class="col-6"><small>Precio Total</small><div class="fw-semibold" id="lotTotal"></div></div>
                                             </div>
 
-                                            <p class="small">
-                                                Esta simulación es sólo referencial.
-                                            </p>
-
-                                            <button class="btn btn-outline-primary w-100 btn-radius" id="changeLotBtn">
-                                                Seleccionar otro lote
-                                            </button>
+                                            <p class="small">Esta simulación es sólo referencial.</p>
+                                            <button class="btn btn-outline-primary w-100 btn-radius" id="changeLotBtn">Seleccionar otro lote</button>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="modalSubDevelopments" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Selecciona un desarrollo de Ahawel</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="subDevelopmentsList"></div>
                                 </div>
                             </div>
                         </div>
@@ -444,9 +431,11 @@
     <x-footer />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        window.masterplanMap = @json($map);
-        window.STAGE_ID = 19;
+        window.developmentsData = @json($developments);
+        window.developmentTree = @json($developmentTree);
         window.API_URL = '{{ config('services.naboo.url') }}api/lots';
+        window.currentDevelopmentId = 33;
+        window.masterplanMap = [];
         window.lotsCache = [];
 
         const FINANCIAMIENTO = {

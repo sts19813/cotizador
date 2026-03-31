@@ -7,10 +7,8 @@ use App\Models\Category;
 use App\Models\BaseImage;
 use App\Models\ProductFachadaRender;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\RequestException;
 
 class CategoryController extends Controller
 {
@@ -39,6 +37,7 @@ class CategoryController extends Controller
 
         return response()->json(['success' => true]);
     }
+
     public function configurador($style = 'Minimalista')
     {
         if ($style === 'home') {
@@ -54,10 +53,9 @@ class CategoryController extends Controller
             abort(404);
         }
 
-        // Categorías activas con productos y sus renders generales
         $categories = Category::with([
             'products' => function ($q) {
-                $q->where('is_visible', true) // 👈 filtro clave
+                $q->where('is_visible', true)
                     ->orderBy('fachada_7_price', 'asc');
             },
             'products.renders'
@@ -67,12 +65,10 @@ class CategoryController extends Controller
             ->orderBy('orden')
             ->get();
 
-        // Base images (miniaturas del carrusel)
         $baseImages = BaseImage::where('style', $style)
             ->orderBy('order')
             ->get();
 
-        // Fachadas por producto, agrupadas por producto_id y luego por nombre de fachada
         $fachadas = ProductFachadaRender::with('product')
             ->whereHas('product', function ($q) use ($style) {
                 $q->where('style', $style);
@@ -80,51 +76,104 @@ class CategoryController extends Controller
             ->get()
             ->groupBy('product_id')
             ->map(function ($rendersPorProducto) {
-                return $rendersPorProducto->keyBy('fachada'); // ahora es una Collection, keyBy funciona
+                return $rendersPorProducto->keyBy('fachada');
             });
 
-        // Transforma renders por producto para JSON en Blade
         $rendersPorProducto = $categories->flatMap(function ($category) {
             return $category->products->mapWithKeys(function ($product) {
-                // Asegurarnos de que sea Collection antes de usar keyBy
                 $renders = collect($product->renders)->keyBy('id');
                 return [$product->id => $renders];
             });
         });
 
-        $stageId = 19; // Piaro   
+        $developmentTree = [
+            [
+                'id' => 33,
+                'name' => 'Piaro',
+                'badge' => 'Entrega inmediata',
+                'badge_class' => 'text-primary bg-primary-subtle',
+                'children' => [],
+            ],
+            [
+                'id' => 43,
+                'name' => 'Paseo Península',
+                'badge' => 'Preventa - 20% Enganche',
+                'badge_class' => 'text-danger bg-danger-subtle',
+                'children' => [],
+            ],
+            [
+                'id' => 3,
+                'name' => 'Ahawel',
+                'badge' => 'Preventa - 20% Enganche',
+                'badge_class' => 'text-danger bg-danger-subtle',
+                'children' => [2, 14, 8, 9, 10],
+            ],
+        ];
 
+        $developmentIds = collect($developmentTree)
+            ->flatMap(fn($d) => array_merge([$d['id']], $d['children']))
+            ->unique()
+            ->values();
 
-        $map = [];
+        $developments = [];
 
-        try {
-            $response = Http::timeout(5) // segundos
-                ->get(
-                    config('services.naboo.url') . 'api/masterplan/map',
-                    ['stage_id' => $stageId]
-                );
+        foreach ($developmentIds as $developmentId) {
+            try {
+                $response = Http::timeout(10)
+                    ->get(config('services.naboo.url') . "api/desarrollos/{$developmentId}");
 
-            if ($response->successful()) {
-                $map = $response->json();
+                if (!$response->successful()) {
+                    continue;
+                }
+
+                $development = $response->json();
+                $svgInline = null;
+
+                if (!empty($development['svg_image'])) {
+                    $svgUrl = rtrim(config('services.naboo.url'), '/') . '/storage/' . ltrim($development['svg_image'], '/');
+                    try {
+                        $svgResponse = Http::timeout(10)->get($svgUrl);
+                        if ($svgResponse->successful()) {
+                            $svgInline = $svgResponse->body();
+                        }
+                    } catch (\Throwable $e) {
+                        logger()->warning('No se pudo cargar SVG del desarrollo', [
+                            'development_id' => $developmentId,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
+
+                $developments[$developmentId] = [
+                    'id' => $development['id'] ?? $developmentId,
+                    'name' => $development['name'] ?? 'Desarrollo',
+                    'stage_id' => $development['stage_id'] ?? null,
+                    'svg_image' => $development['svg_image'] ?? null,
+                    'png_image' => $development['png_image'] ?? null,
+                    'map' => $development['map'] ?? $development['lotes'] ?? [],
+                    'svg_inline' => $svgInline,
+                ];
+            } catch (\Throwable $e) {
+                logger()->warning('Naboo desarrollo no disponible', [
+                    'development_id' => $developmentId,
+                    'error' => $e->getMessage(),
+                ]);
             }
-
-        } catch (\Throwable $e) {
-            // Log opcional
-            logger()->warning('Naboo map no disponible', [
-                'error' => $e->getMessage(),
-            ]);
-
-            $map = []; // fallback seguro
         }
 
-
-        return view('test', compact('categories', 'style', 'baseImages', 'fachadas', 'rendersPorProducto', 'map'));
+        return view('test', compact(
+            'categories',
+            'style',
+            'baseImages',
+            'fachadas',
+            'rendersPorProducto',
+            'developmentTree',
+            'developments'
+        ));
     }
-
 
     public function resumen()
     {
-
         return view('resumen');
     }
 
@@ -145,7 +194,6 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => [
                 'required',
-                // Unique solo dentro del mismo style, excluyendo la categoría actual
                 Rule::unique('categories')->where(function ($query) use ($request) {
                     return $query->where('style', $request->style);
                 })->ignore($category->id),
@@ -154,7 +202,7 @@ class CategoryController extends Controller
             'style' => 'required|in:Minimalista,Tulum,Mexicano',
         ]);
 
-        $validated['is_active'] = $request->has('is_active'); // checkbox
+        $validated['is_active'] = $request->has('is_active');
 
         $category->update($validated);
 
