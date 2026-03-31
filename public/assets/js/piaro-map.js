@@ -75,6 +75,32 @@ function paintSvg(el, color) {
     el.querySelectorAll('*').forEach(child => child.style.setProperty('fill', color, 'important'));
 }
 
+function resolveSvgElement(svgLayer, rawSelector) {
+    const selector = String(rawSelector || '').trim();
+    if (!selector) return null;
+
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+        return svgLayer.querySelector(`#${window.CSS.escape(selector)}`);
+    }
+
+    return svgLayer.querySelector(`[id="${selector.replace(/"/g, '\"')}"]`);
+}
+
+function normalizeColor(value, fallback) {
+    const color = String(value || '').trim();
+    if (!color) return fallback;
+
+    if (/^#?[0-9a-fA-F]{8}$/.test(color)) {
+        return color.startsWith('#') ? color : `#${color}`;
+    }
+
+    if (/^#?[0-9a-fA-F]{6}$/.test(color)) {
+        return color.startsWith('#') ? color : `#${color}`;
+    }
+
+    return color;
+}
+
 function bindMapInteractions() {
     const svgLayer = document.querySelector('.svg-layer');
     const currentDevelopment = getDevelopmentById(window.currentDevelopmentId);
@@ -86,14 +112,14 @@ function bindMapInteractions() {
         const selector = item.selectorSVG || item.selector_svg || item.selector;
         if (!selector) return;
 
-        const svgElement = svgLayer.querySelector(`#${selector}`);
+        const svgElement = resolveSvgElement(svgLayer, selector);
         if (!svgElement) return;
 
-        const redirectDevelopmentId = item.redirect === 1 ? Number(item.redirect_url) : null;
+        const redirectDevelopmentId = String(item.redirect) === '1' ? Number(item.redirect_url) : null;
 
         if (redirectDevelopmentId) {
-            const baseColor = (item.color || '#9aa0a6').trim();
-            const hoverColor = (item.color_active || '#4b5563').trim();
+            const baseColor = normalizeColor(item.color, '#9aa0a6');
+            const hoverColor = normalizeColor(item.color_active, '#4b5563');
 
             paintSvg(svgElement, baseColor);
             svgElement.style.cursor = 'pointer';
@@ -112,7 +138,7 @@ function bindMapInteractions() {
             return;
         }
 
-        if (!item.lote_id) return;
+        if (item.lote_id === null || item.lote_id === undefined || item.lote_id === '') return;
 
         const matchedLot = window.lotsCache.find(l =>
             String(l.id) === String(item.lote_id) ||
