@@ -36,6 +36,23 @@ let currentDevelopment = null;
 let currentMap = [];
 let lotsByDevelopment = {};
 let searchableLotsCache = [];
+let activeSearchDevelopmentId = 33;
+
+function getInputElementsForDevelopment(developmentId) {
+    return {
+        input: document.getElementById(`lotInput-${developmentId}`),
+        hiddenLotId: document.getElementById(`lotId-${developmentId}`),
+        dropdown: document.getElementById(`lotDropdown-${developmentId}`)
+    };
+}
+
+function setActiveSearchDevelopment(developmentId) {
+    activeSearchDevelopmentId = Number(developmentId);
+}
+
+function getActiveInputElements() {
+    return getInputElementsForDevelopment(activeSearchDevelopmentId);
+}
 
 function resolveMediaUrl(path) {
     if (!path) return '';
@@ -238,16 +255,18 @@ async function preloadSearchableLots() {
     searchableLotsCache = developmentData.flat();
 }
 
-function resolveSearchLots() {
-    if (!currentDevelopment) return searchableLotsCache;
+function resolveSearchLots(developmentId = null) {
+    const targetDevelopmentId = Number(developmentId || currentDevelopment?.id);
+
+    if (!targetDevelopmentId) return searchableLotsCache;
 
     const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === 3);
-    if (Number(currentDevelopment.id) === 3 && ahawell?.children?.length) {
+    if (targetDevelopmentId === 3 && ahawell?.children?.length) {
         const childIds = ahawell.children.map(child => Number(child.id));
         return searchableLotsCache.filter(lot => childIds.includes(Number(lot.development_id)));
     }
 
-    return searchableLotsCache.filter(lot => Number(lot.development_id) === Number(currentDevelopment.id));
+    return searchableLotsCache.filter(lot => Number(lot.development_id) === targetDevelopmentId);
 }
 
 async function fetchLotsForStage(stageId) {
@@ -311,7 +330,7 @@ function getMappedLot(item, lotsCache) {
     );
 }
 
-function bindSvgInteractions(svgLayer, lotsCache, input, hiddenLotId) {
+function bindSvgInteractions(svgLayer, lotsCache) {
     currentMap.forEach(item => {
         if (!item.selectorSVG || !item.lote_id) return;
 
@@ -374,8 +393,9 @@ function bindSvgInteractions(svgLayer, lotsCache, input, hiddenLotId) {
             localStorage.setItem('selections', JSON.stringify(selections));
             recalcularPrecioTotal();
 
-            input.value = matchedLot.name;
-            hiddenLotId.value = matchedLot.id;
+            const { input, hiddenLotId } = getActiveInputElements();
+            if (input) input.value = getSelectedLotLabel(matchedLot);
+            if (hiddenLotId) hiddenLotId.value = matchedLot.id;
 
             renderSelectedLot(matchedLot);
 
@@ -387,8 +407,6 @@ function bindSvgInteractions(svgLayer, lotsCache, input, hiddenLotId) {
 }
 
 async function loadDevelopment(developmentId) {
-    const input = document.getElementById('lotInput');
-    const hiddenLotId = document.getElementById('lotId');
     const svgLayer = document.getElementById('dynamicSvgLayer');
 
     try {
@@ -406,7 +424,7 @@ async function loadDevelopment(developmentId) {
             development_name: development.name
         }));
 
-        bindSvgInteractions(svgLayer, window.lotsCache, input, hiddenLotId);
+        bindSvgInteractions(svgLayer, window.lotsCache);
         highlightActiveDevelopment(developmentId);
     } catch (error) {
         console.error(error);
@@ -417,79 +435,97 @@ async function loadDevelopment(developmentId) {
  * DOM READY
  *************************************************/
 document.addEventListener('DOMContentLoaded', function () {
-    const input = document.getElementById('lotInput');
-    const dropdown = document.getElementById('lotDropdown');
-    const hiddenLotId = document.getElementById('lotId');
     const changeLotBtn = document.getElementById('changeLotBtn');
 
     setDevelopmentButtons();
+    setActiveSearchDevelopment(33);
     loadDevelopment(33);
     preloadSearchableLots().catch(error => console.error(error));
 
-    input.addEventListener('input', function () {
-        const allowedStatuses = ['sold', 'reserved'];
-        const value = this.value.toLowerCase().trim();
-        dropdown.innerHTML = '';
-
-        const scopedLots = resolveSearchLots();
-
-        if (!value || !Array.isArray(scopedLots) || !scopedLots.length) {
-            dropdown.style.display = 'none';
-            return;
-        }
-
-        const matches = scopedLots.filter(l =>
-            allowedStatuses.includes(l.status) &&
-            String(l.name).toLowerCase().includes(value)
-        );
-
-        if (!matches.length) {
-            dropdown.style.display = 'none';
-            return;
-        }
-
-        matches.forEach(lot => {
-            const item = document.createElement('button');
-            item.type = 'button';
-            item.className = 'list-group-item list-group-item-action';
-            const developmentLabel = lot.development_name ? `<small class="text-muted d-block">${lot.development_name}</small>` : '';
-            item.innerHTML = `${developmentLabel}<strong>Lote ${lot.name}</strong>`;
-            isSelectingLot = false;
-
-            item.onclick = () => {
-                isSelectingLot = true;
-                input.value = lot.development_name ? `${lot.development_name} - Lote ${lot.name}` : lot.name;
-                hiddenLotId.value = lot.id;
-                dropdown.style.display = 'none';
-
-                window.selectedLote = lot;
-                clearSelectedLot();
-
-                selections.lote = {
-                    id: lot.id,
-                    name: getSelectedLotLabel(lot, lot.development_name),
-                    lot_name: lot.name,
-                    development_id: lot.development_id || currentDevelopment?.id,
-                    development_name: lot.development_name || currentDevelopment?.name,
-                    area: lot.area,
-                    price_square_meter: lot.price_square_meter,
-                    total: lot.area * lot.price_square_meter,
-                    origen: 'input',
-                    suma: false
-                };
-                localStorage.setItem('selections', JSON.stringify(selections));
-
-                renderSelectedLot(lot, lot.development_name);
-            };
-            dropdown.appendChild(item);
+    document.querySelectorAll('.js-open-development-modal').forEach(button => {
+        button.addEventListener('click', () => {
+            const developmentId = Number(button.dataset.developmentId);
+            setActiveSearchDevelopment(developmentId);
+            loadDevelopment(developmentId);
         });
+    });
 
-        dropdown.style.display = 'block';
+    document.querySelectorAll('.development-lot-input').forEach(input => {
+        const developmentId = Number(input.dataset.developmentId);
+        const { dropdown, hiddenLotId } = getInputElementsForDevelopment(developmentId);
+
+        if (!dropdown) return;
+
+        input.addEventListener('focus', () => setActiveSearchDevelopment(developmentId));
+
+        input.addEventListener('input', function () {
+            const allowedStatuses = ['sold', 'reserved'];
+            const value = this.value.toLowerCase().trim();
+            dropdown.innerHTML = '';
+
+            const scopedLots = resolveSearchLots(developmentId);
+
+            if (!value || !Array.isArray(scopedLots) || !scopedLots.length) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            const matches = scopedLots.filter(l =>
+                allowedStatuses.includes(l.status) &&
+                String(l.name).toLowerCase().includes(value)
+            );
+
+            if (!matches.length) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            matches.forEach(lot => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'list-group-item list-group-item-action';
+                const developmentLabel = lot.development_name ? `<small class="text-muted d-block">${lot.development_name}</small>` : '';
+                item.innerHTML = `${developmentLabel}<strong>Lote ${lot.name}</strong>`;
+                isSelectingLot = false;
+
+                item.onclick = () => {
+                    isSelectingLot = true;
+                    setActiveSearchDevelopment(developmentId);
+                    input.value = lot.development_name ? `${lot.development_name} - Lote ${lot.name}` : lot.name;
+                    if (hiddenLotId) hiddenLotId.value = lot.id;
+                    dropdown.style.display = 'none';
+
+                    window.selectedLote = lot;
+                    clearSelectedLot();
+
+                    selections.lote = {
+                        id: lot.id,
+                        name: getSelectedLotLabel(lot, lot.development_name),
+                        lot_name: lot.name,
+                        development_id: lot.development_id || currentDevelopment?.id,
+                        development_name: lot.development_name || currentDevelopment?.name,
+                        area: lot.area,
+                        price_square_meter: lot.price_square_meter,
+                        total: lot.area * lot.price_square_meter,
+                        origen: 'input',
+                        suma: false
+                    };
+                    localStorage.setItem('selections', JSON.stringify(selections));
+
+                    renderSelectedLot(lot, lot.development_name);
+                };
+                dropdown.appendChild(item);
+            });
+
+            dropdown.style.display = 'block';
+        });
     });
 
     document.addEventListener('click', e => {
         if (!e.target.closest('.position-relative')) {
-            dropdown.style.display = 'none';
+            document.querySelectorAll('.development-lot-dropdown').forEach(dropdown => {
+                dropdown.style.display = 'none';
+            });
         }
     });
 
@@ -498,8 +534,8 @@ document.addEventListener('DOMContentLoaded', function () {
             clearSelectedLot();
             document.getElementById('selectedLotCard').classList.add('d-none');
             document.getElementById('piaroInitialContent').classList.remove('d-none');
-            input.value = '';
-            hiddenLotId.value = '';
+            document.querySelectorAll('.development-lot-input').forEach(input => input.value = '');
+            document.querySelectorAll('[id^="lotId-"]').forEach(hidden => hidden.value = '');
             window.selectedLote = null;
         };
     }
