@@ -35,6 +35,7 @@ let isSelectingLot = false;
 let currentDevelopment = null;
 let currentMap = [];
 let lotsByDevelopment = {};
+let searchableLotsCache = [];
 
 function resolveMediaUrl(path) {
     if (!path) return '';
@@ -43,21 +44,23 @@ function resolveMediaUrl(path) {
     return `${window.NABOO_ASSET_BASE_URL}/${cleanPath}`;
 }
 
-function getSelectedLotLabel(lot) {
+function getSelectedLotLabel(lot, developmentName = null) {
     const lotName = lot?.name ?? lot?.lote_id ?? '';
-    if (!currentDevelopment) {
+    const resolvedDevelopmentName = developmentName || lot?.development_name || currentDevelopment?.name;
+
+    if (!resolvedDevelopmentName) {
         return lotName;
     }
 
-    return `${currentDevelopment.name} - Lote ${lotName}`;
+    return `${resolvedDevelopmentName} - Lote ${lotName}`;
 }
 
 /*************************************************
  * RENDER CARD LOTE SELECCIONADO
  *************************************************/
-function renderSelectedLot(lot) {
+function renderSelectedLot(lot, developmentName = null) {
     document.getElementById('lotTitle').textContent = 'Lote seleccionado';
-    document.getElementById('lotName').textContent = getSelectedLotLabel(lot);
+    document.getElementById('lotName').textContent = getSelectedLotLabel(lot, developmentName);
     document.getElementById('lotArea').textContent = `${lot.area} m²`;
 
     document.getElementById('lotPriceM2').textContent =
@@ -84,24 +87,57 @@ function setDevelopmentButtons() {
 
     DEVELOPMENT_TREE.forEach(dev => {
         const group = document.createElement('div');
-        group.className = 'development-group mb-2';
+        group.className = 'development-group w-100 mb-2';
+
+        const card = document.createElement('div');
+        card.className = 'development-card';
+        card.dataset.developmentId = dev.id;
 
         const mainBtn = document.createElement('button');
         mainBtn.type = 'button';
-        mainBtn.className = 'btn btn-outline-primary btn-sm me-2 mb-2 development-btn';
-        mainBtn.textContent = dev.name;
+        mainBtn.className = 'btn development-btn development-main-btn';
         mainBtn.dataset.developmentId = dev.id;
         mainBtn.dataset.buttonType = 'main';
 
-        if (!dev.children) {
+        if (dev.children?.length) {
+            mainBtn.dataset.bsToggle = 'collapse';
+            mainBtn.dataset.bsTarget = `#developmentChildren-${dev.id}`;
+            mainBtn.setAttribute('aria-expanded', 'false');
+            mainBtn.setAttribute('aria-controls', `developmentChildren-${dev.id}`);
+        }
+
+        const mainContent = document.createElement('span');
+        mainContent.className = 'development-main-content';
+        mainContent.innerHTML = `<span class="development-name">${dev.name}</span>`;
+
+        const icon = document.createElement('span');
+        icon.className = 'development-icon';
+        icon.innerHTML = dev.children?.length ? '+' : '';
+
+        mainBtn.appendChild(mainContent);
+        mainBtn.appendChild(icon);
+
+        if (!dev.children?.length) {
             mainBtn.addEventListener('click', () => loadDevelopment(dev.id));
-            group.appendChild(mainBtn);
         } else {
-            mainBtn.addEventListener('click', () => loadDevelopment(dev.id));
-            group.appendChild(mainBtn);
+            mainBtn.addEventListener('click', () => {
+                setTimeout(() => {
+                    const collapseEl = document.getElementById(`developmentChildren-${dev.id}`);
+                    const isOpen = collapseEl?.classList.contains('show');
+                    icon.textContent = isOpen ? '−' : '+';
+
+                    if (!isOpen) {
+                        loadDevelopment(dev.id);
+                    }
+                }, 0);
+            });
 
             const subContainer = document.createElement('div');
-            subContainer.className = 'd-flex flex-wrap gap-2 ms-0 ms-md-3';
+            subContainer.id = `developmentChildren-${dev.id}`;
+            subContainer.className = 'collapse development-children';
+
+            const childButtons = document.createElement('div');
+            childButtons.className = 'development-children-buttons';
 
             dev.children.forEach(child => {
                 const childBtn = document.createElement('button');
@@ -110,25 +146,65 @@ function setDevelopmentButtons() {
                 childBtn.textContent = child.name;
                 childBtn.dataset.developmentId = child.id;
                 childBtn.dataset.buttonType = 'child';
-                childBtn.addEventListener('click', () => loadDevelopment(child.id));
-                subContainer.appendChild(childBtn);
+                childBtn.addEventListener('click', event => {
+                    event.stopPropagation();
+                    loadDevelopment(child.id);
+                });
+                childButtons.appendChild(childBtn);
             });
 
-            group.appendChild(subContainer);
+            subContainer.appendChild(childButtons);
+            card.appendChild(mainBtn);
+            card.appendChild(subContainer);
+            group.appendChild(card);
+            container.appendChild(group);
+            return;
         }
 
+        card.appendChild(mainBtn);
+        group.appendChild(card);
         container.appendChild(group);
     });
 }
 
 function highlightActiveDevelopment(id) {
+    const numericId = Number(id);
+
     document.querySelectorAll('.development-btn').forEach(btn => {
-        const isActive = Number(btn.dataset.developmentId) === Number(id);
+        const isActive = Number(btn.dataset.developmentId) === numericId;
         const isMain = btn.dataset.buttonType === 'main';
 
-        btn.classList.remove('btn-primary', 'btn-outline-primary', 'btn-light');
-        btn.classList.add(isActive ? 'btn-primary' : (isMain ? 'btn-outline-primary' : 'btn-light'));
-        btn.classList.toggle('active', isActive);
+        if (isMain) {
+            btn.classList.toggle('active', isActive);
+            return;
+        }
+
+        btn.classList.toggle('btn-primary', isActive);
+        btn.classList.toggle('text-white', isActive);
+        btn.classList.toggle('btn-light', !isActive);
+    });
+
+    DEVELOPMENT_TREE.forEach(dev => {
+        if (!dev.children?.length) return;
+
+        const collapseEl = document.getElementById(`developmentChildren-${dev.id}`);
+        const toggleBtn = document.querySelector(`.development-main-btn[data-development-id="${dev.id}"]`);
+        const icon = toggleBtn?.querySelector('.development-icon');
+
+        if (!collapseEl || !toggleBtn) return;
+
+        const shouldOpen = Number(dev.id) === numericId || dev.children.some(child => Number(child.id) === numericId);
+        const collapse = bootstrap.Collapse.getOrCreateInstance(collapseEl, { toggle: false });
+
+        if (shouldOpen) {
+            collapse.show();
+            icon && (icon.textContent = '−');
+            toggleBtn.classList.add('active');
+        } else {
+            collapse.hide();
+            icon && (icon.textContent = '+');
+            toggleBtn.classList.remove('active');
+        }
     });
 }
 
@@ -138,6 +214,40 @@ async function fetchDevelopment(id) {
         throw new Error(`No se pudo cargar el desarrollo ${id}`);
     }
     return response.json();
+}
+
+function flattenDevelopments(tree) {
+    return tree.flatMap(dev => dev.children?.length ? [dev, ...dev.children] : [dev]);
+}
+
+async function preloadSearchableLots() {
+    const flatDevelopments = flattenDevelopments(DEVELOPMENT_TREE);
+
+    const developmentData = await Promise.all(flatDevelopments.map(async dev => {
+        const development = await fetchDevelopment(dev.id);
+        const lots = await fetchLotsForStage(development.stage_id);
+
+        return lots.map(lot => ({
+            ...lot,
+            development_id: development.id,
+            development_name: development.name,
+            stage_id: development.stage_id
+        }));
+    }));
+
+    searchableLotsCache = developmentData.flat();
+}
+
+function resolveSearchLots() {
+    if (!currentDevelopment) return searchableLotsCache;
+
+    const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === 3);
+    if (Number(currentDevelopment.id) === 3 && ahawell?.children?.length) {
+        const childIds = ahawell.children.map(child => Number(child.id));
+        return searchableLotsCache.filter(lot => childIds.includes(Number(lot.development_id)));
+    }
+
+    return searchableLotsCache.filter(lot => Number(lot.development_id) === Number(currentDevelopment.id));
 }
 
 async function fetchLotsForStage(stageId) {
@@ -290,9 +400,13 @@ async function loadDevelopment(developmentId) {
         await loadSvgLayer(development);
 
         const lots = await fetchLotsForStage(development.stage_id);
-        window.lotsCache = lots;
+        window.lotsCache = lots.map(lot => ({
+            ...lot,
+            development_id: development.id,
+            development_name: development.name
+        }));
 
-        bindSvgInteractions(svgLayer, lots, input, hiddenLotId);
+        bindSvgInteractions(svgLayer, window.lotsCache, input, hiddenLotId);
         highlightActiveDevelopment(developmentId);
     } catch (error) {
         console.error(error);
@@ -310,18 +424,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setDevelopmentButtons();
     loadDevelopment(33);
+    preloadSearchableLots().catch(error => console.error(error));
 
     input.addEventListener('input', function () {
         const allowedStatuses = ['sold', 'reserved'];
         const value = this.value.toLowerCase().trim();
         dropdown.innerHTML = '';
 
-        if (!value || !Array.isArray(window.lotsCache)) {
+        const scopedLots = resolveSearchLots();
+
+        if (!value || !Array.isArray(scopedLots) || !scopedLots.length) {
             dropdown.style.display = 'none';
             return;
         }
 
-        const matches = window.lotsCache.filter(l =>
+        const matches = scopedLots.filter(l =>
             allowedStatuses.includes(l.status) &&
             String(l.name).toLowerCase().includes(value)
         );
@@ -335,12 +452,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const item = document.createElement('button');
             item.type = 'button';
             item.className = 'list-group-item list-group-item-action';
-            item.innerHTML = `<strong>Lote ${lot.name}</strong>`;
+            const developmentLabel = lot.development_name ? `<small class="text-muted d-block">${lot.development_name}</small>` : '';
+            item.innerHTML = `${developmentLabel}<strong>Lote ${lot.name}</strong>`;
             isSelectingLot = false;
 
             item.onclick = () => {
                 isSelectingLot = true;
-                input.value = lot.name;
+                input.value = lot.development_name ? `${lot.development_name} - Lote ${lot.name}` : lot.name;
                 hiddenLotId.value = lot.id;
                 dropdown.style.display = 'none';
 
@@ -349,10 +467,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 selections.lote = {
                     id: lot.id,
-                    name: getSelectedLotLabel(lot),
+                    name: getSelectedLotLabel(lot, lot.development_name),
                     lot_name: lot.name,
-                    development_id: currentDevelopment?.id,
-                    development_name: currentDevelopment?.name,
+                    development_id: lot.development_id || currentDevelopment?.id,
+                    development_name: lot.development_name || currentDevelopment?.name,
                     area: lot.area,
                     price_square_meter: lot.price_square_meter,
                     total: lot.area * lot.price_square_meter,
@@ -361,7 +479,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
                 localStorage.setItem('selections', JSON.stringify(selections));
 
-                renderSelectedLot(lot);
+                renderSelectedLot(lot, lot.development_name);
             };
             dropdown.appendChild(item);
         });
