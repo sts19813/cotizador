@@ -77,10 +77,42 @@ function paintSvg(el, color) {
 
 function bindMapInteractions() {
     const svgLayer = document.querySelector('.svg-layer');
-    if (!svgLayer || !Array.isArray(window.masterplanMap)) return;
+    const currentDevelopment = getDevelopmentById(window.currentDevelopmentId);
+    const mapEntries = currentDevelopment?.map?.length ? currentDevelopment.map : (currentDevelopment?.lotes || []);
 
-    window.masterplanMap.forEach(item => {
-        if (!item.selectorSVG || !item.lote_id) return;
+    if (!svgLayer || !Array.isArray(mapEntries)) return;
+
+    mapEntries.forEach(item => {
+        const selector = item.selectorSVG || item.selector_svg || item.selector;
+        if (!selector) return;
+
+        const svgElement = svgLayer.querySelector(`#${selector}`);
+        if (!svgElement) return;
+
+        const redirectDevelopmentId = item.redirect === 1 ? Number(item.redirect_url) : null;
+
+        if (redirectDevelopmentId) {
+            const baseColor = (item.color || '#9aa0a6').trim();
+            const hoverColor = (item.color_active || '#4b5563').trim();
+
+            paintSvg(svgElement, baseColor);
+            svgElement.style.cursor = 'pointer';
+
+            new bootstrap.Tooltip(svgElement, {
+                html: true,
+                title: `Ir a ${getDevelopmentById(redirectDevelopmentId)?.name || 'desarrollo'}`
+            });
+
+            svgElement.addEventListener('mouseenter', () => paintSvg(svgElement, hoverColor));
+            svgElement.addEventListener('mouseleave', () => paintSvg(svgElement, baseColor));
+            svgElement.addEventListener('click', e => {
+                e.preventDefault();
+                applyDevelopmentContext(redirectDevelopmentId);
+            });
+            return;
+        }
+
+        if (!item.lote_id) return;
 
         const matchedLot = window.lotsCache.find(l =>
             String(l.id) === String(item.lote_id) ||
@@ -88,9 +120,6 @@ function bindMapInteractions() {
         );
 
         if (!matchedLot) return;
-
-        const svgElement = svgLayer.querySelector(`#${item.selectorSVG}`);
-        if (!svgElement) return;
 
         const status = matchedLot.status;
         const fillColor = statusColors[status] ?? 'rgba(100,100,100,.8)';
@@ -149,7 +178,7 @@ function applyDevelopmentContext(developmentId) {
     if (!development) return;
 
     window.currentDevelopmentId = development.id;
-    window.masterplanMap = development.map || [];
+    window.masterplanMap = development.map || development.lotes || [];
 
     document.getElementById('selectedDevelopmentName').textContent = development.name;
     document.getElementById('selectedDevelopmentNameSecondary').textContent = development.name;

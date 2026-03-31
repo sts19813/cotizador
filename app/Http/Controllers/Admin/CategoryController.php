@@ -150,7 +150,8 @@ class CategoryController extends Controller
                     'stage_id' => $development['stage_id'] ?? null,
                     'svg_image' => $development['svg_image'] ?? null,
                     'png_image' => $development['png_image'] ?? null,
-                    'map' => $development['map'] ?? $development['lotes'] ?? [],
+                    'map' => $development['map'] ?? [],
+                    'lotes' => $development['lotes'] ?? [],
                     'svg_inline' => $svgInline,
                 ];
             } catch (\Throwable $e) {
