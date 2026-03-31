@@ -37,6 +37,9 @@ let currentMap = [];
 let lotsByDevelopment = {};
 let searchableLotsCache = [];
 let activeSearchDevelopmentId = 33;
+let selectedModalRootDevelopmentId = 33;
+
+const AHAWELL_ROOT_ID = 3;
 
 function getInputElementsForDevelopment(developmentId) {
     return {
@@ -96,92 +99,40 @@ function renderSelectedLot(lot, developmentName = null) {
     document.getElementById('selectedLotCard').classList.remove('d-none');
 }
 
-function setDevelopmentButtons() {
+function setDevelopmentButtons(rootDevelopmentId) {
     const container = document.getElementById('developmentSelector');
     if (!container) return;
 
     container.innerHTML = '';
+    const numericRootId = Number(rootDevelopmentId);
 
-    DEVELOPMENT_TREE.forEach(dev => {
-        const group = document.createElement('div');
-        group.className = 'development-group w-100 mb-2';
+    if (numericRootId !== AHAWELL_ROOT_ID) {
+        container.classList.add('d-none');
+        return;
+    }
 
-        const card = document.createElement('div');
-        card.className = 'development-card';
-        card.dataset.developmentId = dev.id;
+    const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === AHAWELL_ROOT_ID);
+    if (!ahawell?.children?.length) {
+        container.classList.add('d-none');
+        return;
+    }
 
-        const mainBtn = document.createElement('button');
-        mainBtn.type = 'button';
-        mainBtn.className = 'btn development-btn development-main-btn';
-        mainBtn.dataset.developmentId = dev.id;
-        mainBtn.dataset.buttonType = 'main';
+    container.classList.remove('d-none');
 
-        if (dev.children?.length) {
-            mainBtn.dataset.bsToggle = 'collapse';
-            mainBtn.dataset.bsTarget = `#developmentChildren-${dev.id}`;
-            mainBtn.setAttribute('aria-expanded', 'false');
-            mainBtn.setAttribute('aria-controls', `developmentChildren-${dev.id}`);
-        }
+    const childButtons = document.createElement('div');
+    childButtons.className = 'development-selector-cluster';
 
-        const mainContent = document.createElement('span');
-        mainContent.className = 'development-main-content';
-        mainContent.innerHTML = `<span class="development-name">${dev.name}</span>`;
-
-        const icon = document.createElement('span');
-        icon.className = 'development-icon';
-        icon.innerHTML = dev.children?.length ? '+' : '';
-
-        mainBtn.appendChild(mainContent);
-        mainBtn.appendChild(icon);
-
-        if (!dev.children?.length) {
-            mainBtn.addEventListener('click', () => loadDevelopment(dev.id));
-        } else {
-            mainBtn.addEventListener('click', () => {
-                setTimeout(() => {
-                    const collapseEl = document.getElementById(`developmentChildren-${dev.id}`);
-                    const isOpen = collapseEl?.classList.contains('show');
-                    icon.textContent = isOpen ? '−' : '+';
-
-                    if (!isOpen) {
-                        loadDevelopment(dev.id);
-                    }
-                }, 0);
-            });
-
-            const subContainer = document.createElement('div');
-            subContainer.id = `developmentChildren-${dev.id}`;
-            subContainer.className = 'collapse development-children';
-
-            const childButtons = document.createElement('div');
-            childButtons.className = 'development-children-buttons';
-
-            dev.children.forEach(child => {
-                const childBtn = document.createElement('button');
-                childBtn.type = 'button';
-                childBtn.className = 'btn btn-light btn-sm development-btn';
-                childBtn.textContent = child.name;
-                childBtn.dataset.developmentId = child.id;
-                childBtn.dataset.buttonType = 'child';
-                childBtn.addEventListener('click', event => {
-                    event.stopPropagation();
-                    loadDevelopment(child.id);
-                });
-                childButtons.appendChild(childBtn);
-            });
-
-            subContainer.appendChild(childButtons);
-            card.appendChild(mainBtn);
-            card.appendChild(subContainer);
-            group.appendChild(card);
-            container.appendChild(group);
-            return;
-        }
-
-        card.appendChild(mainBtn);
-        group.appendChild(card);
-        container.appendChild(group);
+    ahawell.children.forEach(child => {
+        const childBtn = document.createElement('button');
+        childBtn.type = 'button';
+        childBtn.className = 'btn btn-sm development-btn development-child-btn';
+        childBtn.textContent = child.name;
+        childBtn.dataset.developmentId = child.id;
+        childBtn.addEventListener('click', () => loadDevelopment(child.id));
+        childButtons.appendChild(childBtn);
     });
+
+    container.appendChild(childButtons);
 }
 
 function highlightActiveDevelopment(id) {
@@ -189,42 +140,12 @@ function highlightActiveDevelopment(id) {
 
     document.querySelectorAll('.development-btn').forEach(btn => {
         const isActive = Number(btn.dataset.developmentId) === numericId;
-        const isMain = btn.dataset.buttonType === 'main';
-
-        if (isMain) {
-            btn.classList.toggle('active', isActive);
-            return;
-        }
-
+        btn.classList.toggle('active', isActive);
         btn.classList.toggle('btn-primary', isActive);
         btn.classList.toggle('text-white', isActive);
         btn.classList.toggle('btn-light', !isActive);
     });
-
-    DEVELOPMENT_TREE.forEach(dev => {
-        if (!dev.children?.length) return;
-
-        const collapseEl = document.getElementById(`developmentChildren-${dev.id}`);
-        const toggleBtn = document.querySelector(`.development-main-btn[data-development-id="${dev.id}"]`);
-        const icon = toggleBtn?.querySelector('.development-icon');
-
-        if (!collapseEl || !toggleBtn) return;
-
-        const shouldOpen = Number(dev.id) === numericId || dev.children.some(child => Number(child.id) === numericId);
-        const collapse = bootstrap.Collapse.getOrCreateInstance(collapseEl, { toggle: false });
-
-        if (shouldOpen) {
-            collapse.show();
-            icon && (icon.textContent = '−');
-            toggleBtn.classList.add('active');
-        } else {
-            collapse.hide();
-            icon && (icon.textContent = '+');
-            toggleBtn.classList.remove('active');
-        }
-    });
 }
-
 async function fetchDevelopment(id) {
     const response = await fetch(`${window.DESARROLLOS_API_URL}/${id}`);
     if (!response.ok) {
@@ -289,22 +210,51 @@ async function fetchLotsForStage(stageId) {
 function renderMapAssets(development) {
     const mapBase = document.getElementById('dynamicMapBase');
     const svgLayer = document.getElementById('dynamicSvgLayer');
-    const modalTitle = document.getElementById('developmentModalTitle');
 
-    if (!mapBase || !svgLayer || !modalTitle) return;
+    if (!mapBase || !svgLayer) return;
 
     mapBase.src = resolveMediaUrl(development.png_image);
     mapBase.alt = `Masterplan ${development.name}`;
-    modalTitle.textContent = development.name;
 
     svgLayer.innerHTML = '';
 }
 
+function updateModalHeader(development) {
+    const modalTitle = document.getElementById('developmentModalTitle');
+    const modalSubtitle = document.getElementById('developmentModalSubtitle');
+    if (!modalTitle || !modalSubtitle) return;
+
+    const isAhawellRootView =
+        Number(selectedModalRootDevelopmentId) === AHAWELL_ROOT_ID &&
+        Number(development.id) === AHAWELL_ROOT_ID;
+
+    if (isAhawellRootView) {
+        modalTitle.textContent = 'Seleccione un desarrollo de Ahawell para continuar';
+        modalSubtitle.textContent = 'Selecciona uno de los 5 desarrollos del cluster Ahawell.';
+        return;
+    }
+
+    modalTitle.textContent = development.name;
+    modalSubtitle.textContent = 'Selecciona un lote para agregar al proyecto de tu casa';
+}
+
+function updateSvgLayerVisibility(developmentId) {
+    const svgLayer = document.getElementById('dynamicSvgLayer');
+    if (!svgLayer) return;
+
+    const isAhawellRootView = Number(developmentId) === AHAWELL_ROOT_ID;
+    svgLayer.style.opacity = isAhawellRootView ? '0' : '1';
+    svgLayer.style.pointerEvents = isAhawellRootView ? 'none' : 'auto';
+}
 async function loadSvgLayer(development) {
     const svgLayer = document.getElementById('dynamicSvgLayer');
     const svgUrl = resolveMediaUrl(development.svg_image);
 
-    if (!svgUrl || !svgLayer) return;
+    if (!svgLayer) return;
+    if (!svgUrl) {
+        updateSvgLayerVisibility(development.id);
+        return;
+    }
 
     try {
         const proxyUrl = `/svg-proxy?url=${encodeURIComponent(svgUrl)}`;
@@ -317,8 +267,10 @@ async function loadSvgLayer(development) {
 
         const svgText = await response.text();
         svgLayer.innerHTML = svgText;
+        updateSvgLayerVisibility(development.id);
 
     } catch (error) {
+        updateSvgLayerVisibility(development.id);
         console.error(error);
     }
 }
@@ -415,7 +367,15 @@ async function loadDevelopment(developmentId) {
         currentMap = development.map || development.lotes || [];
 
         renderMapAssets(development);
+        updateModalHeader(development);
         await loadSvgLayer(development);
+
+        const isAhawellRootView = Number(development.id) === AHAWELL_ROOT_ID;
+        if (isAhawellRootView) {
+            window.lotsCache = [];
+            highlightActiveDevelopment(0);
+            return;
+        }
 
         const lots = await fetchLotsForStage(development.stage_id);
         window.lotsCache = lots.map(lot => ({
@@ -424,20 +384,26 @@ async function loadDevelopment(developmentId) {
             development_name: development.name
         }));
 
-        bindSvgInteractions(svgLayer, window.lotsCache);
+        if (svgLayer) {
+            bindSvgInteractions(svgLayer, window.lotsCache);
+        }
         highlightActiveDevelopment(developmentId);
     } catch (error) {
         console.error(error);
     }
 }
 
+function setSelectedModalRootDevelopment(developmentId) {
+    selectedModalRootDevelopmentId = Number(developmentId);
+    setDevelopmentButtons(selectedModalRootDevelopmentId);
+}
 /*************************************************
  * DOM READY
  *************************************************/
 document.addEventListener('DOMContentLoaded', function () {
     const changeLotBtn = document.getElementById('changeLotBtn');
 
-    setDevelopmentButtons();
+    setDevelopmentButtons(33);
     setActiveSearchDevelopment(33);
     loadDevelopment(33);
     preloadSearchableLots().catch(error => console.error(error));
@@ -445,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.js-open-development-modal').forEach(button => {
         button.addEventListener('click', () => {
             const developmentId = Number(button.dataset.developmentId);
+            setSelectedModalRootDevelopment(developmentId);
             setActiveSearchDevelopment(developmentId);
             loadDevelopment(developmentId);
         });
@@ -557,3 +524,4 @@ function paintSvg(el, color) {
         child.style.setProperty('fill', color, 'important')
     );
 }
+

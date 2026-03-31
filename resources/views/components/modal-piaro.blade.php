@@ -18,55 +18,27 @@
     .legend-item.available .legend-dot { background-color: #198754; }
     .legend-item.reserved .legend-dot { background-color: #ffc107; }
 
-    .development-card {
-        background: #fff;
-        border-radius: 14px;
-        border: 1px solid #e8ebf0;
-        overflow: hidden;
-    }
-
-    .development-main-btn {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        text-align: left;
-        border: 0;
-        border-radius: 0;
-        padding: 12px 16px;
-        font-weight: 700;
-        color: #20242c;
-        background: transparent;
-    }
-
-    .development-main-btn.active {
-        background: #f2f6ff;
-        color: #1f4ca0;
-    }
-
-    .development-main-content {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .development-icon {
-        font-size: 26px;
-        line-height: 1;
-        font-weight: 300;
-        color: #20242c;
-    }
-
-    .development-children {
-        padding: 0 16px 12px;
-    }
-
-    .development-children-buttons {
+    .development-selector-cluster {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
+        justify-content: center;
     }
 
+    .development-child-btn {
+        border-radius: 999px;
+        border: 1px solid #d8dee8;
+        font-weight: 600;
+        color: #20242c;
+        background: #fff;
+        padding: 8px 14px;
+    }
+
+    .development-child-btn.active {
+        background: #1f4ca0;
+        color: #fff;
+        border-color: #1f4ca0;
+    }
 </style>
 
 <div class="modal fade" id="modalPiaro" tabindex="-1" aria-hidden="true">
@@ -75,7 +47,7 @@
             <div class="modal-header border-0 position-relative">
                 <div class="w-100 text-center">
                     <h4 class="fw-bold mb-1" id="developmentModalTitle">Piaró</h4>
-                    <p class="text-primary fw-semibold mt-3 mb-1">Selecciona un lote para agregar al proyecto de tu casa</p>
+                    <p class="text-primary fw-semibold mt-3 mb-1" id="developmentModalSubtitle">Selecciona un lote para agregar al proyecto de tu casa</p>
 
                     <div id="developmentSelector" class="d-flex flex-column align-items-stretch mb-3 w-100"></div>
 
