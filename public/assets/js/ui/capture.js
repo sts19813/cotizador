@@ -50,7 +50,7 @@ function mostrarErrorLote() {
         const msg = document.createElement('div');
         msg.id = 'loteErrorMsg';
         msg.className = 'alert alert-danger mt-3';
-        msg.innerText = 'Debes seleccionar un lote en Piaro para continuar.';
+        msg.innerText = 'Debes seleccionar un lote para continuar.';
         card.querySelector('.accordion-body').prepend(msg);
     }
 }

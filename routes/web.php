@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\SvgProxyController;
 
 
 Route::get('/lang/{lang}', function ($lang) {
@@ -145,6 +146,9 @@ Route::middleware(['auth', AdminMiddleware::class])
 | Otras rutas normales
 |--------------------------------------------------------------------------
 */
+
+// Ruta para el proxy de SVGs y evitar problemas de CORS
+Route::get('/svg-proxy', [SvgProxyController::class, 'show']);
 
 Route::post('/leads', [LeadController::class, 'storeLead']);
 Route::view('/unauthorized', 'unauthorized')->name('unauthorized');
