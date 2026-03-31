@@ -65,7 +65,7 @@
                             <h2 class="accordion-header" id="headingPiaro">
                                 <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#piaroCard" aria-expanded="true" aria-controls="piaroCard">
-                                    <span class="textAcordeon">Piaro</span>
+                                    <span class="textAcordeon">Selecciona un desarrollo</span>
                                     <span class="icon ms-auto">
                                         <!-- PLUS ICON -->
                                         <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -88,9 +88,6 @@
 
                                     <!-- CONTENIDO INICIAL (SE OCULTA) -->
                                     <div id="piaroInitialContent">
-
-                                        <h5 class="fw-bold mb-3">Selecciona un Desarrollo</h5>
-
                                         <div class="development-selector-main d-flex flex-column gap-3">
                                             <div class="border rounded-4 p-3">
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
