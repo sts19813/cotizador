@@ -40,7 +40,7 @@ function resolveMediaUrl(path) {
     if (!path) return '';
     if (/^https?:\/\//i.test(path)) return path;
     const cleanPath = String(path).replace(/^\/+/, '');
-    return `${window.NABOO_ASSET_BASE_URL}/storage/${cleanPath}`;
+    return `${window.NABOO_ASSET_BASE_URL}/${cleanPath}`;
 }
 
 function getSelectedLotLabel(lot) {
@@ -175,18 +175,24 @@ async function loadSvgLayer(development) {
     const svgLayer = document.getElementById('dynamicSvgLayer');
     const svgUrl = resolveMediaUrl(development.svg_image);
 
-    if (!svgUrl || !svgLayer) {
-        return;
-    }
+    if (!svgUrl || !svgLayer) return;
 
-    const response = await fetch(svgUrl);
-    if (!response.ok) {
-        throw new Error('No se pudo cargar el SVG del desarrollo');
-    }
+    try {
+        const proxyUrl = `/svg-proxy?url=${encodeURIComponent(svgUrl)}`;
 
-    svgLayer.innerHTML = await response.text();
+        const response = await fetch(proxyUrl);
+
+        if (!response.ok) {
+            throw new Error('No se pudo cargar el SVG');
+        }
+
+        const svgText = await response.text();
+        svgLayer.innerHTML = svgText;
+
+    } catch (error) {
+        console.error(error);
+    }
 }
-
 function getMappedLot(item, lotsCache) {
     return lotsCache.find(l =>
         String(l.id) === String(item.lote_id) ||
