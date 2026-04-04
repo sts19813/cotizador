@@ -17,6 +17,28 @@
     .legend-item.sold .legend-dot { background-color: #dc3545; }
     .legend-item.available .legend-dot { background-color: #198754; }
     .legend-item.reserved .legend-dot { background-color: #ffc107; }
+
+    .development-selector-cluster {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .development-child-btn {
+        border-radius: 999px;
+        border: 1px solid #d8dee8;
+        font-weight: 600;
+        color: #20242c;
+        background: #fff;
+        padding: 8px 14px;
+    }
+
+    .development-child-btn.active {
+        background: #1f4ca0;
+        color: #fff;
+        border-color: #1f4ca0;
+    }
 </style>
 
 <div class="modal fade" id="modalPiaro" tabindex="-1" aria-hidden="true">
@@ -25,9 +47,9 @@
             <div class="modal-header border-0 position-relative">
                 <div class="w-100 text-center">
                     <h4 class="fw-bold mb-1" id="developmentModalTitle">Piaró</h4>
-                    <p class="text-primary fw-semibold mt-3 mb-1">Selecciona un lote para agregar al proyecto de tu casa</p>
+                    <p class="text-primary fw-semibold mt-3 mb-1" id="developmentModalSubtitle">Selecciona un lote para agregar al proyecto de tu casa</p>
 
-                    <div id="developmentSelector" class="d-flex flex-column align-items-center mb-3"></div>
+                    <div id="developmentSelector" class="d-flex flex-column align-items-stretch mb-3 w-100"></div>
 
                     <div class="d-flex justify-content-center gap-4 small mt-2">
                         <span class="legend-item sold"><span class="legend-dot"></span> Vendidos</span>

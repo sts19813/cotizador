@@ -65,7 +65,7 @@
                             <h2 class="accordion-header" id="headingPiaro">
                                 <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#piaroCard" aria-expanded="true" aria-controls="piaroCard">
-                                    <span class="textAcordeon">Piaro</span>
+                                    <span class="textAcordeon">Selecciona un desarrollo</span>
                                     <span class="icon ms-auto">
                                         <!-- PLUS ICON -->
                                         <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -88,38 +88,55 @@
 
                                     <!-- CONTENIDO INICIAL (SE OCULTA) -->
                                     <div id="piaroInitialContent">
+                                        <div class="development-selector-main d-flex flex-column gap-3">
+                                            <div class="border rounded-4 p-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="fw-bold mb-0">Piaró</h6>
+                                                    <button class="btn btn-outline-primary btn-sm js-open-development-modal" data-development-id="33" data-bs-toggle="modal" data-bs-target="#modalPiaro">Cotizar lote</button>
+                                                </div>
 
-                                        <h5 class="fw-bold mb-2">¿Ya tienes un lote en alguno de nuestros desarrollos?</h5>
-                                        <p class="mb-3">
-                                            Si ya cuentas con un lote, indícanos su número para brindarte una asesoría personalizada y continuar con tu proyecto.
-                                        </p>
+                                                <p class="small mb-2">¿Ya formas parte de Piaró? Busca tu lote para continuar.</p>
 
-                                        <div class="d-flex gap-2 mb-4">
+                                                <div class="position-relative">
+                                                    <input type="text" id="lotInput-33" class="form-control development-lot-input"
+                                                        data-development-id="33" placeholder="Buscar lote en Piaró" autocomplete="off">
+                                                    <input type="hidden" id="lotId-33">
+                                                    <div id="lotDropdown-33" class="list-group position-absolute w-100 shadow-sm development-lot-dropdown" style="z-index:1000; display:none;"></div>
+                                                </div>
+                                            </div>
 
-                                            <div class="position-relative flex-grow-1">
-                                                <input type="text" id="lotInput" class="form-control"
-                                                    placeholder="Num. de lote" autocomplete="off">
+                                            <div class="border rounded-4 p-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="fw-bold mb-0">Paseo Península</h6>
+                                                    <button class="btn btn-outline-primary btn-sm js-open-development-modal" data-development-id="43" data-bs-toggle="modal" data-bs-target="#modalPiaro">Cotizar lote</button>
+                                                </div>
 
-                                                <input type="hidden" id="lotId">
+                                                <p class="small mb-2">¿Ya formas parte de Paseo Península? Busca tu lote para continuar.</p>
 
-                                                <div id="lotDropdown"
-                                                    class="list-group position-absolute w-100 shadow-sm"
-                                                    style="z-index:1000; display:none;">
+                                                <div class="position-relative">
+                                                    <input type="text" id="lotInput-43" class="form-control development-lot-input"
+                                                        data-development-id="43" placeholder="Buscar lote en Paseo Península" autocomplete="off">
+                                                    <input type="hidden" id="lotId-43">
+                                                    <div id="lotDropdown-43" class="list-group position-absolute w-100 shadow-sm development-lot-dropdown" style="z-index:1000; display:none;"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="border rounded-4 p-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="fw-bold mb-0">Ahawell</h6>
+                                                    <button class="btn btn-outline-primary btn-sm js-open-development-modal" data-development-id="3" data-bs-toggle="modal" data-bs-target="#modalPiaro">Cotizar lote</button>
+                                                </div>
+
+                                                <p class="small mb-2">Si ya formas parte de Ahawell, busca por desarrollo hijo y lote.</p>
+
+                                                <div class="position-relative">
+                                                    <input type="text" id="lotInput-3" class="form-control development-lot-input"
+                                                        data-development-id="3" placeholder="Buscar en Portal, Chakté, Bayal, Pakal y Chechem" autocomplete="off">
+                                                    <input type="hidden" id="lotId-3">
+                                                    <div id="lotDropdown-3" class="list-group position-absolute w-100 shadow-sm development-lot-dropdown" style="z-index:1000; display:none;"></div>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <hr>
-
-                                        <h6 class="fw-bold mt-3">¿Aún no tienes lote?</h6>
-                                        <p class="mb-3">
-                                            Selecciona un lote dentro de Piaró, Paseo Península o Ahawell.
-                                        </p>
-
-                                        <button class="btn btn-outline-primary btn-radius w-100" data-bs-toggle="modal"
-                                            data-bs-target="#modalPiaro">
-                                            Seleccionar lote
-                                        </button>
 
                                     </div>
 
