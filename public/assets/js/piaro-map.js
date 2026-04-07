@@ -242,10 +242,37 @@ function updateSvgLayerVisibility(developmentId) {
     const svgLayer = document.getElementById('dynamicSvgLayer');
     if (!svgLayer) return;
 
-    const isAhawellRootView = Number(developmentId) === AHAWELL_ROOT_ID;
-    svgLayer.style.opacity = isAhawellRootView ? '0' : '1';
-    svgLayer.style.pointerEvents = isAhawellRootView ? 'none' : 'auto';
+    svgLayer.style.opacity = '1';
+    svgLayer.style.pointerEvents = 'auto';
 }
+
+function getRedirectTargetDevelopmentId(item) {
+    if (!item) return null;
+    if (Number(item.redirect) !== 1) return null;
+
+    const redirectTargetId = Number(item.redirect_url);
+    if (Number.isNaN(redirectTargetId) || redirectTargetId <= 0) return null;
+
+    return redirectTargetId;
+}
+
+function getDevelopmentNameById(developmentId) {
+    const flatDevelopments = flattenDevelopments(DEVELOPMENT_TREE);
+    const matched = flatDevelopments.find(dev => Number(dev.id) === Number(developmentId));
+    return matched?.name || `desarrollo ${developmentId}`;
+}
+
+function normalizeHexColor(color) {
+    if (!color) return '';
+    const normalized = String(color).trim();
+
+    if (!normalized) return '';
+    if (normalized.startsWith('#')) return normalized;
+    if (/^[0-9a-fA-F]{3,8}$/.test(normalized)) return `#${normalized}`;
+
+    return normalized;
+}
+
 async function loadSvgLayer(development) {
     const svgLayer = document.getElementById('dynamicSvgLayer');
     const svgUrl = resolveMediaUrl(development.svg_image);
@@ -284,13 +311,45 @@ function getMappedLot(item, lotsCache) {
 
 function bindSvgInteractions(svgLayer, lotsCache) {
     currentMap.forEach(item => {
-        if (!item.selectorSVG || !item.lote_id) return;
-
-        const matchedLot = getMappedLot(item, lotsCache);
-        if (!matchedLot) return;
+        if (!item?.selectorSVG) return;
 
         const svgElement = svgLayer.querySelector(`#${item.selectorSVG}`);
         if (!svgElement) return;
+
+        const redirectTargetId = getRedirectTargetDevelopmentId(item);
+        if (redirectTargetId) {
+            const baseColor = normalizeHexColor(item.color) || 'rgba(56, 110, 250, 0.25)';
+            const activeColor = normalizeHexColor(item.color_active) || 'rgba(56, 110, 250, 0.55)';
+
+            paintSvg(svgElement, baseColor);
+            svgElement.style.cursor = 'pointer';
+
+            new bootstrap.Tooltip(svgElement, {
+                title: `Abrir ${getDevelopmentNameById(redirectTargetId)}`
+            });
+
+            svgElement.addEventListener('mouseenter', () => {
+                paintSvg(svgElement, activeColor);
+            });
+
+            svgElement.addEventListener('mouseleave', () => {
+                paintSvg(svgElement, baseColor);
+            });
+
+            svgElement.addEventListener('click', e => {
+                e.preventDefault();
+                e.stopPropagation();
+                setActiveSearchDevelopment(redirectTargetId);
+                loadDevelopment(redirectTargetId);
+            });
+
+            return;
+        }
+
+        if (!item.lote_id) return;
+
+        const matchedLot = getMappedLot(item, lotsCache);
+        if (!matchedLot) return;
 
         const status = matchedLot.status;
         const fillColor = statusColors[status] ?? 'rgba(100,100,100,.8)';
@@ -374,6 +433,9 @@ async function loadDevelopment(developmentId) {
         if (isAhawellRootView) {
             window.lotsCache = [];
             highlightActiveDevelopment(0);
+            if (svgLayer) {
+                bindSvgInteractions(svgLayer, window.lotsCache);
+            }
             return;
         }
 
@@ -524,4 +586,3 @@ function paintSvg(el, color) {
         child.style.setProperty('fill', color, 'important')
     );
 }
-

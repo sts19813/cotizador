@@ -7,6 +7,8 @@ let activeOverlays = {};
 let selectedFachada = null;
 let currentLoadToken = 0; // Loader helpers y token global
 
+const PREVENTA_DEVELOPMENT_IDS = new Set([43, 3, 2, 14, 8, 9, 10]);
+
 /**********************************************************
  * LOADER
  **********************************************************/
@@ -150,29 +152,95 @@ function cambiarImagen(index) {
   }
 }
 
+function getSelectedDevelopmentId() {
+  const developmentId = Number(
+    selections?.lote?.development_id ??
+    selections?.lote?.desarrollo_id ??
+    0
+  );
+
+  return Number.isNaN(developmentId) ? 0 : developmentId;
+}
+
+function getFinancingMode() {
+  const developmentId = getSelectedDevelopmentId();
+  if (PREVENTA_DEVELOPMENT_IDS.has(developmentId)) return 'PREVENTA';
+  return 'PIARO';
+}
+
+function setFinancingUIByMode(mode) {
+  const selectEnganche = document.getElementById('selectEnganche');
+  const selectPlazo = document.getElementById('selectPlazo');
+  const tasaLabel = document.getElementById('financingRateLabel');
+  const tasaValue = document.getElementById('tasa');
+  const mensualidadHint = document.getElementById('mensualidadHint');
+  const schemeNote = document.getElementById('financingSchemeNote');
+
+  if (mode === 'PREVENTA') {
+    if (selectEnganche) {
+      selectEnganche.value = '0.20';
+      selectEnganche.disabled = true;
+    }
+
+    if (selectPlazo) {
+      selectPlazo.value = '3';
+      selectPlazo.disabled = true;
+    }
+
+    if (tasaLabel) tasaLabel.textContent = 'Esquema de preventa';
+    if (tasaValue) tasaValue.textContent = '20% del total';
+    if (mensualidadHint) mensualidadHint.textContent = '/mes a 36 meses';
+    if (schemeNote) {
+      schemeNote.textContent = 'En Ahawell y Paseo Península aplicas un esquema especial de preventa con solo 20% de anticipo y el resto se definira mediante un credito hipotecario';
+    }
+    return;
+  }
+
+  if (selectEnganche) selectEnganche.disabled = false;
+  if (selectPlazo) {
+    selectPlazo.disabled = false;
+
+    if (Number(selectPlazo.value) === 3) {
+      selectPlazo.value = String(FINANCIAMIENTO.plazoAnios || 25);
+    }
+  }
+
+  if (tasaLabel) tasaLabel.textContent = '% Tasa de interés fija anual';
+  if (tasaValue) tasaValue.textContent = `${Number(FINANCIAMIENTO.tasaAnual || 0).toFixed(2)}%`;
+  if (mensualidadHint) mensualidadHint.textContent = '/mes estimado';
+  if (schemeNote) schemeNote.textContent = '';
+}
+
 function actualizarFinanciamiento(total) {
   if (!total || total <= 0) return;
 
   window.precioTotalActual = total;
 
-  const {
-    anticipoPorcentaje,
-    tasaAnual,
-    plazoAnios
-  } = FINANCIAMIENTO;
+  const mode = getFinancingMode();
+  setFinancingUIByMode(mode);
 
+  if (mode === 'PREVENTA') {
+    const baseFinanciable = total * 0.20;
+    const anticipo = baseFinanciable * 0.20;
+    const montoFinanciado = baseFinanciable * 0.80;
+    const mensualidad = montoFinanciado / 36;
+
+    document.getElementById('mensualidad').textContent = formatoMXN(mensualidad);
+    document.getElementById('montoFinanciado').textContent = formatoMXN(montoFinanciado);
+    document.getElementById('anticipo').textContent = formatoMXN(anticipo);
+    return;
+  }
+
+  const { anticipoPorcentaje, tasaAnual, plazoAnios } = FINANCIAMIENTO;
   const plazoMeses = plazoAnios * 12;
-
   const anticipo = total * anticipoPorcentaje;
   const montoFinanciado = total - anticipo;
-
   const tasaMensual = (tasaAnual / 100) / 12;
 
   // Amortización francesa
   const mensualidad = (montoFinanciado * tasaMensual) /
     (1 - Math.pow(1 + tasaMensual, -plazoMeses));
 
-  // UI
   document.getElementById('mensualidad').textContent = formatoMXN(mensualidad);
   document.getElementById('montoFinanciado').textContent = formatoMXN(montoFinanciado);
   document.getElementById('anticipo').textContent = formatoMXN(anticipo);
@@ -517,12 +585,19 @@ document.querySelectorAll('.option-card').forEach(card => {
 document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById('selectEnganche').addEventListener('change', e => {
+    if (getFinancingMode() !== 'PIARO') return;
     FINANCIAMIENTO.anticipoPorcentaje = parseFloat(e.target.value);
     actualizarFinanciamiento(window.precioTotalActual);
   });
 
   document.getElementById('selectPlazo').addEventListener('change', e => {
-    FINANCIAMIENTO.plazoAnios = parseInt(e.target.value);
+    if (getFinancingMode() !== 'PIARO') return;
+    const plazoSeleccionado = parseInt(e.target.value);
+    if (plazoSeleccionado === 3) {
+      e.target.value = String(FINANCIAMIENTO.plazoAnios || 25);
+      return;
+    }
+    FINANCIAMIENTO.plazoAnios = plazoSeleccionado;
     actualizarFinanciamiento(window.precioTotalActual);
   });
 

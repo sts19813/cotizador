@@ -68,17 +68,7 @@
                                     data-bs-target="#opciones-casas" aria-expanded="true"
                                     aria-controls="opciones-casas">
                                     <span class="textAcordeon">Estilo</span>
-                                    <span class="icon ms-auto">
-                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
-                                        </svg>
-                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            height="20" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
-                                        </svg>
-                                    </span>
+                                    <x-accordion-toggle-icon class="ms-auto" />
                                 </button>
                             </h2>
                             <div id="Estilos" class="accordion-collapse collapse show" aria-labelledby="headingGeneral">
@@ -125,19 +115,7 @@
                                 <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#Habitaciones" aria-expanded="true" aria-controls="Habitaciones">
                                     <span class="textAcordeon">Número de habitaciones</span>
-                                    <span class="icon ms-auto">
-                                        <!-- PLUS ICON -->
-                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
-                                        </svg>
-                                        <!-- MINUS ICON -->
-                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            height="20" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
-                                        </svg>
-                                    </span>
+                                    <x-accordion-toggle-icon class="ms-auto" />
                                 </button>
                             </h2>
                             <div id="Habitaciones" class="accordion-collapse collapse show"
@@ -198,19 +176,7 @@
                                         aria-controls="collapse-{{ $category->id }}">
 
                                         <span class="textAcordeon">{{ $category->name }}</span>
-                                        <span class="icon ms-auto">
-                                            <!-- Ícono + (más), se muestra cuando está colapsado -->
-                                            <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                fill="currentColor" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
-                                            </svg>
-                                            <!-- Ícono − (menos), se muestra cuando está expandido -->
-                                            <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                                height="20" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
-                                            </svg>
-                                        </span>
+                                        <x-accordion-toggle-icon class="ms-auto" />
                                     </button>
                                 </h2>
 
@@ -258,148 +224,148 @@
                             </div>
                         @endforeach
 
-                        <div class="accordion-item hover-shadow mb-4">
+                        <div class="development-section mb-4">
+                            <h2 class="development-section-title">Selecciona un Desarrollo</h2>
 
-                            <h2 class="accordion-header" id="headingPiaro">
-                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#piaroCard" aria-expanded="true" aria-controls="piaroCard">
-                                    <span class="textAcordeon">Selecciona un desarrollo</span>
-                                    <span class="icon ms-auto">
-                                        <!-- PLUS ICON -->
-                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
-                                        </svg>
-                                        <!-- MINUS ICON -->
-                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            height="20" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
-                                        </svg>
-                                    </span>
-                                </button>
-                            </h2>
+                            <div id="piaroInitialContent">
+                                <div class="development-selector-main d-flex flex-column gap-3" id="developmentSelectorAccordion">
+                                    <div class="development-card" style="overflow: visible !important;">
+                                        <button class="development-card-toggle collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseDevelopmentPiaro" aria-expanded="false"
+                                            aria-controls="collapseDevelopmentPiaro" style="border-radius: 18px">
+                                            <span class="development-card-title">Piaró</span>
+                                            <span class="development-badge development-badge-immediate">Entrega inmediata</span>
+                                            <x-accordion-toggle-icon class="ms-auto development-toggle-icon" />
+                                        </button>
 
-                            <div id="piaroCard" class="accordion-collapse collapse show">
+                                        <div id="collapseDevelopmentPiaro" class="collapse development-card-collapse"
+                                            data-bs-parent="#developmentSelectorAccordion">
+                                            <div class="development-card-body">
+                                                <p class="development-copy mb-2">¿Ya formas parte de Piaró? Busca tu lote para continuar.</p>
 
-                                <div class="accordion-body">
-
-                                    <!-- CONTENIDO INICIAL (SE OCULTA) -->
-                                    <div id="piaroInitialContent">
-                                        <div class="development-selector-main d-flex flex-column gap-3">
-                                            <div class="border rounded-4 p-3">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <h6 class="fw-bold mb-0">Piaró</h6>
-                                                    <button
-                                                        class="btn btn-outline-primary btn-sm js-open-development-modal"
-                                                        data-development-id="33" data-bs-toggle="modal"
-                                                        data-bs-target="#modalPiaro">Cotizar lote</button>
-                                                </div>
-
-                                                <p class="small mb-2">¿Ya formas parte de Piaró? Busca tu lote para
-                                                    continuar.</p>
-
-                                                <div class="position-relative">
-                                                    <input type="text" id="lotInput-33"
-                                                        class="form-control development-lot-input"
-                                                        data-development-id="33" placeholder="Buscar lote en Piaró"
-                                                        autocomplete="off">
+                                                <div class="position-relative mb-3">
+                                                    <input type="text" id="lotInput-33" class="form-control development-lot-input"
+                                                        data-development-id="33" placeholder="Num. de lote" autocomplete="off">
                                                     <input type="hidden" id="lotId-33">
                                                     <div id="lotDropdown-33"
                                                         class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
                                                         style="z-index:1000; display:none;"></div>
                                                 </div>
+
+                                                <button class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
+                                                    data-development-id="33" data-bs-toggle="modal"
+                                                    data-bs-target="#modalPiaro">Cotizar lote</button>
                                             </div>
+                                        </div>
+                                    </div>
 
-                                            <div class="border rounded-4 p-3">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <h6 class="fw-bold mb-0">Paseo Península</h6>
-                                                    <button
-                                                        class="btn btn-outline-primary btn-sm js-open-development-modal"
-                                                        data-development-id="43" data-bs-toggle="modal"
-                                                        data-bs-target="#modalPiaro">Cotizar lote</button>
-                                                </div>
+                                    <div class="development-card">
+                                        <button class="development-card-toggle collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseDevelopmentPaseo" aria-expanded="false"
+                                            aria-controls="collapseDevelopmentPaseo">
+                                            <span class="development-card-title">Paseo Península</span>
+                                            <span class="development-badge development-badge-presale">Preventa - 20% Enganche</span>
+                                            <x-accordion-toggle-icon class="ms-auto development-toggle-icon" />
+                                        </button>
 
-                                                <p class="small mb-2">¿Ya formas parte de Paseo Península? Busca tu lote
-                                                    para continuar.</p>
+                                        <div id="collapseDevelopmentPaseo" class="collapse development-card-collapse"
+                                            data-bs-parent="#developmentSelectorAccordion">
+                                            <div class="development-card-body">
+                                                <p class="development-copy mb-2">¿Ya formas parte de Paseo Península? Busca tu lote para continuar.</p>
 
-                                                <div class="position-relative">
-                                                    <input type="text" id="lotInput-43"
-                                                        class="form-control development-lot-input"
-                                                        data-development-id="43"
-                                                        placeholder="Buscar lote en Paseo Península" autocomplete="off">
-                                                    <input type="hidden" id="lotId-43">
+                                                <div class="position-relative mb-3">
+                                                    <input type="text" id="lotInput-43" class="form-control development-lot-input"
+                                                        data-development-id="43" placeholder="Num. de lote" autocomplete="off">
+                                                    <input type="hidden" id="lotId-43" disabled>
                                                     <div id="lotDropdown-43"
                                                         class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
                                                         style="z-index:1000; display:none;"></div>
                                                 </div>
+
+                                                <button class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
+                                                    data-development-id="43" data-bs-toggle="modal"
+                                                    data-bs-target="#modalPiaro">Cotizar lote</button>
                                             </div>
+                                        </div>
+                                    </div>
 
-                                            <div class="border rounded-4 p-3">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <h6 class="fw-bold mb-0">Ahawell</h6>
-                                                    <button
-                                                        class="btn btn-outline-primary btn-sm js-open-development-modal"
-                                                        data-development-id="3" data-bs-toggle="modal"
-                                                        data-bs-target="#modalPiaro">Cotizar lote</button>
-                                                </div>
+                                    <div class="development-card">
+                                        <button class="development-card-toggle" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseDevelopmentAhawell" aria-expanded="true"
+                                            aria-controls="collapseDevelopmentAhawell">
+                                            <span class="development-card-title">Ahawell</span>
+                                            <span class="development-badge development-badge-presale">Preventa - 20% Enganche</span>
+                                            <x-accordion-toggle-icon class="ms-auto development-toggle-icon" />
+                                        </button>
 
-                                                <p class="small mb-2">Si ya formas parte de Ahawell, busca por
-                                                    desarrollo hijo y lote.</p>
+                                        <div id="collapseDevelopmentAhawell" class="collapse show development-card-collapse"
+                                            data-bs-parent="#developmentSelectorAccordion">
+                                            <div class="development-card-body">
+                                                <h5 class="fw-bold mb-2">¿Ya eres parte de Ahawell?</h5>
+                                                <p class="development-copy mb-2">
+                                                    Si ya cuentas con un lote en Ahawell, indícanos tu número de lote para brindarte
+                                                    asesoría personalizada y continuar con tu proyecto.
+                                                </p>
 
-                                                <div class="position-relative">
-                                                    <input type="text" id="lotInput-3"
-                                                        class="form-control development-lot-input"
-                                                        data-development-id="3"
-                                                        placeholder="Buscar en Portal, Chakté, Bayal, Pakal y Chechem"
-                                                        autocomplete="off">
-                                                    <input type="hidden" id="lotId-3">
+                                                <div class="position-relative mb-4">
+                                                    <input type="text" id="lotInput-3" class="form-control development-lot-input"
+                                                        data-development-id="3" placeholder="Num. de lote" autocomplete="off">
+                                                    <input type="hidden" id="lotId-3" disabled>
                                                     <div id="lotDropdown-3"
                                                         class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
                                                         style="z-index:1000; display:none;"></div>
                                                 </div>
+
+                                                <h5 class="fw-bold mb-2">¿Aún no tienes lote en Ahawell?</h5>
+                                                <p class="development-copy mb-2">
+                                                    Ahawell incluye Portal, Chakté, Bayal, Pakal y Chechem.
+                                                </p>
+                                                <p class="development-copy mb-3">
+                                                    Puedes cotizar tu lote para continuar con tu casa personalizada.
+                                                </p>
+
+                                                <button class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
+                                                    data-development-id="3" data-bs-toggle="modal"
+                                                    data-bs-target="#modalPiaro">Cotizar lote</button>
                                             </div>
                                         </div>
-
                                     </div>
+                                </div>
+                            </div>
 
-                                    <!-- CARD LOTE SELECCIONADO -->
-                                    <div id="selectedLotCard" class="d-none">
-                                        <div class="card-body">
+                            <div id="selectedLotCard" class="d-none development-selected-lot mt-3">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3" id="lotTitle"></h5>
 
-                                            <h5 class="fw-bold mb-3" id="lotTitle"></h5>
-
-                                            <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <small class="">Lote</small>
-                                                    <div class="fw-semibold" id="lotName"></div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="">Área</small>
-                                                    <div class="fw-semibold" id="lotArea"></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mb-3 " id="info-lote">
-                                                <div class="col-6">
-                                                    <small class="">Precio m²</small>
-                                                    <div class="fw-semibold" id="lotPriceM2"></div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="">Precio Total</small>
-                                                    <div class="fw-semibold" id="lotTotal"></div>
-                                                </div>
-                                            </div>
-
-                                            <p class="small">
-                                                Esta simulación es sólo referencial.
-                                            </p>
-
-                                            <button class="btn btn-outline-primary w-100 btn-radius" id="changeLotBtn">
-                                                Seleccionar otro lote
-                                            </button>
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <small class="">Lote</small>
+                                            <div class="fw-semibold" id="lotName"></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="">Área</small>
+                                            <div class="fw-semibold" id="lotArea"></div>
                                         </div>
                                     </div>
+
+                                    <div class="row mb-3 " id="info-lote">
+                                        <div class="col-6">
+                                            <small class="">Precio m²</small>
+                                            <div class="fw-semibold" id="lotPriceM2"></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="">Precio Total</small>
+                                            <div class="fw-semibold" id="lotTotal"></div>
+                                        </div>
+                                    </div>
+
+                                    <p class="small">
+                                        Esta simulación es sólo referencial.
+                                    </p>
+
+                                    <button class="btn btn-outline-primary w-100 btn-radius" id="changeLotBtn">
+                                        Seleccionar otro lote
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -410,7 +376,7 @@
                                 <h5 class="fw-bold mb-3">Financiamiento</h5>
                                 <div class="mb-3">
                                     <span id="mensualidad" class="fs-3 fw-bold">$0.00</span>
-                                    <span class="text-primary">/mes estimado</span>
+                                    <span class="text-primary" id="mensualidadHint">/mes estimado</span>
                                 </div>
 
                                 <hr>
@@ -428,6 +394,7 @@
                                     <div class="col-6">
                                         <label class="form-label small">Plazo</label>
                                         <select id="selectPlazo" class="form-select">
+                                            <option value="3">36 meses</option>
                                             <option value="10">10 años</option>
                                             <option value="15">15 años</option>
                                             <option value="20">20 años</option>
@@ -438,7 +405,7 @@
 
                                 <div class="row mb-3 g-2 text-center text-md-start">
                                     <div class="col-12 col-md-5">
-                                        <small>% Tasa de interés fija anual</small>
+                                        <small id="financingRateLabel">% Tasa de interés fija anual</small>
                                         <div id="tasa" class="fw-bold fs-6 fs-md-6">11.99%</div>
                                     </div>
 
@@ -452,6 +419,8 @@
                                         <div id="montoFinanciado" class="fw-bold fs-6 fs-md-6">$0.00</div>
                                     </div>
                                 </div>
+
+                                <p class="small text-primary mb-3" id="financingSchemeNote"></p>
 
 
                                 <div class="mb-4 d-none">
@@ -522,3 +491,4 @@
 </body>
 
 </html>
+
