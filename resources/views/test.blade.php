@@ -60,126 +60,6 @@
 
                     <div class="accordion " id="configAccordion">
 
-                        <div class="accordion-item hover-shadow mb-4">
-
-                            <h2 class="accordion-header" id="headingPiaro">
-                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#piaroCard" aria-expanded="true" aria-controls="piaroCard">
-                                    <span class="textAcordeon">Selecciona un desarrollo</span>
-                                    <span class="icon ms-auto">
-                                        <!-- PLUS ICON -->
-                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
-                                        </svg>
-                                        <!-- MINUS ICON -->
-                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            height="20" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
-                                        </svg>
-                                    </span>
-                                </button>
-                            </h2>
-
-                            <div id="piaroCard" class="accordion-collapse collapse show">
-
-                                <div class="accordion-body">
-
-                                    <!-- CONTENIDO INICIAL (SE OCULTA) -->
-                                    <div id="piaroInitialContent">
-                                        <div class="development-selector-main d-flex flex-column gap-3">
-                                            <div class="border rounded-4 p-3">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <h6 class="fw-bold mb-0">Piaró</h6>
-                                                    <button class="btn btn-outline-primary btn-sm js-open-development-modal" data-development-id="33" data-bs-toggle="modal" data-bs-target="#modalPiaro">Cotizar lote</button>
-                                                </div>
-
-                                                <p class="small mb-2">¿Ya formas parte de Piaró? Busca tu lote para continuar.</p>
-
-                                                <div class="position-relative">
-                                                    <input type="text" id="lotInput-33" class="form-control development-lot-input"
-                                                        data-development-id="33" placeholder="Buscar lote en Piaró" autocomplete="off">
-                                                    <input type="hidden" id="lotId-33">
-                                                    <div id="lotDropdown-33" class="list-group position-absolute w-100 shadow-sm development-lot-dropdown" style="z-index:1000; display:none;"></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="border rounded-4 p-3">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <h6 class="fw-bold mb-0">Paseo Península</h6>
-                                                    <button class="btn btn-outline-primary btn-sm js-open-development-modal" data-development-id="43" data-bs-toggle="modal" data-bs-target="#modalPiaro">Cotizar lote</button>
-                                                </div>
-
-                                                <p class="small mb-2">¿Ya formas parte de Paseo Península? Busca tu lote para continuar.</p>
-
-                                                <div class="position-relative">
-                                                    <input type="text" id="lotInput-43" class="form-control development-lot-input"
-                                                        data-development-id="43" placeholder="Buscar lote en Paseo Península" autocomplete="off">
-                                                    <input type="hidden" id="lotId-43">
-                                                    <div id="lotDropdown-43" class="list-group position-absolute w-100 shadow-sm development-lot-dropdown" style="z-index:1000; display:none;"></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="border rounded-4 p-3">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <h6 class="fw-bold mb-0">Ahawell</h6>
-                                                    <button class="btn btn-outline-primary btn-sm js-open-development-modal" data-development-id="3" data-bs-toggle="modal" data-bs-target="#modalPiaro">Cotizar lote</button>
-                                                </div>
-
-                                                <p class="small mb-2">Si ya formas parte de Ahawell, busca por desarrollo hijo y lote.</p>
-
-                                                <div class="position-relative">
-                                                    <input type="text" id="lotInput-3" class="form-control development-lot-input"
-                                                        data-development-id="3" placeholder="Buscar en Portal, Chakté, Bayal, Pakal y Chechem" autocomplete="off">
-                                                    <input type="hidden" id="lotId-3">
-                                                    <div id="lotDropdown-3" class="list-group position-absolute w-100 shadow-sm development-lot-dropdown" style="z-index:1000; display:none;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <!-- CARD LOTE SELECCIONADO -->
-                                    <div id="selectedLotCard" class="d-none">
-                                        <div class="card-body">
-
-                                            <h5 class="fw-bold mb-3" id="lotTitle"></h5>
-
-                                            <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <small class="">Lote</small>
-                                                    <div class="fw-semibold" id="lotName"></div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="">Área</small>
-                                                    <div class="fw-semibold" id="lotArea"></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mb-3 " id="info-lote">
-                                                <div class="col-6">
-                                                    <small class="">Precio m²</small>
-                                                    <div class="fw-semibold" id="lotPriceM2"></div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="">Precio Total</small>
-                                                    <div class="fw-semibold" id="lotTotal"></div>
-                                                </div>
-                                            </div>
-
-                                            <p class="small">
-                                                Esta simulación es sólo referencial.
-                                            </p>
-
-                                            <button class="btn btn-outline-primary w-100 btn-radius" id="changeLotBtn">
-                                                Seleccionar otro lote
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- General -->
                         <div class="accordion-item hover-shadow mb-4">
@@ -378,6 +258,153 @@
                             </div>
                         @endforeach
 
+                        <div class="accordion-item hover-shadow mb-4">
+
+                            <h2 class="accordion-header" id="headingPiaro">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#piaroCard" aria-expanded="true" aria-controls="piaroCard">
+                                    <span class="textAcordeon">Selecciona un desarrollo</span>
+                                    <span class="icon ms-auto">
+                                        <!-- PLUS ICON -->
+                                        <svg class="plus-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            fill="currentColor" viewBox="0 0 16 16">
+                                            <path
+                                                d="M8 1a.5.5 0 0 1 .5.5v6.5h6.5a.5.5 0 0 1 0 1H8.5V15a.5.5 0 0 1-1 0V9.5H1a.5.5 0 0 1 0-1h6.5V1.5A.5.5 0 0 1 8 1z" />
+                                        </svg>
+                                        <!-- MINUS ICON -->
+                                        <svg class="minus-icon" xmlns="http://www.w3.org/2000/svg" width="20"
+                                            height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </h2>
+
+                            <div id="piaroCard" class="accordion-collapse collapse show">
+
+                                <div class="accordion-body">
+
+                                    <!-- CONTENIDO INICIAL (SE OCULTA) -->
+                                    <div id="piaroInitialContent">
+                                        <div class="development-selector-main d-flex flex-column gap-3">
+                                            <div class="border rounded-4 p-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="fw-bold mb-0">Piaró</h6>
+                                                    <button
+                                                        class="btn btn-outline-primary btn-sm js-open-development-modal"
+                                                        data-development-id="33" data-bs-toggle="modal"
+                                                        data-bs-target="#modalPiaro">Cotizar lote</button>
+                                                </div>
+
+                                                <p class="small mb-2">¿Ya formas parte de Piaró? Busca tu lote para
+                                                    continuar.</p>
+
+                                                <div class="position-relative">
+                                                    <input type="text" id="lotInput-33"
+                                                        class="form-control development-lot-input"
+                                                        data-development-id="33" placeholder="Buscar lote en Piaró"
+                                                        autocomplete="off">
+                                                    <input type="hidden" id="lotId-33">
+                                                    <div id="lotDropdown-33"
+                                                        class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
+                                                        style="z-index:1000; display:none;"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="border rounded-4 p-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="fw-bold mb-0">Paseo Península</h6>
+                                                    <button
+                                                        class="btn btn-outline-primary btn-sm js-open-development-modal"
+                                                        data-development-id="43" data-bs-toggle="modal"
+                                                        data-bs-target="#modalPiaro">Cotizar lote</button>
+                                                </div>
+
+                                                <p class="small mb-2">¿Ya formas parte de Paseo Península? Busca tu lote
+                                                    para continuar.</p>
+
+                                                <div class="position-relative">
+                                                    <input type="text" id="lotInput-43"
+                                                        class="form-control development-lot-input"
+                                                        data-development-id="43"
+                                                        placeholder="Buscar lote en Paseo Península" autocomplete="off">
+                                                    <input type="hidden" id="lotId-43">
+                                                    <div id="lotDropdown-43"
+                                                        class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
+                                                        style="z-index:1000; display:none;"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="border rounded-4 p-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="fw-bold mb-0">Ahawell</h6>
+                                                    <button
+                                                        class="btn btn-outline-primary btn-sm js-open-development-modal"
+                                                        data-development-id="3" data-bs-toggle="modal"
+                                                        data-bs-target="#modalPiaro">Cotizar lote</button>
+                                                </div>
+
+                                                <p class="small mb-2">Si ya formas parte de Ahawell, busca por
+                                                    desarrollo hijo y lote.</p>
+
+                                                <div class="position-relative">
+                                                    <input type="text" id="lotInput-3"
+                                                        class="form-control development-lot-input"
+                                                        data-development-id="3"
+                                                        placeholder="Buscar en Portal, Chakté, Bayal, Pakal y Chechem"
+                                                        autocomplete="off">
+                                                    <input type="hidden" id="lotId-3">
+                                                    <div id="lotDropdown-3"
+                                                        class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
+                                                        style="z-index:1000; display:none;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- CARD LOTE SELECCIONADO -->
+                                    <div id="selectedLotCard" class="d-none">
+                                        <div class="card-body">
+
+                                            <h5 class="fw-bold mb-3" id="lotTitle"></h5>
+
+                                            <div class="row mb-3">
+                                                <div class="col-6">
+                                                    <small class="">Lote</small>
+                                                    <div class="fw-semibold" id="lotName"></div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="">Área</small>
+                                                    <div class="fw-semibold" id="lotArea"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 " id="info-lote">
+                                                <div class="col-6">
+                                                    <small class="">Precio m²</small>
+                                                    <div class="fw-semibold" id="lotPriceM2"></div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="">Precio Total</small>
+                                                    <div class="fw-semibold" id="lotTotal"></div>
+                                                </div>
+                                            </div>
+
+                                            <p class="small">
+                                                Esta simulación es sólo referencial.
+                                            </p>
+
+                                            <button class="btn btn-outline-primary w-100 btn-radius" id="changeLotBtn">
+                                                Seleccionar otro lote
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div class="card shadow-sm border-0 financing-card">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-3">Financiamiento</h5>
@@ -397,7 +424,7 @@
                                             <option value="0.20" selected>20%</option>
                                             <option value="0.25">25%</option>
                                         </select>
-                                    </div>                              
+                                    </div>
                                     <div class="col-6">
                                         <label class="form-label small">Plazo</label>
                                         <select id="selectPlazo" class="form-select">
@@ -411,17 +438,17 @@
 
                                 <div class="row mb-3 g-2 text-center text-md-start">
                                     <div class="col-12 col-md-5">
-                                        <small >% Tasa de interés fija anual</small>
+                                        <small>% Tasa de interés fija anual</small>
                                         <div id="tasa" class="fw-bold fs-6 fs-md-6">11.99%</div>
                                     </div>
 
                                     <div class="col-6 col-md-3">
-                                        <small >Enganche</small>
+                                        <small>Enganche</small>
                                         <div id="anticipo" class="fw-bold fs-6 fs-md-6">$0.00</div>
                                     </div>
 
                                     <div class="col-6 col-md-4">
-                                        <small >Monto financiado</small>
+                                        <small>Monto financiado</small>
                                         <div id="montoFinanciado" class="fw-bold fs-6 fs-md-6">$0.00</div>
                                     </div>
                                 </div>
@@ -433,7 +460,9 @@
                                 </div>
 
                                 <p class="small ">
-                                    Esta simulación es únicamente de carácter referencial. La aprobación final del crédito está sujeta a la evaluación y autorización de la institución financiera correspondiente.
+                                    Esta simulación es únicamente de carácter referencial. La aprobación final del
+                                    crédito está sujeta a la evaluación y autorización de la institución financiera
+                                    correspondiente.
                                 </p>
 
                                 {{-- BOTONES --}}
