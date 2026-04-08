@@ -40,6 +40,8 @@ let activeSearchDevelopmentId = 33;
 let selectedModalRootDevelopmentId = 33;
 
 const AHAWELL_ROOT_ID = 3;
+const AHAWELL_CLUSTER_BASE_COLOR = 'rgba(52, 199, 89, 0.22)';
+const AHAWELL_CLUSTER_ACTIVE_COLOR = 'rgba(52, 199, 89, 1)';
 
 function getInputElementsForDevelopment(developmentId) {
     return {
@@ -64,9 +66,42 @@ function resolveMediaUrl(path) {
     return `${window.NABOO_ASSET_BASE_URL}/${cleanPath}`;
 }
 
+function getDevelopmentDisplayNameById(developmentId, fallbackName = '') {
+    const numericId = Number(developmentId);
+    if (!numericId) return fallbackName;
+
+    const directDevelopment = DEVELOPMENT_TREE.find(dev => Number(dev.id) === numericId);
+    if (directDevelopment) {
+        return directDevelopment.name || fallbackName;
+    }
+
+    const parentDevelopment = DEVELOPMENT_TREE.find(dev =>
+        Array.isArray(dev.children) && dev.children.some(child => Number(child.id) === numericId)
+    );
+    if (!parentDevelopment) {
+        return fallbackName || `desarrollo ${developmentId}`;
+    }
+
+    const childDevelopment = parentDevelopment.children.find(child => Number(child.id) === numericId);
+    if (!childDevelopment) {
+        return fallbackName || `desarrollo ${developmentId}`;
+    }
+
+    if (Number(parentDevelopment.id) === AHAWELL_ROOT_ID) {
+        return `${parentDevelopment.name} - ${childDevelopment.name}`;
+    }
+
+    return childDevelopment.name || fallbackName || `desarrollo ${developmentId}`;
+}
+
 function getSelectedLotLabel(lot, developmentName = null) {
     const lotName = lot?.name ?? lot?.lote_id ?? '';
-    const resolvedDevelopmentName = developmentName || lot?.development_name || currentDevelopment?.name;
+    const resolvedDevelopmentName =
+        developmentName ||
+        lot?.development_display_name ||
+        lot?.development_name ||
+        getDevelopmentDisplayNameById(lot?.development_id, currentDevelopment?.name) ||
+        currentDevelopment?.name;
 
     if (!resolvedDevelopmentName) {
         return lotName;
@@ -164,11 +199,13 @@ async function preloadSearchableLots() {
     const developmentData = await Promise.all(flatDevelopments.map(async dev => {
         const development = await fetchDevelopment(dev.id);
         const lots = await fetchLotsForStage(development.stage_id);
+        const developmentDisplayName = getDevelopmentDisplayNameById(development.id, development.name);
 
         return lots.map(lot => ({
             ...lot,
             development_id: development.id,
             development_name: development.name,
+            development_display_name: developmentDisplayName,
             stage_id: development.stage_id
         }));
     }));
@@ -257,9 +294,7 @@ function getRedirectTargetDevelopmentId(item) {
 }
 
 function getDevelopmentNameById(developmentId) {
-    const flatDevelopments = flattenDevelopments(DEVELOPMENT_TREE);
-    const matched = flatDevelopments.find(dev => Number(dev.id) === Number(developmentId));
-    return matched?.name || `desarrollo ${developmentId}`;
+    return getDevelopmentDisplayNameById(developmentId);
 }
 
 function normalizeHexColor(color) {
@@ -309,17 +344,58 @@ function getMappedLot(item, lotsCache) {
     );
 }
 
+function escapeCssSelectorValue(selectorValue) {
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+        return window.CSS.escape(selectorValue);
+    }
+
+    return String(selectorValue).replace(/([ #;?%&,.+*~':"!^$[\]()=>|/@])/g, '\\$1');
+}
+
+function resolveSvgElement(svgLayer, rawSelector) {
+    if (!svgLayer || !rawSelector) return null;
+
+    const selectorValue = String(rawSelector).trim();
+    if (!selectorValue) return null;
+
+    const plainId = selectorValue.replace(/^#/, '');
+    const attempts = [
+        `#${escapeCssSelectorValue(plainId)}`,
+        `[id="${plainId.replace(/"/g, '\\"')}"]`
+    ];
+
+    if (selectorValue.startsWith('#')) {
+        attempts.push(selectorValue);
+    }
+
+    for (const selector of attempts) {
+        try {
+            const element = svgLayer.querySelector(selector);
+            if (element) return element;
+        } catch (_error) {
+            continue;
+        }
+    }
+
+    return null;
+}
+
 function bindSvgInteractions(svgLayer, lotsCache) {
     currentMap.forEach(item => {
         if (!item?.selectorSVG) return;
 
-        const svgElement = svgLayer.querySelector(`#${item.selectorSVG}`);
+        const svgElement = resolveSvgElement(svgLayer, item.selectorSVG);
         if (!svgElement) return;
 
         const redirectTargetId = getRedirectTargetDevelopmentId(item);
         if (redirectTargetId) {
-            const baseColor = normalizeHexColor(item.color) || 'rgba(56, 110, 250, 0.25)';
-            const activeColor = normalizeHexColor(item.color_active) || 'rgba(56, 110, 250, 0.55)';
+            const isAhawellRootView = Number(currentDevelopment?.id) === AHAWELL_ROOT_ID;
+            const baseColor = isAhawellRootView
+                ? AHAWELL_CLUSTER_BASE_COLOR
+                : (normalizeHexColor(item.color) || 'rgba(56, 110, 250, 0.25)');
+            const activeColor = isAhawellRootView
+                ? AHAWELL_CLUSTER_ACTIVE_COLOR
+                : (normalizeHexColor(item.color_active) || 'rgba(56, 110, 250, 0.55)');
 
             paintSvg(svgElement, baseColor);
             svgElement.style.cursor = 'pointer';
@@ -339,6 +415,7 @@ function bindSvgInteractions(svgLayer, lotsCache) {
             svgElement.addEventListener('click', e => {
                 e.preventDefault();
                 e.stopPropagation();
+                paintSvg(svgElement, activeColor);
                 setActiveSearchDevelopment(redirectTargetId);
                 loadDevelopment(redirectTargetId);
             });
@@ -387,13 +464,19 @@ function bindSvgInteractions(svgLayer, lotsCache) {
             clearSelectedLot();
 
             const loteTotal = matchedLot.area * matchedLot.price_square_meter;
+            const lotDevelopmentId = matchedLot.development_id || currentDevelopment.id;
+            const lotDevelopmentName = matchedLot.development_name || currentDevelopment.name;
+            const lotDevelopmentDisplayName =
+                matchedLot.development_display_name ||
+                getDevelopmentDisplayNameById(lotDevelopmentId, lotDevelopmentName);
 
             selections.lote = {
                 id: matchedLot.id,
-                name: getSelectedLotLabel(matchedLot),
+                name: getSelectedLotLabel(matchedLot, lotDevelopmentDisplayName),
                 lot_name: matchedLot.name,
-                development_id: currentDevelopment.id,
-                development_name: currentDevelopment.name,
+                development_id: lotDevelopmentId,
+                development_name: lotDevelopmentName,
+                development_display_name: lotDevelopmentDisplayName,
                 area: matchedLot.area,
                 price_square_meter: matchedLot.price_square_meter,
                 total: loteTotal,
@@ -405,10 +488,10 @@ function bindSvgInteractions(svgLayer, lotsCache) {
             recalcularPrecioTotal();
 
             const { input, hiddenLotId } = getActiveInputElements();
-            if (input) input.value = getSelectedLotLabel(matchedLot);
+            if (input) input.value = getSelectedLotLabel(matchedLot, lotDevelopmentDisplayName);
             if (hiddenLotId) hiddenLotId.value = matchedLot.id;
 
-            renderSelectedLot(matchedLot);
+            renderSelectedLot(matchedLot, lotDevelopmentDisplayName);
 
             const modalEl = document.getElementById('modalPiaro');
             const modal = bootstrap.Modal.getInstance(modalEl);
@@ -440,10 +523,12 @@ async function loadDevelopment(developmentId) {
         }
 
         const lots = await fetchLotsForStage(development.stage_id);
+        const developmentDisplayName = getDevelopmentDisplayNameById(development.id, development.name);
         window.lotsCache = lots.map(lot => ({
             ...lot,
             development_id: development.id,
-            development_name: development.name
+            development_name: development.name,
+            development_display_name: developmentDisplayName
         }));
 
         if (svgLayer) {
@@ -513,14 +598,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 const item = document.createElement('button');
                 item.type = 'button';
                 item.className = 'list-group-item list-group-item-action';
-                const developmentLabel = lot.development_name ? `<small class="text-muted d-block">${lot.development_name}</small>` : '';
+                const lotDevelopmentName =
+                    lot.development_display_name ||
+                    getDevelopmentDisplayNameById(lot.development_id, lot.development_name || currentDevelopment?.name);
+                const developmentLabel = lotDevelopmentName ? `<small class="text-muted d-block">${lotDevelopmentName}</small>` : '';
                 item.innerHTML = `${developmentLabel}<strong>Lote ${lot.name}</strong>`;
                 isSelectingLot = false;
 
                 item.onclick = () => {
                     isSelectingLot = true;
                     setActiveSearchDevelopment(developmentId);
-                    input.value = lot.development_name ? `${lot.development_name} - Lote ${lot.name}` : lot.name;
+                    input.value = lotDevelopmentName ? `${lotDevelopmentName} - Lote ${lot.name}` : lot.name;
                     if (hiddenLotId) hiddenLotId.value = lot.id;
                     dropdown.style.display = 'none';
 
@@ -529,10 +617,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     selections.lote = {
                         id: lot.id,
-                        name: getSelectedLotLabel(lot, lot.development_name),
+                        name: getSelectedLotLabel(lot, lotDevelopmentName),
                         lot_name: lot.name,
                         development_id: lot.development_id || currentDevelopment?.id,
                         development_name: lot.development_name || currentDevelopment?.name,
+                        development_display_name: lotDevelopmentName,
                         area: lot.area,
                         price_square_meter: lot.price_square_meter,
                         total: lot.area * lot.price_square_meter,
@@ -541,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     };
                     localStorage.setItem('selections', JSON.stringify(selections));
 
-                    renderSelectedLot(lot, lot.development_name);
+                    renderSelectedLot(lot, lotDevelopmentName);
                 };
                 dropdown.appendChild(item);
             });

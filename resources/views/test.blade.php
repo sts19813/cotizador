@@ -2,8 +2,8 @@
 <html lang="es">
 
 <x-head />
-<link rel="stylesheet" href="/assets/cotizador.css">
 
+<link rel="stylesheet" href="/assets/cotizador.css?v={{ filemtime(public_path('assets/cotizador.css')) }}">
 
 <body class="general-background">
 
@@ -224,7 +224,7 @@
                             </div>
                         @endforeach
 
-                        <div class="development-section mb-4">
+                        <div class="development-section mb-4" id="piaroCard">
                             <h2 class="development-section-title">Selecciona un Desarrollo</h2>
 
                             <div id="piaroInitialContent">
@@ -275,7 +275,7 @@
 
                                                 <div class="position-relative mb-3">
                                                     <input type="text" id="lotInput-43" class="form-control development-lot-input"
-                                                        data-development-id="43" placeholder="Num. de lote" autocomplete="off">
+                                                        data-development-id="43" placeholder="Num. de lote" autocomplete="off" disabled>
                                                     <input type="hidden" id="lotId-43" disabled>
                                                     <div id="lotDropdown-43"
                                                         class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
@@ -309,7 +309,7 @@
 
                                                 <div class="position-relative mb-4">
                                                     <input type="text" id="lotInput-3" class="form-control development-lot-input"
-                                                        data-development-id="3" placeholder="Num. de lote" autocomplete="off">
+                                                        data-development-id="3" placeholder="Num. de lote" autocomplete="off" disabled>
                                                     <input type="hidden" id="lotId-3" disabled>
                                                     <div id="lotDropdown-3"
                                                         class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
@@ -360,7 +360,7 @@
                                     </div>
 
                                     <p class="small">
-                                        Esta simulación es sólo referencial.
+                                        Los precios de materiales y costos de construcción están sujetos a actualización al momento de concluir el pago del enganche. Históricamente, estos costos han presentado incrementos aproximados del 5% anual, por lo que el precio final podrá ajustarse en función de las condiciones vigentes al momento de la formalización.
                                     </p>
 
                                     <button class="btn btn-outline-primary w-100 btn-radius" id="changeLotBtn">
