@@ -125,7 +125,11 @@ function syncOverlayImages(container, overlays, isThumb = false, animate = true)
 
   // Aplicar/animar solo overlays nuevos o cambiados
   normalized.forEach(item => {
-    const current = container.querySelector(`[data-overlay-key="${escapeSelectorValue(item.key)}"]`);
+    const sameKeyNodes = Array.from(container.querySelectorAll(`[data-overlay-key="${escapeSelectorValue(item.key)}"]`));
+    const current = sameKeyNodes[sameKeyNodes.length - 1] || null;
+    if (sameKeyNodes.length > 1) {
+      sameKeyNodes.slice(0, -1).forEach(n => n.remove());
+    }
     const baseClass = isThumb ? 'thumb thumb-overlay-image' : 'main-overlay-image';
 
     if (!current) {
@@ -145,9 +149,13 @@ function syncOverlayImages(container, overlays, isThumb = false, animate = true)
       img.style.zIndex = String(100 + item.order);
       container.appendChild(img);
       if (animate) {
-        requestAnimationFrame(() => {
-          img.style.opacity = '1';
-        });
+        const preload = new window.Image();
+        preload.onload = preload.onerror = () => {
+          requestAnimationFrame(() => {
+            img.style.opacity = '1';
+          });
+        };
+        preload.src = item.url;
       }
       return;
     }
@@ -165,14 +173,33 @@ function syncOverlayImages(container, overlays, isThumb = false, animate = true)
       return;
     }
 
-    // Evitar nodos duplicados por key (esto causaba overlays "pegados" y clics extra)
-    current.style.transition = `opacity ${OVERLAY_TRANSITION_MS}ms ease`;
-    current.style.opacity = '0';
-    current.src = item.url;
-    current.dataset.overlayUrl = item.url;
-    requestAnimationFrame(() => {
-      current.style.opacity = '1';
-    });
+    // Crossfade real: imagen anterior -> imagen nueva.
+    const next = current.cloneNode(false);
+    next.src = item.url;
+    next.dataset.overlayUrl = item.url;
+    next.style.opacity = '0';
+    next.style.transition = `opacity ${OVERLAY_TRANSITION_MS}ms ease`;
+    next.style.zIndex = current.style.zIndex;
+    container.appendChild(next);
+
+    const startFade = () => {
+      requestAnimationFrame(() => {
+        current.style.transition = `opacity ${OVERLAY_TRANSITION_MS}ms ease`;
+        current.style.opacity = '0';
+        next.style.opacity = '1';
+      });
+    };
+
+    const preload = new window.Image();
+    preload.onload = startFade;
+    preload.onerror = startFade;
+    preload.src = item.url;
+
+    const cleanup = () => {
+      if (current.parentNode) current.remove();
+      next.removeEventListener('transitionend', cleanup);
+    };
+    next.addEventListener('transitionend', cleanup);
   });
 }
 
