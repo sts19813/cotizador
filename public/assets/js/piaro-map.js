@@ -38,6 +38,7 @@ let lotsByDevelopment = {};
 let searchableLotsCache = [];
 let activeSearchDevelopmentId = 33;
 let selectedModalRootDevelopmentId = 33;
+let developmentLoadRequestId = 0;
 
 const AHAWELL_ROOT_ID = 3;
 const AHAWELL_CLUSTER_BASE_COLOR = 'rgba(52, 199, 89, 0.22)';
@@ -108,6 +109,13 @@ function resolveMediaUrl(path) {
     if (/^https?:\/\//i.test(path)) return path;
     const cleanPath = String(path).replace(/^\/+/, '');
     return `${window.NABOO_ASSET_BASE_URL}/${cleanPath}`;
+}
+
+function setMapLoadingState(isLoading) {
+    const mapContainer = document.getElementById('developmentMapContainer');
+    if (!mapContainer) return;
+
+    mapContainer.classList.toggle('is-loading', Boolean(isLoading));
 }
 
 function getDevelopmentDisplayNameById(developmentId, fallbackName = '') {
@@ -321,12 +329,35 @@ function renderMapAssets(development) {
     const mapBase = document.getElementById('dynamicMapBase');
     const svgLayer = document.getElementById('dynamicSvgLayer');
 
-    if (!mapBase || !svgLayer) return;
+    if (!mapBase || !svgLayer) return Promise.resolve();
 
-    mapBase.src = resolveMediaUrl(development.png_image);
+    const mapUrl = resolveMediaUrl(development.png_image);
     mapBase.alt = `Masterplan ${development.name}`;
-
     svgLayer.innerHTML = '';
+
+    if (!mapUrl) {
+        mapBase.removeAttribute('src');
+        return Promise.resolve();
+    }
+
+    return new Promise(resolve => {
+        const onReady = () => {
+            mapBase.removeEventListener('load', onReady);
+            mapBase.removeEventListener('error', onReady);
+            resolve();
+        };
+
+        const isSameSource = mapBase.getAttribute('src') === mapUrl || mapBase.src === mapUrl;
+        if (isSameSource && mapBase.complete) {
+            resolve();
+            return;
+        }
+
+        mapBase.addEventListener('load', onReady, { once: true });
+        mapBase.addEventListener('error', onReady, { once: true });
+
+        mapBase.src = mapUrl;
+    });
 }
 
 function updateModalHeader(development) {
@@ -358,7 +389,7 @@ function updateModalHeader(development) {
     modalSubtitle.textContent = 'Selecciona un lote para agregar al proyecto de tu casa';
 }
 
-function updateSvgLayerVisibility(developmentId) {
+function updateSvgLayerVisibility() {
     const svgLayer = document.getElementById('dynamicSvgLayer');
     if (!svgLayer) return;
 
@@ -391,13 +422,13 @@ function normalizeHexColor(color) {
     return normalized;
 }
 
-async function loadSvgLayer(development) {
+async function loadSvgLayer(development, requestId) {
     const svgLayer = document.getElementById('dynamicSvgLayer');
     const svgUrl = resolveMediaUrl(development.svg_image);
 
     if (!svgLayer) return;
     if (!svgUrl) {
-        updateSvgLayerVisibility(development.id);
+        updateSvgLayerVisibility();
         return;
     }
 
@@ -405,17 +436,22 @@ async function loadSvgLayer(development) {
         const proxyUrl = `/svg-proxy?url=${encodeURIComponent(svgUrl)}`;
 
         const response = await fetch(proxyUrl);
+        if (requestId !== developmentLoadRequestId) return;
 
         if (!response.ok) {
             throw new Error('No se pudo cargar el SVG');
         }
 
         const svgText = await response.text();
+        if (requestId !== developmentLoadRequestId) return;
+
         svgLayer.innerHTML = svgText;
-        updateSvgLayerVisibility(development.id);
+        updateSvgLayerVisibility();
 
     } catch (error) {
-        updateSvgLayerVisibility(development.id);
+        if (requestId === developmentLoadRequestId) {
+            updateSvgLayerVisibility();
+        }
         console.error(error);
     }
 }
@@ -585,6 +621,9 @@ function bindSvgInteractions(svgLayer, lotsCache) {
 
 async function loadDevelopment(developmentId) {
     const svgLayer = document.getElementById('dynamicSvgLayer');
+    const requestId = ++developmentLoadRequestId;
+
+    setMapLoadingState(true);
 
     try {
         const resolvedRootId = getRootDevelopmentId(developmentId);
@@ -594,12 +633,18 @@ async function loadDevelopment(developmentId) {
         setDevelopmentButtons(developmentId);
 
         const development = await fetchDevelopment(developmentId);
+        if (requestId !== developmentLoadRequestId) return;
+
         currentDevelopment = development;
         currentMap = development.map || development.lotes || [];
 
-        renderMapAssets(development);
         updateModalHeader(development);
-        await loadSvgLayer(development);
+        await Promise.all([
+            renderMapAssets(development),
+            loadSvgLayer(development, requestId)
+        ]);
+        if (requestId !== developmentLoadRequestId) return;
+
         highlightActiveDevelopment(development.id);
 
         const isAhawellRootView = Number(development.id) === AHAWELL_ROOT_ID;
@@ -612,6 +657,8 @@ async function loadDevelopment(developmentId) {
         }
 
         const lots = await fetchLotsForStage(development.stage_id);
+        if (requestId !== developmentLoadRequestId) return;
+
         const developmentDisplayName = getDevelopmentDisplayNameById(development.id, development.name);
         window.lotsCache = lots.map(lot => ({
             ...lot,
@@ -625,6 +672,10 @@ async function loadDevelopment(developmentId) {
         }
     } catch (error) {
         console.error(error);
+    } finally {
+        if (requestId === developmentLoadRequestId) {
+            setMapLoadingState(false);
+        }
     }
 }
 

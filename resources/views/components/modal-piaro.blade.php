@@ -62,6 +62,41 @@
         color: #fff;
         border-color: #1f4ca0;
     }
+
+    .map-container {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .map-base,
+    .svg-layer {
+        transition: opacity .25s ease;
+    }
+
+    .map-loader {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, .72);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s ease;
+        z-index: 3;
+    }
+
+    .map-container.is-loading .map-loader {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .map-container.is-loading .map-base,
+    .map-container.is-loading .svg-layer {
+        opacity: 0;
+        pointer-events: none;
+    }
 </style>
 
 <div class="modal fade" id="modalPiaro" tabindex="-1" aria-hidden="true">
@@ -88,9 +123,12 @@
 
             <div class="modal-body pt-0">
                 <div class="piaro-map-wrapper">
-                    <div class="map-container" style="position:relative; display:inline-block; width:100%;">
+                    <div class="map-container" id="developmentMapContainer">
                         <img id="dynamicMapBase" src="" class="map-base" alt="Masterplan" style="width:100%; height:auto;">
                         <div class="svg-layer" id="dynamicSvgLayer" style="position:absolute; top:0; left:0; width:100%;"></div>
+                        <div id="developmentMapLoader" class="map-loader" aria-hidden="true">
+                            <div class="spinner-border text-primary" role="status" aria-label="Cargando mapa"></div>
+                        </div>
                     </div>
                 </div>
             </div>
