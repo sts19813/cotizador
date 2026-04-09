@@ -54,16 +54,18 @@ function isValidImageUrl(url) {
   return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
 }
 
-function updateThumbnailOverlay(index) {
+function updateThumbnailOverlay(index, options = {}) {
+  const { animate = true } = options;
   const $thumbWrapper = $('.gallery-carousel .owl-item').eq(index).find('.thumb-wrapper');
   const $overlayContainer = $thumbWrapper.find('.overlay-container');
   const overlayContainer = $overlayContainer.get(0);
   if (!overlayContainer) return;
 
-  syncOverlayImages(overlayContainer, activeOverlays[index] || [], true);
+  syncOverlayImages(overlayContainer, activeOverlays[index] || [], true, animate);
 }
 
-function updateMainPreview(index) {
+function updateMainPreview(index, options = {}) {
+  const { animate = true } = options;
   const mainPreview = document.getElementById('mainPreview');
   const previewWrapper = mainPreview.parentElement;
 
@@ -83,10 +85,10 @@ function updateMainPreview(index) {
     previewWrapper.appendChild(overlayMainContainer);
   }
 
-  syncOverlayImages(overlayMainContainer, activeOverlays[index] || [], false);
+  syncOverlayImages(overlayMainContainer, activeOverlays[index] || [], false, animate);
 }
 
-function syncOverlayImages(container, overlays, isThumb = false) {
+function syncOverlayImages(container, overlays, isThumb = false, animate = true) {
   const normalized = [];
   const byKey = new Map();
 
@@ -125,13 +127,15 @@ function syncOverlayImages(container, overlays, isThumb = false) {
       img.style.top = '0';
       img.style.left = '0';
       img.style.pointerEvents = 'none';
-      img.style.opacity = '0';
-      img.style.transition = `opacity ${OVERLAY_TRANSITION_MS}ms ease`;
+      img.style.opacity = animate ? '0' : '1';
+      img.style.transition = animate ? `opacity ${OVERLAY_TRANSITION_MS}ms ease` : 'none';
       img.style.zIndex = String(100 + item.order);
       container.appendChild(img);
-      requestAnimationFrame(() => {
-        img.style.opacity = '1';
-      });
+      if (animate) {
+        requestAnimationFrame(() => {
+          img.style.opacity = '1';
+        });
+      }
       return;
     }
 
@@ -139,6 +143,14 @@ function syncOverlayImages(container, overlays, isThumb = false) {
 
     // Si la URL no cambió, no animar nada (evita reanimar overlays antiguos)
     if (current.dataset.overlayUrl === item.url) return;
+
+    if (!animate) {
+      current.src = item.url;
+      current.dataset.overlayUrl = item.url;
+      current.style.opacity = '1';
+      current.style.transition = 'none';
+      return;
+    }
 
     const next = current.cloneNode(false);
     next.src = item.url;
@@ -244,7 +256,7 @@ function cambiarImagen(index) {
       $preview.addClass('fade-out');
       setTimeout(() => {
         $preview.attr('src', newSrc).removeClass('fade-out');
-        updateMainPreview(index);
+        updateMainPreview(index, { animate: false });
         hideLoader();
       }, 180);
     };
@@ -519,8 +531,8 @@ function seleccionarOpcion(elemento) {
     }
   }
 
-  Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx));
-  updateMainPreview(globalindex);
+  Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx, { animate: true }));
+  updateMainPreview(globalindex, { animate: true });
 }
 
 
