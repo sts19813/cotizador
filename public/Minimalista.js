@@ -152,17 +152,13 @@ function syncOverlayImages(container, overlays, isThumb = false, animate = true)
       return;
     }
 
-    const next = current.cloneNode(false);
-    next.src = item.url;
-    next.dataset.overlayUrl = item.url;
-    next.style.opacity = '0';
-    next.style.transition = `opacity ${OVERLAY_TRANSITION_MS}ms ease`;
-    next.style.zIndex = current.style.zIndex;
-    container.appendChild(next);
-
+    // Evitar nodos duplicados por key (esto causaba overlays "pegados" y clics extra)
+    current.style.transition = `opacity ${OVERLAY_TRANSITION_MS}ms ease`;
+    current.style.opacity = '0';
+    current.src = item.url;
+    current.dataset.overlayUrl = item.url;
     requestAnimationFrame(() => {
-      next.style.opacity = '1';
-      setTimeout(() => current.remove(), OVERLAY_TRANSITION_MS + 80);
+      current.style.opacity = '1';
     });
   });
 }
@@ -253,10 +249,19 @@ function cambiarImagen(index) {
     const img = new window.Image();
     img.onload = function () {
       if (token !== currentLoadToken) return;
+
+      // Primero limpiamos overlays de la principal para evitar "renders viejos" en la transición.
+      const overlayMainContainer = document.getElementById('overlayMainContainer');
+      if (overlayMainContainer) overlayMainContainer.innerHTML = '';
+
       $preview.addClass('fade-out');
       setTimeout(() => {
         $preview.attr('src', newSrc).removeClass('fade-out');
-        updateMainPreview(index, { animate: false });
+
+        // Primero se actualiza la imagen principal; luego, ya cargada, se aplican overlays.
+        requestAnimationFrame(() => {
+          updateMainPreview(index, { animate: false });
+        });
         hideLoader();
       }, 180);
     };
