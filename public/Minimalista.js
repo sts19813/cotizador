@@ -7,8 +7,21 @@ let activeOverlays = {};
 let selectedFachada = null;
 let currentLoadToken = 0; // Loader helpers y token global
 const OVERLAY_TRANSITION_MS = 1500;
+let isBootstrappingSelections = true;
+let lastOptionClickMeta = { trusted: false, ts: 0 };
 
 const PREVENTA_DEVELOPMENT_IDS = new Set([43, 3, 2, 14, 8, 9, 10]);
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.closest('.option-card')) {
+    lastOptionClickMeta = { trusted: !!e.isTrusted, ts: Date.now() };
+  }
+}, true);
+
+function shouldAnimateSelectionOverlay() {
+  const freshInteraction = (Date.now() - lastOptionClickMeta.ts) < 500;
+  return !isBootstrappingSelections && lastOptionClickMeta.trusted && freshInteraction;
+}
 
 /**********************************************************
  * LOADER
@@ -422,6 +435,7 @@ function formatoMXN(numero) {
  * SELECCIONAR OPCIONES
  **********************************************************/
 function seleccionarOpcion(elemento) {
+  const animateSelection = shouldAnimateSelectionOverlay();
   const categoria = elemento.getAttribute('data-categoria');
   const valor = elemento.getAttribute('data-valor');
 
@@ -450,7 +464,7 @@ function seleccionarOpcion(elemento) {
 
     Object.keys(activeOverlays).forEach(idx => {
       activeOverlays[idx] = [];
-      updateThumbnailOverlay(idx);
+      updateThumbnailOverlay(idx, { animate: false });
     });
     const overlayMainContainer = document.getElementById('overlayMainContainer');
     if (overlayMainContainer) overlayMainContainer.innerHTML = '';
@@ -536,8 +550,8 @@ function seleccionarOpcion(elemento) {
     }
   }
 
-  Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx, { animate: true }));
-  updateMainPreview(globalindex, { animate: true });
+  Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx, { animate: animateSelection }));
+  updateMainPreview(globalindex, { animate: animateSelection });
 }
 
 
@@ -777,6 +791,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }, 400);
 
   preloadAllRenderImages();
+  setTimeout(() => {
+    isBootstrappingSelections = false;
+  }, 1200);
 });
 
 //para hacer la seleccion del primera opcion al cambio de fachada
@@ -856,6 +873,6 @@ function refreshSelectionsAndOverlays() {
   });
 
   // 🔹 5. Actualizar visuales en miniaturas y preview principal
-  Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx));
-  updateMainPreview(globalindex);
+  Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx, { animate: animateSelection }));
+  updateMainPreview(globalindex, { animate: animateSelection });
 }
