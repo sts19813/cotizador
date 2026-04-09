@@ -56,24 +56,41 @@ function isValidImageUrl(url) {
 function updateThumbnailOverlay(index) {
   const $thumbWrapper = $('.gallery-carousel .owl-item').eq(index).find('.thumb-wrapper');
   const $overlayContainer = $thumbWrapper.find('.overlay-container');
-  $overlayContainer.empty();
+
+  const previousLayer = $overlayContainer.find('.thumb-overlay-layer.active');
+  const nextLayer = $('<div class="thumb-overlay-layer"></div>');
 
   if (activeOverlays[index]) {
     activeOverlays[index].forEach(ov => {
       if (isValidImageUrl(ov.url)) {
         const img = document.createElement('img');
         img.src = ov.url;
-        img.classList.add('thumb');
+        img.classList.add('thumb', 'thumb-overlay-image');
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.position = 'absolute';
         img.style.top = '0';
         img.style.left = '0';
         img.style.pointerEvents = 'none';
-        $overlayContainer.append(img);
+        nextLayer.append(img);
       }
     });
   }
+
+  if (!$overlayContainer.find('.thumb-overlay-layer').length) {
+    nextLayer.addClass('active').css('opacity', '1');
+    $overlayContainer.append(nextLayer);
+    return;
+  }
+
+  $overlayContainer.append(nextLayer);
+  requestAnimationFrame(() => {
+    nextLayer.addClass('active').css('opacity', '1');
+    previousLayer.css('opacity', '0').removeClass('active');
+    setTimeout(() => {
+      previousLayer.remove();
+    }, 260);
+  });
 }
 
 function updateMainPreview(index) {
@@ -96,23 +113,58 @@ function updateMainPreview(index) {
     previewWrapper.appendChild(overlayMainContainer);
   }
 
-  overlayMainContainer.innerHTML = '';
+  if (!overlayMainContainer.querySelector('.main-overlay-layer')) {
+    overlayMainContainer.innerHTML = '';
+
+    const layerA = document.createElement('div');
+    layerA.className = 'main-overlay-layer active';
+    layerA.dataset.layer = 'a';
+    layerA.style.opacity = '1';
+
+    const layerB = document.createElement('div');
+    layerB.className = 'main-overlay-layer';
+    layerB.dataset.layer = 'b';
+    layerB.style.opacity = '0';
+
+    overlayMainContainer.appendChild(layerA);
+    overlayMainContainer.appendChild(layerB);
+    overlayMainContainer.dataset.activeLayer = 'a';
+  }
+
+  const currentLayerKey = overlayMainContainer.dataset.activeLayer || 'a';
+  const nextLayerKey = currentLayerKey === 'a' ? 'b' : 'a';
+
+  const currentLayer = overlayMainContainer.querySelector(`.main-overlay-layer[data-layer="${currentLayerKey}"]`);
+  const nextLayer = overlayMainContainer.querySelector(`.main-overlay-layer[data-layer="${nextLayerKey}"]`);
+
+  if (!currentLayer || !nextLayer) return;
+  nextLayer.innerHTML = '';
 
   if (activeOverlays[index] && activeOverlays[index].length > 0) {
     activeOverlays[index].forEach(ov => {
       if (isValidImageUrl(ov.url)) {
         const img = document.createElement('img');
         img.src = ov.url;
+        img.classList.add('main-overlay-image');
         img.style.position = 'absolute';
         img.style.top = '0';
         img.style.left = '0';
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.pointerEvents = 'none';
-        overlayMainContainer.appendChild(img);
+        nextLayer.appendChild(img);
       }
     });
   }
+
+  requestAnimationFrame(() => {
+    currentLayer.style.opacity = '0';
+    currentLayer.classList.remove('active');
+
+    nextLayer.style.opacity = '1';
+    nextLayer.classList.add('active');
+    overlayMainContainer.dataset.activeLayer = nextLayerKey;
+  });
 }
 
 

@@ -140,9 +140,25 @@
     box-sizing: border-box;
 }
 
-.preview-img.fade-out {
+.thumb-overlay-layer,
+.main-overlay-layer {
+    position: absolute;
+    inset: 0;
     opacity: 0;
-    transition: opacity 0.01s ease;
+    transition: opacity 260ms ease-out;
+    will-change: opacity;
+}
+
+.thumb-overlay-layer.active,
+.main-overlay-layer.active {
+    opacity: 1;
+}
+
+.thumb-overlay-image,
+.main-overlay-image {
+    opacity: 1;
+    transition: opacity 260ms ease-out;
+    will-change: opacity;
 }
 
 
@@ -178,7 +194,7 @@
 
 .preview-img.fade-out {
     opacity: 0;
-    transition: opacity 0.18s ease;
+    transition: opacity 260ms cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 
