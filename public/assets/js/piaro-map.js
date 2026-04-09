@@ -42,6 +42,50 @@ let selectedModalRootDevelopmentId = 33;
 const AHAWELL_ROOT_ID = 3;
 const AHAWELL_CLUSTER_BASE_COLOR = 'rgba(52, 199, 89, 0.22)';
 const AHAWELL_CLUSTER_ACTIVE_COLOR = 'rgba(52, 199, 89, 1)';
+const DEVELOPMENT_LOGOS = {
+    33: {
+        src: '/img/logos/piaro.svg',
+        alt: 'Piaro'
+    },
+    43: {
+        src: '/img/logos/pase%20peninsula.svg',
+        alt: 'Paseo Peninsula'
+    },
+    3: {
+        src: '/img/logos/ahawell.svg',
+        alt: 'Ahawell'
+    }
+};
+
+function findParentDevelopmentByChildId(childId) {
+    const numericChildId = Number(childId);
+    if (!numericChildId) return null;
+
+    return DEVELOPMENT_TREE.find(dev =>
+        Array.isArray(dev.children) && dev.children.some(child => Number(child.id) === numericChildId)
+    ) || null;
+}
+
+function getRootDevelopmentId(developmentId) {
+    const numericId = Number(developmentId);
+    if (!numericId) return null;
+
+    const directDevelopment = DEVELOPMENT_TREE.find(dev => Number(dev.id) === numericId);
+    if (directDevelopment) return Number(directDevelopment.id);
+
+    const parent = findParentDevelopmentByChildId(numericId);
+    return parent ? Number(parent.id) : null;
+}
+
+function isAhawellChildDevelopment(developmentId) {
+    const parent = findParentDevelopmentByChildId(developmentId);
+    return Number(parent?.id) === AHAWELL_ROOT_ID;
+}
+
+function getLogoConfigForDevelopment(developmentId) {
+    const rootId = getRootDevelopmentId(developmentId) || Number(developmentId);
+    return DEVELOPMENT_LOGOS[rootId] || null;
+}
 
 function getInputElementsForDevelopment(developmentId) {
     return {
@@ -134,51 +178,80 @@ function renderSelectedLot(lot, developmentName = null) {
     document.getElementById('selectedLotCard').classList.remove('d-none');
 }
 
-function setDevelopmentButtons(rootDevelopmentId) {
+function setDevelopmentButtons(activeDevelopmentId) {
     const container = document.getElementById('developmentSelector');
     if (!container) return;
 
     container.innerHTML = '';
-    const numericRootId = Number(rootDevelopmentId);
-
-    if (numericRootId !== AHAWELL_ROOT_ID) {
-        container.classList.add('d-none');
-        return;
-    }
-
-    const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === AHAWELL_ROOT_ID);
-    if (!ahawell?.children?.length) {
-        container.classList.add('d-none');
-        return;
-    }
-
     container.classList.remove('d-none');
 
-    const childButtons = document.createElement('div');
-    childButtons.className = 'development-selector-cluster';
+    const numericActiveId = Number(activeDevelopmentId);
+    const activeRootId = getRootDevelopmentId(numericActiveId) || Number(selectedModalRootDevelopmentId) || 33;
 
-    ahawell.children.forEach(child => {
-        const childBtn = document.createElement('button');
-        childBtn.type = 'button';
-        childBtn.className = 'btn btn-sm development-btn development-child-btn';
-        childBtn.textContent = child.name;
-        childBtn.dataset.developmentId = child.id;
-        childBtn.addEventListener('click', () => loadDevelopment(child.id));
-        childButtons.appendChild(childBtn);
+    const rootButtons = document.createElement('div');
+    rootButtons.className = 'development-selector-roots';
+
+    DEVELOPMENT_TREE.forEach(development => {
+        const rootBtn = document.createElement('button');
+        rootBtn.type = 'button';
+        rootBtn.className = 'btn btn-sm development-btn development-root-btn';
+        rootBtn.textContent = development.name;
+        rootBtn.dataset.developmentId = development.id;
+        rootBtn.dataset.developmentGroup = 'root';
+        rootBtn.addEventListener('click', () => {
+            setActiveSearchDevelopment(development.id);
+            loadDevelopment(development.id);
+        });
+        rootButtons.appendChild(rootBtn);
     });
 
-    container.appendChild(childButtons);
+    container.appendChild(rootButtons);
+
+    if (activeRootId === AHAWELL_ROOT_ID) {
+        const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === AHAWELL_ROOT_ID);
+        if (ahawell?.children?.length) {
+            const childButtons = document.createElement('div');
+            childButtons.className = 'development-selector-cluster mt-2';
+
+            ahawell.children.forEach(child => {
+                const childBtn = document.createElement('button');
+                childBtn.type = 'button';
+                childBtn.className = 'btn btn-sm development-btn development-child-btn';
+                childBtn.textContent = child.name;
+                childBtn.dataset.developmentId = child.id;
+                childBtn.dataset.developmentGroup = 'child';
+                childBtn.addEventListener('click', () => {
+                    setActiveSearchDevelopment(child.id);
+                    loadDevelopment(child.id);
+                });
+                childButtons.appendChild(childBtn);
+            });
+
+            container.appendChild(childButtons);
+        }
+    }
+}
+
+function toggleDevelopmentButtonState(button, isActive) {
+    button.classList.toggle('active', isActive);
+    button.classList.toggle('btn-primary', isActive);
+    button.classList.toggle('text-white', isActive);
+    button.classList.toggle('btn-light', !isActive);
 }
 
 function highlightActiveDevelopment(id) {
     const numericId = Number(id);
+    const activeRootId = getRootDevelopmentId(numericId) || Number(selectedModalRootDevelopmentId);
+    const isChildView = isAhawellChildDevelopment(numericId);
 
-    document.querySelectorAll('.development-btn').forEach(btn => {
-        const isActive = Number(btn.dataset.developmentId) === numericId;
-        btn.classList.toggle('active', isActive);
-        btn.classList.toggle('btn-primary', isActive);
-        btn.classList.toggle('text-white', isActive);
-        btn.classList.toggle('btn-light', !isActive);
+    document.querySelectorAll('.development-root-btn').forEach(btn => {
+        const isActive = Number(btn.dataset.developmentId) === activeRootId;
+        toggleDevelopmentButtonState(btn, isActive);
+    });
+
+    document.querySelectorAll('.development-child-btn').forEach(btn => {
+        const isActive = isChildView && Number(btn.dataset.developmentId) === numericId;
+        toggleDevelopmentButtonState(btn, isActive);
     });
 }
 async function fetchDevelopment(id) {
@@ -258,20 +331,30 @@ function renderMapAssets(development) {
 
 function updateModalHeader(development) {
     const modalTitle = document.getElementById('developmentModalTitle');
+    const modalLogo = document.getElementById('developmentModalLogo');
     const modalSubtitle = document.getElementById('developmentModalSubtitle');
     if (!modalTitle || !modalSubtitle) return;
 
-    const isAhawellRootView =
-        Number(selectedModalRootDevelopmentId) === AHAWELL_ROOT_ID &&
-        Number(development.id) === AHAWELL_ROOT_ID;
+    const logoConfig = getLogoConfigForDevelopment(development.id);
+    if (modalLogo && logoConfig) {
+        modalLogo.src = logoConfig.src;
+        modalLogo.alt = logoConfig.alt;
+        modalTitle.setAttribute('aria-label', logoConfig.alt);
+    }
+
+    const isAhawellRootView = Number(development.id) === AHAWELL_ROOT_ID;
+    const isAhawellChildView = isAhawellChildDevelopment(development.id);
 
     if (isAhawellRootView) {
-        modalTitle.textContent = 'Seleccione un desarrollo de Ahawell para continuar';
         modalSubtitle.textContent = 'Selecciona uno de los 5 desarrollos del cluster Ahawell.';
         return;
     }
 
-    modalTitle.textContent = development.name;
+    if (isAhawellChildView) {
+        modalSubtitle.textContent = `Ahawell - ${development.name}: selecciona un lote para agregar al proyecto de tu casa`;
+        return;
+    }
+
     modalSubtitle.textContent = 'Selecciona un lote para agregar al proyecto de tu casa';
 }
 
@@ -504,6 +587,12 @@ async function loadDevelopment(developmentId) {
     const svgLayer = document.getElementById('dynamicSvgLayer');
 
     try {
+        const resolvedRootId = getRootDevelopmentId(developmentId);
+        if (resolvedRootId) {
+            selectedModalRootDevelopmentId = resolvedRootId;
+        }
+        setDevelopmentButtons(developmentId);
+
         const development = await fetchDevelopment(developmentId);
         currentDevelopment = development;
         currentMap = development.map || development.lotes || [];
@@ -511,11 +600,11 @@ async function loadDevelopment(developmentId) {
         renderMapAssets(development);
         updateModalHeader(development);
         await loadSvgLayer(development);
+        highlightActiveDevelopment(development.id);
 
         const isAhawellRootView = Number(development.id) === AHAWELL_ROOT_ID;
         if (isAhawellRootView) {
             window.lotsCache = [];
-            highlightActiveDevelopment(0);
             if (svgLayer) {
                 bindSvgInteractions(svgLayer, window.lotsCache);
             }
@@ -534,15 +623,15 @@ async function loadDevelopment(developmentId) {
         if (svgLayer) {
             bindSvgInteractions(svgLayer, window.lotsCache);
         }
-        highlightActiveDevelopment(developmentId);
     } catch (error) {
         console.error(error);
     }
 }
 
 function setSelectedModalRootDevelopment(developmentId) {
-    selectedModalRootDevelopmentId = Number(developmentId);
-    setDevelopmentButtons(selectedModalRootDevelopmentId);
+    const rootId = getRootDevelopmentId(developmentId) || Number(developmentId) || 33;
+    selectedModalRootDevelopmentId = rootId;
+    setDevelopmentButtons(developmentId);
 }
 /*************************************************
  * DOM READY

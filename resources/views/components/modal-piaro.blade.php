@@ -25,6 +25,29 @@
         justify-content: center;
     }
 
+    .development-selector-roots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .development-modal-logo {
+        width: auto;
+        max-width: min(280px, 85%);
+        max-height: 56px;
+        object-fit: contain;
+    }
+
+    .development-root-btn {
+        border-radius: 999px;
+        border: 1px solid #d8dee8;
+        font-weight: 600;
+        color: #20242c;
+        background: #fff;
+        padding: 8px 14px;
+    }
+
     .development-child-btn {
         border-radius: 999px;
         border: 1px solid #d8dee8;
@@ -46,7 +69,9 @@
         <div class="modal-content border-0 rounded-4 shadow-lg">
             <div class="modal-header border-0 position-relative">
                 <div class="w-100 text-center">
-                    <h4 class="fw-bold mb-1" id="developmentModalTitle">Piaró</h4>
+                    <h4 class="fw-bold mb-1" id="developmentModalTitle">
+                        <img id="developmentModalLogo" src="/img/logos/piaro.svg" alt="Piaro" class="development-modal-logo">
+                    </h4>
                     <p class="text-primary fw-semibold mt-3 mb-1" id="developmentModalSubtitle">Selecciona un lote para agregar al proyecto de tu casa</p>
 
                     <div id="developmentSelector" class="d-flex flex-column align-items-stretch mb-3 w-100"></div>
