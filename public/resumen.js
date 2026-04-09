@@ -54,6 +54,50 @@ function formatearM2(valor) {
   });
 }
 
+const AHAWELL_CHILD_DEVELOPMENTS = ['portal', 'chakte', 'bayal', 'pakal', 'chechem'];
+
+function obtenerNombreLote(lote) {
+  if (!lote || typeof lote !== 'object') return '';
+  if (lote.lot_name) return lote.lot_name;
+
+  const nombreCrudo = String(lote.name ?? lote.valor ?? '').trim();
+  if (!nombreCrudo) return '';
+
+  const match = nombreCrudo.match(/lote\s+(.+)$/i);
+  return match ? match[1].trim() : nombreCrudo;
+}
+
+function normalizarNombreDesarrollo(nombre = '') {
+  const valor = String(nombre || '').trim();
+  if (!valor) return '';
+
+  const nombreLimpio = quitarAcentos(valor).toLowerCase().trim();
+  if (nombreLimpio.startsWith('ahawell')) return valor;
+  if (AHAWELL_CHILD_DEVELOPMENTS.includes(nombreLimpio)) {
+    return `Ahawell - ${valor}`;
+  }
+
+  return valor;
+}
+
+function obtenerDesarrolloDesdeLote(lote) {
+  if (!lote || typeof lote !== 'object') return 'N/D';
+
+  const desarrolloDirecto = normalizarNombreDesarrollo(
+    lote.development_display_name || lote.development_name || ''
+  );
+  if (desarrolloDirecto) return desarrolloDirecto;
+
+  const origenNombre = String(lote.name ?? lote.valor ?? '').trim();
+  const match = origenNombre.match(/^(.*?)\s*-\s*lote\b/i);
+  if (match?.[1]) {
+    const desarrolloDesdeNombre = normalizarNombreDesarrollo(match[1]);
+    if (desarrolloDesdeNombre) return desarrolloDesdeNombre;
+  }
+
+  return 'N/D';
+}
+
 // =======================
 // TABLA RESUMEN
 // =======================
@@ -129,6 +173,8 @@ const loteEntry = savedSelections["lote"];
 if (loteEntry) {
   const lotePrecio = document.getElementById('lotePrecio');
   const loteResumen = document.getElementById('loteResumen');
+  const desarrolloResumen = document.getElementById('desarrolloResumen');
+  const desarrolloNombre = document.getElementById('desarrolloNombre');
   const loteAreaResumen = document.getElementById('loteAreaResumen');
   const loteArea = document.getElementById('loteArea');
 
@@ -136,7 +182,8 @@ if (loteEntry) {
     loteResumen.classList.remove('d-none');
 
     // Siempre mostrar nombre del lote
-    let texto = `Lote ${loteEntry.name}`;
+    const nombreLote = obtenerNombreLote(loteEntry);
+    let texto = `Lote ${nombreLote || loteEntry.name || ''}`;
 
     // Solo mostrar precio si suma === true
     if (loteEntry.suma) {
@@ -144,6 +191,11 @@ if (loteEntry) {
     }
 
     lotePrecio.textContent = texto;
+  }
+
+  if (desarrolloResumen && desarrolloNombre) {
+    desarrolloResumen.classList.remove('d-none');
+    desarrolloNombre.textContent = obtenerDesarrolloDesdeLote(loteEntry);
   }
 
   if (loteArea && loteAreaResumen) {
@@ -489,9 +541,12 @@ document.querySelector('.apartado-row button').addEventListener('click', () => {
 function normalizarLote(lote) {
   if (!lote || typeof lote !== 'object') return null;
 
+  const developmentDisplayName = obtenerDesarrolloDesdeLote(lote);
+
   return {
     id: lote.id ?? null,
     name : lote.name ?? null,
+    lot_name: lote.lot_name ?? obtenerNombreLote(lote) ?? null,
     categoria: 'Lote',
     valor: lote.name ?? lote.valor ?? '',
     precio: lote.suma === true ? Number(lote.total || 0) : 0,
@@ -499,6 +554,12 @@ function normalizarLote(lote) {
     suma: Boolean(lote.suma),
     total: Number(lote.total || 0),
     area: lote.area ?? null,
-    price_square_meter: lote.price_square_meter ?? null
+    price_square_meter: lote.price_square_meter ?? null,
+    development_id: lote.development_id ?? null,
+    development_name: lote.development_name ?? null,
+    development_display_name: developmentDisplayName !== 'N/D'
+      ? developmentDisplayName
+      : (lote.development_display_name ?? null)
   };
 }
+

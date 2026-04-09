@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <x-head />
-<link rel="stylesheet" href="/assets/resumen.css">
+
+<link rel="stylesheet" href="/assets/resumen.css?v={{ filemtime(public_path('assets/resumen.css')) }}">
+
 
 <body>
 
@@ -73,12 +75,17 @@
 				</div>
 
 				<!-- LOTE -->
-				<div id="loteResumen" class="info-row d-none">
+				<div id="loteResumen" class="info-row ">
 					<span class="label">Lote</span>
 					<span id="lotePrecio"></span>
 				</div>
 
-				<div id="loteAreaResumen" class="info-row d-none">
+				<div id="desarrolloResumen" class="info-row">
+					<span class="label">Desarrollo</span>
+					<span id="desarrolloNombre"></span>
+				</div>
+
+				<div id="loteAreaResumen" class="info-row ">
 					<span class="label">Área</span>
 					<span id="loteArea"></span>
 				</div>
@@ -190,3 +197,4 @@
 </body>
 
 </html>
+
