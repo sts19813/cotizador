@@ -254,7 +254,7 @@
 
                                                 <button class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
                                                     data-development-id="33" data-bs-toggle="modal"
-                                                    data-bs-target="#modalPiaro">Cotizar lote</button>
+                                                    data-bs-target="#modalPiaro">Seleccionar lote</button>
                                             </div>
                                         </div>
                                     </div>
@@ -284,7 +284,7 @@
 
                                                 <button class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
                                                     data-development-id="43" data-bs-toggle="modal"
-                                                    data-bs-target="#modalPiaro">Cotizar lote</button>
+                                                    data-bs-target="#modalPiaro">Seleccionar lote</button>
                                             </div>
                                         </div>
                                     </div>
@@ -321,12 +321,12 @@
                                                     Ahawell incluye Portal, Chakté, Bayal, Pakal y Chechem.
                                                 </p>
                                                 <p class="development-copy mb-3">
-                                                    Puedes cotizar tu lote para continuar con tu casa personalizada.
+                                                    Puedes seleccionar tu lote para continuar con tu casa personalizada.
                                                 </p>
 
                                                 <button class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
                                                     data-development-id="3" data-bs-toggle="modal"
-                                                    data-bs-target="#modalPiaro">Cotizar lote</button>
+                                                    data-bs-target="#modalPiaro">Seleccionar lote</button>
                                             </div>
                                         </div>
                                     </div>
