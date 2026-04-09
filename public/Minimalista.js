@@ -6,6 +6,7 @@ let globalindex = 0;
 let activeOverlays = {};
 let selectedFachada = null;
 let currentLoadToken = 0; // Loader helpers y token global
+const OVERLAY_TRANSITION_MS = 1500;
 
 const PREVENTA_DEVELOPMENT_IDS = new Set([43, 3, 2, 14, 8, 9, 10]);
 
@@ -56,24 +57,10 @@ function isValidImageUrl(url) {
 function updateThumbnailOverlay(index) {
   const $thumbWrapper = $('.gallery-carousel .owl-item').eq(index).find('.thumb-wrapper');
   const $overlayContainer = $thumbWrapper.find('.overlay-container');
-  $overlayContainer.empty();
+  const overlayContainer = $overlayContainer.get(0);
+  if (!overlayContainer) return;
 
-  if (activeOverlays[index]) {
-    activeOverlays[index].forEach(ov => {
-      if (isValidImageUrl(ov.url)) {
-        const img = document.createElement('img');
-        img.src = ov.url;
-        img.classList.add('thumb');
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.position = 'absolute';
-        img.style.top = '0';
-        img.style.left = '0';
-        img.style.pointerEvents = 'none';
-        $overlayContainer.append(img);
-      }
-    });
-  }
+  syncOverlayImages(overlayContainer, activeOverlays[index] || [], true);
 }
 
 function updateMainPreview(index) {
@@ -96,22 +83,142 @@ function updateMainPreview(index) {
     previewWrapper.appendChild(overlayMainContainer);
   }
 
-  overlayMainContainer.innerHTML = '';
+  syncOverlayImages(overlayMainContainer, activeOverlays[index] || [], false);
+}
 
-  if (activeOverlays[index] && activeOverlays[index].length > 0) {
-    activeOverlays[index].forEach(ov => {
-      if (isValidImageUrl(ov.url)) {
-        const img = document.createElement('img');
-        img.src = ov.url;
-        img.style.position = 'absolute';
-        img.style.top = '0';
-        img.style.left = '0';
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.pointerEvents = 'none';
-        overlayMainContainer.appendChild(img);
-      }
+function syncOverlayImages(container, overlays, isThumb = false) {
+  const normalized = [];
+  const byKey = new Map();
+
+  overlays.forEach((ov, order) => {
+    if (!ov || !isValidImageUrl(ov.url)) return;
+    const key = String(ov.categoria || `overlay_${order}`);
+    const item = { key, url: ov.url, order };
+    normalized.push(item);
+    byKey.set(key, item);
+  });
+
+  const existing = Array.from(container.querySelectorAll('[data-overlay-key]'));
+
+  // Remover overlays que ya no existen en el estado actual
+  existing.forEach(el => {
+    const key = el.dataset.overlayKey;
+    if (!byKey.has(key)) {
+      el.remove();
+    }
+  });
+
+  // Aplicar/animar solo overlays nuevos o cambiados
+  normalized.forEach(item => {
+    const current = container.querySelector(`[data-overlay-key="${escapeSelectorValue(item.key)}"]`);
+    const baseClass = isThumb ? 'thumb thumb-overlay-image' : 'main-overlay-image';
+
+    if (!current) {
+      const img = document.createElement('img');
+      img.src = item.url;
+      img.dataset.overlayKey = item.key;
+      img.dataset.overlayUrl = item.url;
+      img.className = baseClass;
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.position = 'absolute';
+      img.style.top = '0';
+      img.style.left = '0';
+      img.style.pointerEvents = 'none';
+      img.style.opacity = '0';
+      img.style.transition = `opacity ${OVERLAY_TRANSITION_MS}ms ease`;
+      img.style.zIndex = String(100 + item.order);
+      container.appendChild(img);
+      requestAnimationFrame(() => {
+        img.style.opacity = '1';
+      });
+      return;
+    }
+
+    current.style.zIndex = String(100 + item.order);
+
+    // Si la URL no cambió, no animar nada (evita reanimar overlays antiguos)
+    if (current.dataset.overlayUrl === item.url) return;
+
+    const next = current.cloneNode(false);
+    next.src = item.url;
+    next.dataset.overlayUrl = item.url;
+    next.style.opacity = '0';
+    next.style.transition = `opacity ${OVERLAY_TRANSITION_MS}ms ease`;
+    next.style.zIndex = current.style.zIndex;
+    container.appendChild(next);
+
+    requestAnimationFrame(() => {
+      next.style.opacity = '1';
+      setTimeout(() => current.remove(), OVERLAY_TRANSITION_MS + 80);
     });
+  });
+}
+
+function escapeSelectorValue(value) {
+  if (window.CSS && typeof window.CSS.escape === 'function') {
+    return window.CSS.escape(value);
+  }
+  return String(value).replace(/["\\]/g, '\\$&');
+}
+
+function extractRenderUrlsFromPayload(payload, urls) {
+  if (!payload) return;
+
+  if (typeof payload === 'string') {
+    if (isValidImageUrl(payload)) urls.add(payload);
+    return;
+  }
+
+  if (Array.isArray(payload)) {
+    payload.forEach(v => extractRenderUrlsFromPayload(v, urls));
+    return;
+  }
+
+  if (typeof payload === 'object') {
+    Object.values(payload).forEach(v => extractRenderUrlsFromPayload(v, urls));
+  }
+}
+
+function preloadAllRenderImages() {
+  const urls = new Set();
+
+  document.querySelectorAll('.option-card').forEach(card => {
+    extractRenderUrlsFromPayload(card.dataset.renders, urls);
+    extractRenderUrlsFromPayload(card.dataset.fachadaRenders, urls);
+  });
+
+  document.querySelectorAll('#owl-demo img').forEach(img => {
+    const src = img.getAttribute('src');
+    const overlay = img.getAttribute('data-overlay');
+    if (isValidImageUrl(src)) urls.add(src);
+    if (isValidImageUrl(overlay)) urls.add(overlay);
+  });
+
+  const queue = Array.from(urls);
+  if (!queue.length) return;
+
+  const maxConcurrent = 10;
+  let inFlight = 0;
+  let i = 0;
+
+  const pump = () => {
+    while (inFlight < maxConcurrent && i < queue.length) {
+      const url = queue[i++];
+      inFlight++;
+      const img = new window.Image();
+      img.onload = img.onerror = () => {
+        inFlight--;
+        pump();
+      };
+      img.src = url;
+    }
+  };
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => pump(), { timeout: 1200 });
+  } else {
+    setTimeout(pump, 300);
   }
 }
 
@@ -651,6 +758,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const items = document.querySelectorAll('#owl-demo .item img.tumb-original');
     CambioBases(items, 'Fachada 4A');
   }, 400);
+
+  preloadAllRenderImages();
 });
 
 //para hacer la seleccion del primera opcion al cambio de fachada

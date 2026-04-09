@@ -140,9 +140,11 @@
     box-sizing: border-box;
 }
 
-.preview-img.fade-out {
-    opacity: 0;
-    transition: opacity 0.01s ease;
+.thumb-overlay-image,
+.main-overlay-image {
+    opacity: 1;
+    transition: opacity 1.5s ease;
+    will-change: opacity;
 }
 
 
@@ -178,7 +180,7 @@
 
 .preview-img.fade-out {
     opacity: 0;
-    transition: opacity 0.18s ease;
+    transition: opacity 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 
