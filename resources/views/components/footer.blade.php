@@ -12,7 +12,7 @@
                 <p class="mb-3">999 454 0534</p>
 
                 <p class="footer-title mb-2">Correo Electrónico</p>
-                <p class="mb-0"><a href="mailto:uondr@mdos.mx" class="footer-link">uondr@mdos.mx</a></p>
+                <p class="mb-0"><a href="mailto: hola@uondr.mx" class="footer-link">hola@uondr.mx</a></p>
             </div>
         </div>
 

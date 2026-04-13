@@ -313,6 +313,11 @@
     color: #cf3e3e;
 }
 
+.development-badge-comming-soon {
+    background: #ffd66d;
+    color: #4d4d4d;
+}
+
 .development-card-body {
     padding: 0 18px 18px;
 }

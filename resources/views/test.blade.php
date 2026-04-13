@@ -294,7 +294,7 @@
                                             data-bs-target="#collapseDevelopmentAhawell" aria-expanded="false"
                                             aria-controls="collapseDevelopmentAhawell" disabled>
                                             <span class="development-card-title">Ahawell</span>
-                                            <span class="development-badge development-badge-presale">Próximamente</span>
+                                            <span class="development-badge development-badge-comming-soon">Próximamente</span>
                                         </button>
 
                                         <div id="collapseDevelopmentAhawell" class="collapse development-card-collapse"
