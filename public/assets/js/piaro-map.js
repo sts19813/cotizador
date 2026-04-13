@@ -202,7 +202,7 @@ function setDevelopmentButtons(activeDevelopmentId) {
     DEVELOPMENT_TREE.forEach(development => {
         const rootBtn = document.createElement('button');
         rootBtn.type = 'button';
-        rootBtn.className = 'btn btn-sm development-btn development-root-btn';
+        rootBtn.className = 'btn btn-sm development-btn development-root-btn ' + development.name + '-btn';
         rootBtn.textContent = development.name;
         rootBtn.dataset.developmentId = development.id;
         rootBtn.dataset.developmentGroup = 'root';
@@ -214,6 +214,7 @@ function setDevelopmentButtons(activeDevelopmentId) {
     });
 
     container.appendChild(rootButtons);
+    document.querySelector(".Ahawell-btn").disabled = true;
 
     if (activeRootId === AHAWELL_ROOT_ID) {
         const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === AHAWELL_ROOT_ID);

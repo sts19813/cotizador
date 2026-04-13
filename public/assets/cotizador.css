@@ -183,7 +183,9 @@
     transition: opacity 0.18s ease;
 }
 
-
+.subtitle-development {
+	font-size: 20px !important;
+}
 @media only screen and (max-width: 600px) {
     #mainPreview {
         margin-top: 80px;

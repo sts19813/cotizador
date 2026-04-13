@@ -225,8 +225,8 @@
                         @endforeach
 
                         <div class="development-section mb-4" id="piaroCard">
-                            <h2 class="development-section-title">Selecciona un Desarrollo</h2>
-
+                            <h2 class="development-section-title">¿En dónde quieres vivir?</h2>
+                            <h2 class="development-section-title subtitle-development">Selecciona un Desarrollo</h2>
                             <div id="piaroInitialContent">
                                 <div class="development-selector-main d-flex flex-column gap-3" id="developmentSelectorAccordion">
                                     <div class="development-card" style="overflow: visible !important;">
@@ -291,14 +291,13 @@
 
                                     <div class="development-card">
                                         <button class="development-card-toggle" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseDevelopmentAhawell" aria-expanded="true"
-                                            aria-controls="collapseDevelopmentAhawell">
+                                            data-bs-target="#collapseDevelopmentAhawell" aria-expanded="false"
+                                            aria-controls="collapseDevelopmentAhawell" disabled>
                                             <span class="development-card-title">Ahawell</span>
-                                            <span class="development-badge development-badge-presale">Preventa - 20% Enganche</span>
-                                            <x-accordion-toggle-icon class="ms-auto development-toggle-icon" />
+                                            <span class="development-badge development-badge-presale">Próximamente</span>
                                         </button>
 
-                                        <div id="collapseDevelopmentAhawell" class="collapse show development-card-collapse"
+                                        <div id="collapseDevelopmentAhawell" class="collapse development-card-collapse"
                                             data-bs-parent="#developmentSelectorAccordion">
                                             <div class="development-card-body">
                                                 <h5 class="fw-bold mb-2">¿Ya eres parte de Ahawell?</h5>
