@@ -23,7 +23,7 @@
             <div class="mb-2">
                 <img src="Logo.svg" alt="" width="25">
             </div>
-            <div class="text-muted small mb-2">© UONDR 2025 Todos los Derechos Reservados</div>
+            <div class="text-muted small mb-2">© UONDR {{ date('Y') }} Todos los Derechos Reservados</div>
             <div>
                 <a href="#" class="footer-link">Subir <i class="bi bi-arrow-up"></i></a>
             </div>
