@@ -146,15 +146,24 @@ Route::middleware(['auth', AdminMiddleware::class])
 | Otras rutas normales
 |--------------------------------------------------------------------------
 */
+// 1. MÁS ESPECÍFICAS PRIMERO
+Route::get('/{style}/config/{token}', [CategoryController::class, 'showPreview'])->where('style', 'home|tulum|mexicano|minimalista');
+
+// 2. luego la normal
+Route::get('/config/{token}', [CategoryController::class, 'showPreviewSimple'])->name('config.show');
+
+// 3. POST
+Route::post('/config/save', [CategoryController::class, 'storePreview'])->name('config.save');
+
+// 4. AL FINAL DE TODO
+Route::get('/{style?}', [CategoryController::class, 'configurador'])->where('style', 'home|tulum|mexicano|minimalista');
+
 
 // Ruta para el proxy de SVGs y evitar problemas de CORS
 Route::get('/svg-proxy', [SvgProxyController::class, 'show']);
-
 Route::post('/leads', [LeadController::class, 'storeLead']);
 Route::view('/unauthorized', 'unauthorized')->name('unauthorized');
 Route::get('/resumen', [CategoryController::class, 'resumen']);
 Route::view('/registro', 'register');
-Route::view('/test/{style?}', 'configurador');
-Route::get('/{style?}', [CategoryController::class, 'configurador']);
 
 require __DIR__ . '/auth.php';

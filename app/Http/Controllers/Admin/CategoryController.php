@@ -9,6 +9,8 @@ use App\Models\ProductFachadaRender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Models\Configuration;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -95,6 +97,46 @@ class CategoryController extends Controller
         return view('test', compact('categories', 'style', 'baseImages', 'fachadas', 'rendersPorProducto'));
     }
 
+    // Vista previa de configuración compartida
+    public function showPreview($style, $token)
+    {
+        $config = Configuration::where('token', $token)->firstOrFail();
+
+        // usar style de URL o fallback al guardado
+        $style = ucfirst($style);
+
+        return $this->configurador($style)
+            ->with('sharedConfig', $config->data);
+    }
+
+    // Vista previa de configuración sin estilo (si se accede desde /config/{token})
+    public function showPreviewSimple($token)
+    {
+        $config = Configuration::where('token', $token)->firstOrFail();
+
+        $style = $config->data['style'] ?? 'Minimalista';
+
+        return $this->configurador($style)
+            ->with('sharedConfig', $config->data);
+    }
+
+
+    // Guardar configuración compartida y generar token
+    public function storePreview(Request $request)
+    {
+        $data = $request->input('data');
+
+        $token = Str::random(8); // corto
+
+        Configuration::create([
+            'token' => $token,
+            'data' => $data
+        ]);
+
+        return response()->json([
+            'url' => url("/" . strtolower($data['style']) . "/config/$token")
+        ]);
+    }
 
     public function resumen()
     {

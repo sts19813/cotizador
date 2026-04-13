@@ -189,6 +189,10 @@
 
         <!-- Opciones de escritorio -->
         <div class="d-none d-md-flex align-items-center gap-2">
+
+            <button class="btn btn btn-primary btn-radius" onclick="compartirConfiguracion()">
+                compartir <i class="bi bi-bookmark"></i>
+            </button>
             <a href="#" class="modal-reload">
                 <img src="/assets/iconos/recargar.svg" alt="icono de recargar" width="34px">
             </a>
@@ -258,7 +262,7 @@
             <a href="/house-configurations/list" class="btn btn-outline-primary btn-radius dark-blue">
                 Perfil <i class="bi bi-person-circle"></i>
             </a>
-            <form method="POST" action="{{ route('logout') }}">
+            <form method=" POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="btn btn-outline-primary btn-radius dark-blue w-100 mb-2">
                     Cerrar sesión <i class="bi bi-box-arrow-right"></i>

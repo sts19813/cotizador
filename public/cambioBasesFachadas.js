@@ -1,4 +1,17 @@
-let slug = window.location.pathname.split("/").filter(Boolean).pop() || "home";
+let parts = window.location.pathname.split("/").filter(Boolean);
+
+let slug = "home";
+
+// detectar style desde URL
+if (["tulum", "mexicano", "home"].includes(parts[0])) {
+  slug = parts[0];
+}
+
+// fallback si viene de config compartido
+if (window.SHARED_CONFIG?.style) {
+  slug = window.SHARED_CONFIG.style.toLowerCase();
+}
+
 
 $(document).ready(function () {
     // Cuando eligen una habitación
@@ -72,7 +85,7 @@ function CambioBases(items, valor) {
         'Fachada 4A': ['min04-01-A.webp', 'min04-02-A.webp', 'min04-03-A.webp', 'min04-04-A.webp']
     };
 
-    const baseFolder = bases[slug] || 'minimalista';
+    const baseFolder = bases[slug] ?? bases['home'];
     const files = fachadaFiles[valor];
 
     if (!files) return;

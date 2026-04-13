@@ -228,31 +228,38 @@
                             <h2 class="development-section-title">¿En dónde quieres vivir?</h2>
                             <h2 class="development-section-title subtitle-development">Selecciona un Desarrollo</h2>
                             <div id="piaroInitialContent">
-                                <div class="development-selector-main d-flex flex-column gap-3" id="developmentSelectorAccordion">
+                                <div class="development-selector-main d-flex flex-column gap-3"
+                                    id="developmentSelectorAccordion">
                                     <div class="development-card" style="overflow: visible !important;">
-                                        <button class="development-card-toggle collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseDevelopmentPiaro" aria-expanded="false"
-                                            aria-controls="collapseDevelopmentPiaro" style="border-radius: 18px">
+                                        <button class="development-card-toggle collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#collapseDevelopmentPiaro"
+                                            aria-expanded="false" aria-controls="collapseDevelopmentPiaro"
+                                            style="border-radius: 18px">
                                             <span class="development-card-title">Piaró</span>
-                                            <span class="development-badge development-badge-immediate">Entrega inmediata</span>
+                                            <span class="development-badge development-badge-immediate">Entrega
+                                                inmediata</span>
                                             <x-accordion-toggle-icon class="ms-auto development-toggle-icon" />
                                         </button>
 
                                         <div id="collapseDevelopmentPiaro" class="collapse development-card-collapse"
                                             data-bs-parent="#developmentSelectorAccordion">
                                             <div class="development-card-body">
-                                                <p class="development-copy mb-2">¿Ya formas parte de Piaró? Busca tu lote para continuar.</p>
+                                                <p class="development-copy mb-2">¿Ya formas parte de Piaró? Busca tu
+                                                    lote para continuar.</p>
 
                                                 <div class="position-relative mb-3">
-                                                    <input type="text" id="lotInput-33" class="form-control development-lot-input"
-                                                        data-development-id="33" placeholder="Num. de lote" autocomplete="off">
+                                                    <input type="text" id="lotInput-33"
+                                                        class="form-control development-lot-input"
+                                                        data-development-id="33" placeholder="Num. de lote"
+                                                        autocomplete="off">
                                                     <input type="hidden" id="lotId-33">
                                                     <div id="lotDropdown-33"
                                                         class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
                                                         style="z-index:1000; display:none;"></div>
                                                 </div>
 
-                                                <button class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
+                                                <button
+                                                    class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
                                                     data-development-id="33" data-bs-toggle="modal"
                                                     data-bs-target="#modalPiaro">Seleccionar lote</button>
                                             </div>
@@ -260,29 +267,34 @@
                                     </div>
 
                                     <div class="development-card">
-                                        <button class="development-card-toggle collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseDevelopmentPaseo" aria-expanded="false"
-                                            aria-controls="collapseDevelopmentPaseo">
+                                        <button class="development-card-toggle collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#collapseDevelopmentPaseo"
+                                            aria-expanded="false" aria-controls="collapseDevelopmentPaseo">
                                             <span class="development-card-title">Paseo Península</span>
-                                            <span class="development-badge development-badge-presale">Preventa - 20% Enganche</span>
+                                            <span class="development-badge development-badge-presale">Preventa - 20%
+                                                Enganche</span>
                                             <x-accordion-toggle-icon class="ms-auto development-toggle-icon" />
                                         </button>
 
                                         <div id="collapseDevelopmentPaseo" class="collapse development-card-collapse"
                                             data-bs-parent="#developmentSelectorAccordion">
                                             <div class="development-card-body">
-                                                <p class="development-copy mb-2">¿Ya formas parte de Paseo Península? Busca tu lote para continuar.</p>
+                                                <p class="development-copy mb-2">¿Ya formas parte de Paseo Península?
+                                                    Busca tu lote para continuar.</p>
 
                                                 <div class="position-relative mb-3">
-                                                    <input type="text" id="lotInput-43" class="form-control development-lot-input"
-                                                        data-development-id="43" placeholder="Num. de lote" autocomplete="off" disabled>
+                                                    <input type="text" id="lotInput-43"
+                                                        class="form-control development-lot-input"
+                                                        data-development-id="43" placeholder="Num. de lote"
+                                                        autocomplete="off" disabled>
                                                     <input type="hidden" id="lotId-43" disabled>
                                                     <div id="lotDropdown-43"
                                                         class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
                                                         style="z-index:1000; display:none;"></div>
                                                 </div>
 
-                                                <button class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
+                                                <button
+                                                    class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
                                                     data-development-id="43" data-bs-toggle="modal"
                                                     data-bs-target="#modalPiaro">Seleccionar lote</button>
                                             </div>
@@ -294,7 +306,8 @@
                                             data-bs-target="#collapseDevelopmentAhawell" aria-expanded="false"
                                             aria-controls="collapseDevelopmentAhawell" disabled>
                                             <span class="development-card-title">Ahawell</span>
-                                            <span class="development-badge development-badge-comming-soon">Próximamente</span>
+                                            <span
+                                                class="development-badge development-badge-comming-soon">Próximamente</span>
                                         </button>
 
                                         <div id="collapseDevelopmentAhawell" class="collapse development-card-collapse"
@@ -302,13 +315,16 @@
                                             <div class="development-card-body">
                                                 <h5 class="fw-bold mb-2">¿Ya eres parte de Ahawell?</h5>
                                                 <p class="development-copy mb-2">
-                                                    Si ya cuentas con un lote en Ahawell, indícanos tu número de lote para brindarte
+                                                    Si ya cuentas con un lote en Ahawell, indícanos tu número de lote
+                                                    para brindarte
                                                     asesoría personalizada y continuar con tu proyecto.
                                                 </p>
 
                                                 <div class="position-relative mb-4">
-                                                    <input type="text" id="lotInput-3" class="form-control development-lot-input"
-                                                        data-development-id="3" placeholder="Num. de lote" autocomplete="off" disabled>
+                                                    <input type="text" id="lotInput-3"
+                                                        class="form-control development-lot-input"
+                                                        data-development-id="3" placeholder="Num. de lote"
+                                                        autocomplete="off" disabled>
                                                     <input type="hidden" id="lotId-3" disabled>
                                                     <div id="lotDropdown-3"
                                                         class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
@@ -323,7 +339,8 @@
                                                     Puedes seleccionar tu lote para continuar con tu casa personalizada.
                                                 </p>
 
-                                                <button class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
+                                                <button
+                                                    class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
                                                     data-development-id="3" data-bs-toggle="modal"
                                                     data-bs-target="#modalPiaro">Seleccionar lote</button>
                                             </div>
@@ -359,7 +376,11 @@
                                     </div>
 
                                     <p class="small">
-                                        Los precios de materiales y costos de construcción están sujetos a actualización al momento de concluir el pago del enganche. Históricamente, estos costos han presentado incrementos aproximados del 5% anual, por lo que el precio final podrá ajustarse en función de las condiciones vigentes al momento de la formalización.
+                                        Los precios de materiales y costos de construcción están sujetos a actualización
+                                        al momento de concluir el pago del enganche. Históricamente, estos costos han
+                                        presentado incrementos aproximados del 5% anual, por lo que el precio final
+                                        podrá ajustarse en función de las condiciones vigentes al momento de la
+                                        formalización.
                                     </p>
 
                                     <button class="btn btn-outline-primary w-100 btn-radius" id="changeLotBtn">
@@ -443,6 +464,11 @@
                                         data-bs-target="#modalAsesor">
                                         Apartar
                                     </button>
+
+                                    <button class="btn btn-outline-primary btn-lg btn-radius"
+                                        onclick="compartirConfiguracion()">
+                                        Compartir Configuración
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -455,8 +481,13 @@
     <x-modal-asesor />
     <x-modal-piaro />
     <x-footer />
+    <script src="/assets/js/shareConfig.js?v={{ filemtime(public_path('assets/js/shareConfig.js')) }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        /** Variables globales para compartir datos entre scripts. Por ejemplo, la configuración compartida se inyecta aquí desde Laravel y luego se puede acceder desde cualquier script incluido en esta página a través de window.SHARED_CONFIG. */
+        window.SHARED_CONFIG = @json($sharedConfig ?? null);
+        window.currentStyle = "{{ $style }}";
+
         window.DESARROLLOS_API_URL = 'https://lotes.beskar.mx/api/desarrollos';
         window.LOTS_API_URL = '{{ config('services.naboo.url') }}api/lots';
         window.NABOO_ASSET_BASE_URL = 'https://lotes.beskar.mx';
@@ -490,4 +521,3 @@
 </body>
 
 </html>
-

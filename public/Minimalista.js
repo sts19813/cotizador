@@ -785,7 +785,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // ===============================
   // Auto-selección de estilo según slug
   // ===============================
-  let slug = window.location.pathname.split("/").filter(Boolean).pop() || "home";
+  let parts = window.location.pathname.split("/").filter(Boolean);
+  let slug = parts[0] || "home";
 
   let estiloId = null;
   if (slug === "home") estiloId = "generalMinimalista";
@@ -856,6 +857,7 @@ function autoSelectFirstOptions() {
  *   las selecciones previas de color, piso, meseta, etc., en vez de perderlas.
  */
 function refreshSelectionsAndOverlays() {
+  const animateSelection = shouldAnimateSelectionOverlay();
   // 🔹 1. Resetear overlays en memoria
   activeOverlays = {};
 
