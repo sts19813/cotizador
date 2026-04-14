@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 ///// Modelo para almacenar configuraciones de casas
 class Configuration extends Model
 {
-    protected $fillable = ['token', 'data'];
+    protected $fillable = ['token', 'data', 'preview_image'];
 
     protected $casts = [
         'data' => 'array',

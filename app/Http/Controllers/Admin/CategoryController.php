@@ -103,10 +103,10 @@ class CategoryController extends Controller
         $config = Configuration::where('token', $token)->firstOrFail();
 
         // usar style de URL o fallback al guardado
-        $style = ucfirst($style);
-
+        $style = ucfirst($style);  
         return $this->configurador($style)
-            ->with('sharedConfig', $config->data);
+            ->with('sharedConfig', $config->data)
+            ->with('preview_image', $config->preview_image); 
     }
 
     // Vista previa de configuración sin estilo (si se accede desde /config/{token})
@@ -117,7 +117,8 @@ class CategoryController extends Controller
         $style = $config->data['style'] ?? 'Minimalista';
 
         return $this->configurador($style)
-            ->with('sharedConfig', $config->data);
+            ->with('sharedConfig', $config->data)
+            ->with('preview_image', $config->preview_image);
     }
 
 
@@ -126,16 +127,54 @@ class CategoryController extends Controller
     {
         $data = $request->input('data');
 
-        $token = Str::random(8); // corto
+        $token = Str::random(8);
+
+        $imagePath = null;
+
+        // SI VIENE BASE64 → GUARDAR Y ELIMINAR DEL JSON
+        if (!empty($data['preview'])) {
+            $imagePath = $this->saveBase64Image($data['preview'], $token);
+
+            unset($data['preview']);
+        }
 
         Configuration::create([
             'token' => $token,
-            'data' => $data
+            'data' => $data,
+            'preview_image' => $imagePath
         ]);
 
         return response()->json([
             'url' => url("/" . strtolower($data['style']) . "/config/$token")
         ]);
+    }
+
+    //guarda el base 64 de la imagen, devuelve la URL pública
+    private function saveBase64Image($base64, $token)
+    {
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64, $type)) {
+            $base64 = substr($base64, strpos($base64, ',') + 1);
+        } else {
+            return null;
+        }
+
+        $base64 = str_replace(' ', '+', $base64);
+        $imageData = base64_decode($base64);
+
+        if ($imageData === false) {
+            return null;
+        }
+
+        $relativePath = "previews/{$token}.jpg"; // sin slash inicial
+        $fullPath = public_path($relativePath);
+
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0775, true);
+        }
+
+        file_put_contents($fullPath, $imageData);
+
+        return asset($relativePath);
     }
 
     public function resumen()

@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<x-head />
-
+<x-head :previewImage="$preview_image ?? null" />
 <link rel="stylesheet" href="/assets/cotizador.css?v={{ filemtime(public_path('assets/cotizador.css')) }}">
 
 <body class="general-background">
@@ -483,6 +481,8 @@
     <x-footer />
     <script src="/assets/js/shareConfig.js?v={{ filemtime(public_path('assets/js/shareConfig.js')) }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script>
         /** Variables globales para compartir datos entre scripts. Por ejemplo, la configuración compartida se inyecta aquí desde Laravel y luego se puede acceder desde cualquier script incluido en esta página a través de window.SHARED_CONFIG. */
         window.SHARED_CONFIG = @json($sharedConfig ?? null);
