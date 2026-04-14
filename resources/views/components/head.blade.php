@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-    <meta property="og:title" content="Mira esta casa que armé con UONDR">
+    <meta property="og:title" content="Mira la casa que armé con UONDR">
     <meta property="og:description" content="Personalicé esta casa a mi gusto. Dale un vistazo.">
     <meta property="og:image" content="{{ $previewImage ?? url('/img/default-preview.jpg') }}">
     <meta property="og:url" content="{{ url()->current() }}">
@@ -26,7 +26,7 @@
 
     <!-- WhatsApp / Twitter también usan esto -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Mira esta casa que armé con UONDR">
+    <meta name="twitter:title" content="Mira la casa que armé con UONDR">
     <meta name="twitter:description" content="Personalicé esta casa a mi gusto.">
     <meta name="twitter:image" content="{{ $previewImage ?? url('/img/default-preview.jpg') }}">
 
