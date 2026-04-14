@@ -184,8 +184,9 @@
 }
 
 .subtitle-development {
-	font-size: 20px !important;
+    font-size: 20px !important;
 }
+
 @media only screen and (max-width: 600px) {
     #mainPreview {
         margin-top: 80px;
@@ -223,15 +224,16 @@
     display: inline-block;
 }
 
-.opcion-selected{
-    --bs-gutter-y:5px !important;
+.opcion-selected {
+    --bs-gutter-y: 5px !important;
     --bs-gutter-x: 5px !important;
 }
+
 .precio-sticky span {
     font-size: 20px;
 }
 
-.incluido{
+.incluido {
     background: #386EFA12;
     width: 166px;
     padding: 4px 10px;
@@ -240,6 +242,7 @@
     font-weight: 400;
     font-family: 'Geologica', sans-serif;
 }
+
 .precio-sticky {
     position: sticky;
     top: 70px;
@@ -249,9 +252,9 @@
     padding: 10px;
 }
 
-.financing-card{
-	border-radius: 25px !important;
-	margin-bottom: 90px !important;
+.financing-card {
+    border-radius: 25px !important;
+    margin-bottom: 90px !important;
 }
 
 .development-section-title {
@@ -318,6 +321,14 @@
     color: #4d4d4d;
 }
 
+.swal2-confirm {
+    background-color: #3F6DF6;
+    border-color: #3F6DF6;
+    border-radius: 25px;
+    font-size: 15px;
+    padding: 9px 34px !important;
+}
+
 .development-card-body {
     padding: 0 18px 18px;
 }
@@ -343,10 +354,12 @@
 
 @media (max-width: 768px) {
     #owl-demo .item img {
-        max-height: 65px;   /* Ajusta el tamaño que prefieras */
+        max-height: 65px;
+        /* Ajusta el tamaño que prefieras */
         height: 65px;
         object-fit: cover;
     }
+
     .gallery-carousel .item {
         width: 120px !important;
     }
