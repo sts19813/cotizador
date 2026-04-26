@@ -605,7 +605,14 @@ function bindSvgInteractions(svgLayer, lotsCache) {
             };
 
             localStorage.setItem('selections', JSON.stringify(selections));
-            recalcularPrecioTotal();
+            if (typeof window.setSelectedDevelopmentForPricing === 'function') {
+                window.setSelectedDevelopmentForPricing(lotDevelopmentId, {
+                    recalculate: true,
+                    persist: true
+                });
+            } else {
+                recalcularPrecioTotal();
+            }
 
             const { input, hiddenLotId } = getActiveInputElements();
             if (input) input.value = getSelectedLotLabel(matchedLot, lotDevelopmentDisplayName);
@@ -705,6 +712,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    document.querySelectorAll('.development-card-toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const collapseTarget = toggle.getAttribute('data-bs-target') || '';
+            const developmentByTarget = {
+                '#collapseDevelopmentPiaro': 33,
+                '#collapseDevelopmentPaseo': 43,
+                '#collapseDevelopmentAhawell': 3
+            };
+
+            const developmentId = developmentByTarget[collapseTarget];
+            if (developmentId) {
+                setActiveSearchDevelopment(developmentId);
+            }
+        });
+    });
+
     document.querySelectorAll('.development-lot-input').forEach(input => {
         const developmentId = Number(input.dataset.developmentId);
         const { dropdown, hiddenLotId } = getInputElementsForDevelopment(developmentId);
@@ -771,6 +794,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     };
                     localStorage.setItem('selections', JSON.stringify(selections));
 
+                    const selectedDevelopmentId = lot.development_id || currentDevelopment?.id || developmentId;
+                    if (typeof window.setSelectedDevelopmentForPricing === 'function') {
+                        window.setSelectedDevelopmentForPricing(selectedDevelopmentId, {
+                            recalculate: true,
+                            persist: true
+                        });
+                    } else {
+                        recalcularPrecioTotal();
+                    }
+
                     renderSelectedLot(lot, lotDevelopmentName);
                 };
                 dropdown.appendChild(item);
@@ -804,7 +837,11 @@ function clearSelectedLot() {
     if (selections['lote']) {
         delete selections['lote'];
         localStorage.setItem('selections', JSON.stringify(selections));
-        recalcularPrecioTotal();
+        if (typeof window.applyPricesForCurrentContext === 'function') {
+            window.applyPricesForCurrentContext({ recalculate: true });
+        } else {
+            recalcularPrecioTotal();
+        }
     }
 }
 

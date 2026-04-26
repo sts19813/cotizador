@@ -60,4 +60,9 @@ class Product extends Model
     {
         return $this->hasMany(ProductFachadaRender::class);
     }
+
+    public function developmentPrices()
+    {
+        return $this->hasMany(ProductDevelopmentPrice::class);
+    }
 }

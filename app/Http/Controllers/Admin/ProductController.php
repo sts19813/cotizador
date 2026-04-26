@@ -152,13 +152,6 @@ class ProductController extends Controller
             'base_price' => 'required|numeric',
             'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'product_file' => 'nullable|file|max:4096',
-            'fachada_1_price' => 'required|numeric',
-            'fachada_2_price' => 'required|numeric',
-            'fachada_3_price' => 'required|numeric',
-            'fachada_4_price' => 'required|numeric',
-            'fachada_5_price' => 'required|numeric',
-            'fachada_6_price' => 'required|numeric',
-            'fachada_7_price' => 'required|numeric',
         ]);
 
         $data = $request->all();

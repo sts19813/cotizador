@@ -184,11 +184,29 @@
                                         <p class="fw-bold mb-1">Opciones de {{ $category->name }}</p>
                                         <div class="row g-3 opcion-selected" id="opciones-{{ Str::slug($category->name) }}">
                                             @foreach ($category->products as $product)
+                                                @php
+                                                    $developmentPrices = $product->developmentPrices->mapWithKeys(
+                                                        function ($price) {
+                                                            return [
+                                                                (string) $price->development_id => [
+                                                                    'precio_a' => (float) $price->fachada_1_price,
+                                                                    'precio_b' => (float) $price->fachada_2_price,
+                                                                    'precio_2a' => (float) $price->fachada_3_price,
+                                                                    'precio_2b' => (float) $price->fachada_4_price,
+                                                                    'precio_3a' => (float) $price->fachada_5_price,
+                                                                    'precio_3b' => (float) $price->fachada_6_price,
+                                                                    'precio_4a' => (float) $price->fachada_7_price,
+                                                                ],
+                                                            ];
+                                                        },
+                                                    );
+                                                @endphp
                                                 <div class="col-6 col-md-6">
                                                     <div class="option-card estilo-{{ Str::slug($category->name) }} cursor-pointer"
                                                         data-categoria="{{ $category->name }}" data-id="{{ $product->id }}"
                                                         data-renders='@json($product->renders)'
                                                         data-fachada-renders='@json($fachadas[$product->id] ?? [])'
+                                                        data-development-prices='@json($developmentPrices)'
                                                         data-valor="{{ $product->title }}"
                                                         data-precio="{{ $product->base_price }}"
                                                         data-precio_a="{{ $product->fachada_1_price }}"

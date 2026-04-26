@@ -54,13 +54,18 @@ class CategoryController extends Controller
             abort(404);
         }
 
+        $mainDevelopmentIds = [33, 43, 3];
+
         // Categorías activas con productos y sus renders generales
         $categories = Category::with([
             'products' => function ($q) {
                 $q->where('is_visible', true) // 👈 filtro clave
                     ->orderBy('fachada_7_price', 'asc');
             },
-            'products.renders'
+            'products.renders',
+            'products.developmentPrices' => function ($query) use ($mainDevelopmentIds) {
+                $query->whereIn('development_id', $mainDevelopmentIds);
+            },
         ])
             ->where('is_active', true)
             ->where('style', $style)

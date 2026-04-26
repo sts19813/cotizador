@@ -145,6 +145,17 @@
                     </div>
                 </div>
 
+                <!-- Precios por Desarrollo -->
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->is('admin/products/development-prices*') ? 'active' : '' }}"
+                        href="{{ route('admin.products.development-prices.byStyle', [33, 'Minimalista']) }}">
+                        <span class="menu-icon">
+                            <i class="ki-outline ki-abstract-26 fs-2"></i>
+                        </span>
+                        <span class="menu-title">{{ __('sidebar.development_prices') }}</span>
+                    </a>
+                </div>
+
                 <!-- Categorías -->
                 <div class="menu-item">
                     <a class="menu-link {{ request()->is('admin/categories*') ? 'active' : '' }}"

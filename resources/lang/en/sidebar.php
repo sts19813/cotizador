@@ -13,5 +13,6 @@ return [
     'renders_tulum' => 'Tulum',
     'renders_mexican' => 'Mexican',
     'style_prices' => 'Style Prices',
+    'development_prices' => 'Development Prices',
     'categories' => 'Categories',
 ];

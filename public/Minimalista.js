@@ -11,6 +11,189 @@ let isBootstrappingSelections = true;
 let lastOptionClickMeta = { trusted: false, ts: 0 };
 
 const PREVENTA_DEVELOPMENT_IDS = new Set([43, 3, 2, 14, 8, 9, 10]);
+const DEFAULT_MAIN_DEVELOPMENT_ID = 33;
+const MAIN_DEVELOPMENT_NAME_MAP = {
+  33: 'Piaró',
+  43: 'Paseo Península',
+  3: 'Ahawell'
+};
+const DEVELOPMENT_ROOT_MAP = {
+  33: 33,
+  43: 43,
+  3: 3,
+  2: 3,
+  14: 3,
+  8: 3,
+  9: 3,
+  10: 3
+};
+
+function normalizeFachadaSuffix(value = '') {
+  if (!value) return null;
+  return String(value)
+    .replace(/fachada/i, '')
+    .trim()
+    .toLowerCase();
+}
+
+function resolveMainDevelopmentId(developmentId) {
+  const numericId = Number(developmentId);
+  if (!numericId || Number.isNaN(numericId)) return null;
+  return DEVELOPMENT_ROOT_MAP[numericId] || numericId;
+}
+
+function getMainDevelopmentLabel(developmentId) {
+  const rootId = resolveMainDevelopmentId(developmentId);
+  return MAIN_DEVELOPMENT_NAME_MAP[rootId] || 'Desarrollo';
+}
+
+function hasSelectedLotForPricing() {
+  const lotDevelopmentId =
+    selections?.lote?.development_id ??
+    selections?.lote?.desarrollo_id ??
+    null;
+
+  return Boolean(resolveMainDevelopmentId(lotDevelopmentId));
+}
+
+function getSelectedDevelopmentRootId() {
+  if (hasSelectedLotForPricing()) {
+    const lotRoot = resolveMainDevelopmentId(
+      selections?.lote?.development_id ??
+      selections?.lote?.desarrollo_id
+    );
+    if (lotRoot) return lotRoot;
+  }
+
+  return DEFAULT_MAIN_DEVELOPMENT_ID;
+}
+
+function setSelectedDevelopmentForPricing(developmentId, options = {}) {
+  const { recalculate = true, persist = true } = options;
+  const rootId = resolveMainDevelopmentId(developmentId) || DEFAULT_MAIN_DEVELOPMENT_ID;
+
+  if (!selections || typeof selections !== 'object') {
+    selections = {};
+  }
+
+  selections.development = {
+    id: rootId,
+    root_id: rootId,
+    name: getMainDevelopmentLabel(rootId)
+  };
+
+  if (persist) {
+    localStorage.setItem('selections', JSON.stringify(selections));
+  }
+
+  applyPricesForCurrentContext({ recalculate });
+  return rootId;
+}
+
+function getCurrentFacadeSuffix() {
+  const fromSelected = normalizeFachadaSuffix(selectedFachada);
+  if (fromSelected) return fromSelected;
+
+  const fromSelection = normalizeFachadaSuffix(selections?.['opciones-fachada']?.valor);
+  if (fromSelection) return fromSelection;
+
+  return '4a';
+}
+
+function getDevelopmentSpecificPrice(card, developmentRootId, priceKey) {
+  if (!card || !priceKey) return null;
+
+  let parsedMap = {};
+  try {
+    parsedMap = JSON.parse(card.dataset.developmentPrices || '{}');
+  } catch (_error) {
+    parsedMap = {};
+  }
+
+  const developmentNode = parsedMap[String(developmentRootId)];
+  if (!developmentNode || developmentNode[priceKey] === undefined || developmentNode[priceKey] === null) {
+    return null;
+  }
+
+  const value = parseFloat(developmentNode[priceKey]);
+  return Number.isNaN(value) ? null : value;
+}
+
+function getPriceByContextForCard(card, options = {}) {
+  if (!card) return 0;
+
+  const developmentRootId = resolveMainDevelopmentId(
+    options.developmentRootId ?? getSelectedDevelopmentRootId()
+  ) || DEFAULT_MAIN_DEVELOPMENT_ID;
+  const facadeSuffix = normalizeFachadaSuffix(options.facadeSuffix ?? getCurrentFacadeSuffix());
+  const priceKey = facadeSuffix ? `precio_${facadeSuffix}` : null;
+  const useDevelopmentOverride = options.useDevelopmentOverride ?? hasSelectedLotForPricing();
+
+  if (priceKey && useDevelopmentOverride) {
+    const developmentPrice = getDevelopmentSpecificPrice(card, developmentRootId, priceKey);
+    if (developmentPrice !== null) return developmentPrice;
+  }
+
+  if (priceKey) {
+    if (card.dataset[priceKey] !== undefined) {
+      const value = parseFloat(card.dataset[priceKey]);
+      if (!Number.isNaN(value)) return value;
+    }
+  }
+
+  const fallback = parseFloat(card.dataset.precio);
+  return Number.isNaN(fallback) ? 0 : fallback;
+}
+
+function applyPricesForCurrentContext(options = {}) {
+  const { recalculate = true } = options;
+  const developmentRootId = getSelectedDevelopmentRootId();
+  const facadeSuffix = getCurrentFacadeSuffix();
+
+  document.querySelectorAll('.option-card[data-precio_a]').forEach(card => {
+    const newPrice = getPriceByContextForCard(card, { developmentRootId, facadeSuffix });
+    card.dataset.precio = Number.isFinite(newPrice) ? String(newPrice) : '0';
+
+    const priceLabel = card.querySelector('.precio-producto');
+    if (priceLabel) {
+      if (newPrice === 0) {
+        priceLabel.textContent = '';
+      } else {
+        priceLabel.textContent = formatoMXN(newPrice);
+        priceLabel.classList.remove('incluido');
+      }
+    }
+
+    if (card.classList.contains('selected')) {
+      const group = card.closest('.accordion-collapse');
+      const groupId = group?.id || 'sin-id';
+      if (selections[groupId]) {
+        selections[groupId].precio = newPrice;
+      }
+    }
+  });
+
+  if (selections['opciones-fachada']) {
+    const selectedFacadeCard = document.querySelector(
+      `.option-card[data-categoria="Fachada"][data-valor="${selections['opciones-fachada'].valor}"]`
+    );
+    if (selectedFacadeCard) {
+      const facadePrice = getPriceByContextForCard(selectedFacadeCard, { developmentRootId, facadeSuffix });
+      selections['precio_base_fachada'] = facadePrice;
+      selections['opciones-fachada'].precio = facadePrice;
+    }
+  }
+
+  localStorage.setItem('selections', JSON.stringify(selections));
+
+  if (recalculate) {
+    recalcularPrecioTotal();
+  }
+}
+
+window.resolveMainDevelopmentId = resolveMainDevelopmentId;
+window.setSelectedDevelopmentForPricing = setSelectedDevelopmentForPricing;
+window.applyPricesForCurrentContext = applyPricesForCurrentContext;
 
 document.addEventListener('click', function (e) {
   if (e.target && e.target.closest('.option-card')) {
@@ -317,11 +500,9 @@ function cambiarImagen(index) {
 }
 
 function getSelectedDevelopmentId() {
-  const developmentId = Number(
-    selections?.lote?.development_id ??
-    selections?.lote?.desarrollo_id ??
-    0
-  );
+  const developmentId = Number(hasSelectedLotForPricing()
+    ? (selections?.lote?.development_id ?? selections?.lote?.desarrollo_id ?? DEFAULT_MAIN_DEVELOPMENT_ID)
+    : DEFAULT_MAIN_DEVELOPMENT_ID);
 
   return Number.isNaN(developmentId) ? 0 : developmentId;
 }
@@ -470,7 +651,9 @@ function seleccionarOpcion(elemento) {
   if (categoria === 'Fachada') {
     selectedFachada = valor;
 
-    const precioBase = parseFloat(elemento.dataset.precio) || 0;
+    const precioBase = getPriceByContextForCard(elemento, {
+      facadeSuffix: normalizeFachadaSuffix(valor)
+    });
     selections["precio_base_fachada"] = precioBase;
 
     // Actualizar precio principal
@@ -498,46 +681,7 @@ function seleccionarOpcion(elemento) {
 
     // EN LUGAR de autoSelectFirstOptions(); ... -> llamamos a la nueva función que reaplica todo
     refreshSelectionsAndOverlays();
-
-    // === ACTUALIZAR PRECIOS AL CAMBIAR DE FACHADA ===
-    const fachada = valor.trim().toLowerCase(); // ej. 'fachada 3a'
-    const sufijo = fachada.replace('fachada', '').trim(); // '3a'
-    const precioKey = 'precio_' + sufijo; // ej. 'precio_3a'
-
-    document.querySelectorAll('.option-card').forEach(card => {
-      const nuevoPrecio = parseFloat(card.dataset[precioKey]) || parseFloat(card.dataset.precio) || 0;
-      const priceLabel = card.querySelector('.precio-producto');
-
-      // Mostrar nuevo precio en UI
-      if (priceLabel) {
-        if (nuevoPrecio === 0) {
-        } else {
-          priceLabel.textContent = formatoMXN(nuevoPrecio);
-          priceLabel.classList.remove("incluido");
-        }
-      }
-
-      // Actualizar atributo para futuros clics
-      card.dataset.precio = nuevoPrecio;
-
-      // 🔥 CORRECCIÓN IMPORTANTE:
-      // Si esta tarjeta está seleccionada, actualizar también selections[groupId].precio
-      if (card.classList.contains('selected')) {
-        const group = card.closest('.accordion-collapse');
-        const groupId = group?.id || 'sin-id';
-
-        if (selections[groupId]) {
-          selections[groupId].precio = nuevoPrecio;
-        }
-      }
-    });
-
-    // Guardar selections corregido
-    localStorage.setItem('selections', JSON.stringify(selections));
-
-    // Recalcular total una vez que TODAS las selecciones tienen el precio correcto
-    recalcularPrecioTotal();
-
+    applyPricesForCurrentContext({ recalculate: true });
 
     return;
   }
@@ -748,6 +892,13 @@ document.querySelectorAll('.option-card').forEach(card => {
  * AUTO-SELECCIÓN AL CARGAR
  **********************************************************/
 document.addEventListener('DOMContentLoaded', function () {
+  const initialDevelopmentId =
+    selections?.lote?.development_id ??
+    DEFAULT_MAIN_DEVELOPMENT_ID;
+  setSelectedDevelopmentForPricing(initialDevelopmentId, {
+    recalculate: false,
+    persist: true
+  });
 
   document.getElementById('selectEnganche').addEventListener('change', e => {
     if (getFinancingMode() !== 'PIARO') return;

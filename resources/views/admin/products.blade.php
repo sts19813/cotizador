@@ -50,13 +50,6 @@
                     data-image_url="{{ $product->image_url }}"
                     data-product_url="{{ $product->product_url }}"
                     data-is_visible="{{ $product->is_visible ? 1 : 0 }}"
-                    data-fachada_1_price="{{ $product->fachada_1_price }}"
-                    data-fachada_2_price="{{ $product->fachada_2_price }}"
-                    data-fachada_3_price="{{ $product->fachada_3_price }}"
-                    data-fachada_4_price="{{ $product->fachada_4_price }}"
-                    data-fachada_5_price="{{ $product->fachada_5_price }}"
-                    data-fachada_6_price="{{ $product->fachada_6_price }}"
-                    data-fachada_7_price="{{ $product->fachada_7_price }}"
                     data-bs-toggle="modal"
                     data-bs-target="#editProductModal">
                     <i class="bi bi-pencil"></i>
@@ -242,13 +235,11 @@
               </div>
           </div>
 
-          <!-- Precios por Fachadas -->
-          <div class="col-12"><label class="fw-bold">Precios por Fachadas*</label></div>
-          @for($i=1; $i<=7; $i++)
-          <div class="col-md-3">
-            <input type="number" step="0.01" name="fachada_{{ $i }}_price" class="form-control" placeholder="Fachada {{ $i }}" required>
+          <div class="col-12">
+            <div class="alert alert-light-info py-2 mb-0">
+              Los precios por fachada se administran desde el módulo de precios.
+            </div>
           </div>
-          @endfor
         </div>
 
         <div class="modal-footer">

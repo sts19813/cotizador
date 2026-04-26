@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\RenderController;
 use App\Http\Controllers\Admin\LeadController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductFachadaController;
+use App\Http\Controllers\Admin\ProductDevelopmentPriceController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -125,6 +126,12 @@ Route::middleware(['auth', AdminMiddleware::class])
         // Guardado masivo de precios por estilo
         Route::put('products/update-mass/{style}', [ProductController::class, 'updateMassPrices'])
             ->name('products.update-mass');
+
+        // Precios por desarrollo + estilo
+        Route::get('products/development-prices/{development}/{style}', [ProductDevelopmentPriceController::class, 'showByDevelopmentAndStyle'])
+            ->name('products.development-prices.byStyle');
+        Route::put('products/development-prices/{development}/{style}', [ProductDevelopmentPriceController::class, 'updateMassPrices'])
+            ->name('products.development-prices.update-mass');
 
         //perfil administrador
         Route::get('/perfil', [ProfileController::class, 'index'])->name('profile.index');
