@@ -11,7 +11,7 @@
                     <i class="ki-outline ki-home fs-2 me-2 text-primary"></i>
                     Precios Base de Fachadas
                 </h1>
-                <span class="text-muted fs-7">Administración de los precios base por estilo</span>
+                <span class="text-muted fs-7">Administración de los precios base por fachada y desarrollo</span>
             </div>
 
             <div class="d-flex align-items-center gap-2">
@@ -28,6 +28,30 @@
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
+
+            <div class="card mb-4">
+                <div class="card-body py-3">
+                    <form method="GET" action="{{ route('admin.precio.fachadas') }}" class="row g-2 align-items-end">
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold">Desarrollo</label>
+                            <select name="development" class="form-select">
+                                <option value="">Default (sin desarrollo)</option>
+                                @foreach($developments as $id => $name)
+                                    <option value="{{ $id }}" {{ (int) $selectedDevelopment === (int) $id ? 'selected' : '' }}>
+                                        {{ $name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary w-100">Aplicar</button>
+                        </div>
+                    </form>
+                    <div class="text-muted mt-2">
+                        Si no existe configuración del desarrollo, el sistema usa automáticamente el precio default.
+                    </div>
+                </div>
+            </div>
 
             <table id="fachadas_table"
                    class="table table-row-bordered table-hover table-striped align-middle gy-3">
@@ -56,13 +80,20 @@
                                       method="POST"
                                       class="d-flex gap-2">
                                     @csrf
+                                    @php
+                                        $override = $selectedDevelopment !== null
+                                            ? optional($product->developmentPrices->first())->base_price
+                                            : null;
+                                        $priceValue = $override ?? $product->base_price;
+                                    @endphp
+                                    <input type="hidden" name="development_id" value="{{ $selectedDevelopment }}">
                                     <div class="input-group input-group-sm w-150px">
                                         <span class="input-group-text">$</span>
                                         <input 
                                             type="text"
                                             name="base_price"
                                             class="form-control price-input"
-                                            value="{{ number_format($product->base_price, 2, '.', ',') }}"
+                                            value="{{ number_format((float) $priceValue, 2, '.', ',') }}"
                                         >
                                     </div>
                             </td>

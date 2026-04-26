@@ -152,6 +152,16 @@ function aplicarConfiguracion(data) {
     // ============================
     if (data.lote) {
         selections.lote = data.lote;
+        if (typeof window.setSelectedDevelopmentForPricing === 'function') {
+            window.setSelectedDevelopmentForPricing(
+                data.lote.development_id || data.lote.desarrollo_id || 33,
+                { recalculate: true, persist: true }
+            );
+        } else if (typeof window.applyPricesForCurrentContext === 'function') {
+            window.applyPricesForCurrentContext({ recalculate: true });
+        }
+    } else if (typeof window.applyPricesForCurrentContext === 'function') {
+        window.applyPricesForCurrentContext({ recalculate: true });
     }
 
     console.log('Configuración aplicada correctamente');

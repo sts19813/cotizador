@@ -119,6 +119,26 @@ function getDevelopmentSpecificPrice(card, developmentRootId, priceKey) {
   return Number.isNaN(value) ? null : value;
 }
 
+function getDevelopmentSpecificBasePrice(card, developmentRootId) {
+  debugger;
+  if (!card) return null;
+
+  let parsedMap = {};
+  try {
+    parsedMap = JSON.parse(card.dataset.developmentPrices || '{}');
+  } catch (_error) {
+    parsedMap = {};
+  }
+
+  const developmentNode = parsedMap[String(developmentRootId)];
+  if (!developmentNode || developmentNode.base_price === undefined || developmentNode.base_price === null) {
+    return null;
+  }
+
+  const value = parseFloat(developmentNode.base_price);
+  return Number.isNaN(value) ? null : value;
+}
+
 function getPriceByContextForCard(card, options = {}) {
   if (!card) return 0;
 
@@ -128,13 +148,19 @@ function getPriceByContextForCard(card, options = {}) {
   const facadeSuffix = normalizeFachadaSuffix(options.facadeSuffix ?? getCurrentFacadeSuffix());
   const priceKey = facadeSuffix ? `precio_${facadeSuffix}` : null;
   const useDevelopmentOverride = options.useDevelopmentOverride ?? hasSelectedLotForPricing();
+  const isFacadeCard = String(card.dataset.categoria || '').toLowerCase() === 'fachada';
+
+  if (isFacadeCard && useDevelopmentOverride) {
+    const developmentBasePrice = getDevelopmentSpecificBasePrice(card, developmentRootId);
+    if (developmentBasePrice !== null) return developmentBasePrice;
+  }
 
   if (priceKey && useDevelopmentOverride) {
     const developmentPrice = getDevelopmentSpecificPrice(card, developmentRootId, priceKey);
     if (developmentPrice !== null) return developmentPrice;
   }
 
-  if (priceKey) {
+  if (priceKey && !isFacadeCard) {
     if (card.dataset[priceKey] !== undefined) {
       const value = parseFloat(card.dataset[priceKey]);
       if (!Number.isNaN(value)) return value;

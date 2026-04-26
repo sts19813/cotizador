@@ -189,6 +189,7 @@
                                                         function ($price) {
                                                             return [
                                                                 (string) $price->development_id => [
+                                                                    'base_price' => $price->base_price !== null ? (float) $price->base_price : null,
                                                                     'precio_a' => (float) $price->fachada_1_price,
                                                                     'precio_b' => (float) $price->fachada_2_price,
                                                                     'precio_2a' => (float) $price->fachada_3_price,

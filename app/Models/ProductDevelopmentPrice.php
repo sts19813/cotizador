@@ -12,6 +12,7 @@ class ProductDevelopmentPrice extends Model
     protected $fillable = [
         'product_id',
         'development_id',
+        'base_price',
         'fachada_1_price',
         'fachada_2_price',
         'fachada_3_price',
@@ -23,6 +24,7 @@ class ProductDevelopmentPrice extends Model
 
     protected $casts = [
         'development_id' => 'integer',
+        'base_price' => 'float',
         'fachada_1_price' => 'float',
         'fachada_2_price' => 'float',
         'fachada_3_price' => 'float',
@@ -37,4 +39,3 @@ class ProductDevelopmentPrice extends Model
         return $this->belongsTo(Product::class);
     }
 }
-
