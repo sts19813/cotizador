@@ -51,14 +51,6 @@
                 @endforeach
             </div>
 
-            <div class="card mb-4">
-                <div class="card-body py-3">
-                    <div class="text-muted">
-                        Si no existe configuración de la zona, el sistema usa automáticamente el precio default.
-                    </div>
-                </div>
-            </div>
-
             <table id="fachadas_table"
                    class="table table-row-bordered table-hover table-striped align-middle gy-3">
                 <thead>

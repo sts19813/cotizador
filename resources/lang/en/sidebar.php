@@ -14,6 +14,6 @@ return [
     'renders_mexican' => 'Mexican',
     'style_prices' => 'Style Prices',
     'zones' => 'Zones',
-    'zone_prices' => 'Zone Prices',
+    'zone_prices' => 'Prices products',
     'categories' => 'Categories',
 ];

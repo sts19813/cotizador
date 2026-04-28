@@ -292,7 +292,7 @@ const estiloSeleccionado =
   '';
 
 if (estiloSeleccionado) {
-  document.querySelector('#estilotabla').textContent = estiloSeleccionado;
+  document.querySelector('#estilotabla').textContent = estiloSeleccionado + (savedSelections.zona.name ? '- ' + savedSelections.zona.name : '');
 }
 
 const construccionM2 = obtenerConstruccionM2(

@@ -7,11 +7,6 @@
 
     <h3 class="mb-4">Precios por Zona - {{ $zoneName }} / {{ $style }}</h3>
 
-    <div class="alert alert-info py-2">
-        Configuras precios por producto y fachada para esta zona. Si un producto no tiene configuración
-        específica, se usa automáticamente el precio base del producto.
-    </div>
-
     @if (session('success'))
         <div class="alert alert-success py-2">
             {{ session('success') }}
