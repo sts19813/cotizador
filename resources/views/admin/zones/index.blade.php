@@ -232,6 +232,23 @@
         </div>
     </div>
 </div>
+
+
+  <div class="border rounded p-3 d-none">
+                            <h5 class="mb-3">Agregar desarrollo</h5>
+                            <form method="POST" action="{{ route('admin.zones.developments.store', $zone) }}" class="row g-2">
+                                @csrf
+                                <div class="col-md-3">
+                                    <input type="number" name="development_id" class="form-control" placeholder="ID" min="1" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="development_name" class="form-control" placeholder="Nombre (opcional)">
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-light-primary w-100">Agregar</button>
+                                </div>
+                            </form>
+                        </div>
 @endsection
 
 @push('scripts')
