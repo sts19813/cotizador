@@ -98,6 +98,49 @@ function obtenerDesarrolloDesdeLote(lote) {
   return 'N/D';
 }
 
+function normalizarCategoria(valor = '') {
+  return quitarAcentos(String(valor || '')).toLowerCase().trim();
+}
+
+function esCategoriaFachada(item) {
+  const categoria = normalizarCategoria(item?.categoria || '');
+  const valor = normalizarCategoria(item?.valor || '');
+  return categoria.includes('fachada') || valor.includes('fachada');
+}
+
+function esCategoriaEstilo(item) {
+  return normalizarCategoria(item?.categoria || '') === 'estilo';
+}
+
+function precioNumerico(valor) {
+  const parsed = Number(valor);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function obtenerPrecioRenglon(key, item, precioFachadaBase) {
+  if (!item || typeof item !== 'object') return 0;
+
+  if (key === 'lote' || normalizarCategoria(item.categoria) === 'lote') {
+    return item.suma === true ? precioNumerico(item.total ?? item.precio) : 0;
+  }
+
+  if (esCategoriaFachada(item)) {
+    return precioNumerico(precioFachadaBase);
+  }
+
+  return precioNumerico(item.precio);
+}
+
+function debeMostrarEnTabla(key, item) {
+  if (!item || typeof item !== 'object') return false;
+  if (key === 'zona' || key === 'development') return false;
+  if (key === 'opciones-zonas' || normalizarCategoria(item.categoria) === 'zona') return false;
+
+  if (key === 'lote') return true;
+
+  return Boolean((item.categoria && item.categoria.trim() !== '') || (item.valor && item.valor.trim() !== ''));
+}
+
 // =======================
 // TABLA RESUMEN
 // =======================
@@ -105,13 +148,28 @@ const tbody = document.querySelector('#tablaResumen tbody');
 tbody.innerHTML = '';
 
 const entries = Object.entries(savedSelections);
-const estiloEntry = entries.find(([_, item]) => item.categoria === "Estilo");
-const otherEntries = entries.filter(([_, item]) => item.categoria !== "Estilo");
+const estiloEntry = entries.find(([_, item]) => esCategoriaEstilo(item));
+const otherEntries = entries.filter(([_, item]) => !esCategoriaEstilo(item));
 
 const orderedEntries = estiloEntry ? [estiloEntry, ...otherEntries] : otherEntries;
+const tableEntries = orderedEntries.filter(([key, item]) => debeMostrarEnTabla(key, item));
+const facadeBasePrice = precioNumerico(savedSelections["precio_base_fachada"] ?? savedSelections["opciones-fachada"]?.precio);
 
-orderedEntries.forEach(([key, item]) => {
-  if (!item.categoria || item.categoria.trim() === '') return;
+let totalResumenCasa = 0;
+tableEntries.forEach(([key, item]) => {
+  if (key === 'lote' || normalizarCategoria(item.categoria) === 'lote') return;
+  if (esCategoriaFachada(item)) return;
+  totalResumenCasa += precioNumerico(item.precio);
+});
+totalResumenCasa += facadeBasePrice;
+
+const loteEntry = savedSelections["lote"] || null;
+const loteTotalResumen = loteEntry && loteEntry.suma === true ? precioNumerico(loteEntry.total) : 0;
+const totalResumen = totalResumenCasa + loteTotalResumen;
+
+tableEntries.forEach(([key, item]) => {
+  const categoriaLabel = item.categoria || (key === 'lote' ? 'Lote' : '');
+  const valorLabel = item.valor || item.name || '';
 
   const headingId = '#' + key.replace('collapse-', 'heading-');
   const seccion = secciones.find(s => s.id === headingId);
@@ -132,12 +190,12 @@ orderedEntries.forEach(([key, item]) => {
     `;
   }
 
-  const precioFinal = getPrecioCorrecto(item);
+  const precioFinal = obtenerPrecioRenglon(key, item, facadeBasePrice);
 
   const row = `
   <tr>
-    <td>${item.categoria ?? ''}</td>
-    <td>${item.valor ?? ''}</td>
+    <td>${categoriaLabel}</td>
+    <td>${valorLabel}</td>
     <td>
       ${item.pre_code ? 'Pre: ' + item.pre_code + '<br>' : ''}
       ${item.variant_code ? 'Var: ' + item.variant_code : ''}
@@ -157,9 +215,6 @@ orderedEntries.forEach(([key, item]) => {
 // =======================
 // TOTAL RESUMEN
 // =======================
-let totalResumen = 0;
-orderedEntries.forEach(([_, item]) => totalResumen += getPrecioCorrecto(item));
-
 const totalElemento = document.querySelector('#totalResumen');
 if (totalElemento) {
   totalElemento.textContent = "$" + totalResumen.toLocaleString("es-MX");
@@ -167,8 +222,6 @@ if (totalElemento) {
 
 // Total duplicado arriba
 
-
-const loteEntry = savedSelections["lote"];
 
 if (loteEntry) {
   const lotePrecio = document.getElementById('lotePrecio');
@@ -208,7 +261,7 @@ if (loteEntry) {
 }
 
 
-const precioCasa = totalResumen;
+const precioCasa = totalResumenCasa;
 
 const precioCasaEl = document.getElementById('precioCasa');
 if (precioCasaEl) {
@@ -216,7 +269,7 @@ if (precioCasaEl) {
 }
 const totalTop = document.querySelector('#totalResumenTop');
 if (totalTop) {
-  totalTop.textContent = "$" + (totalResumen + (savedSelections.lote?.suma ? savedSelections.lote.total : 0)).toLocaleString("es-MX");
+  totalTop.textContent = "$" + totalResumen.toLocaleString("es-MX");
 }
 // =======================
 // ACTUALIZACIÓN DE UI
@@ -227,7 +280,7 @@ if (savedSelections.Habitaciones) {
   document.querySelector('#recamarastabla').textContent = recamarasSeleccionadas;
 }
 
-const fachadaEntry = Object.values(savedSelections).find(item => item.categoria === "Fachada");
+const fachadaEntry = Object.values(savedSelections).find(item => esCategoriaFachada(item));
 const fachadaSeleccionada = fachadaEntry?.valor || '';
 if (fachadaEntry) {
   document.querySelector('#fachadatabla').textContent = fachadaSeleccionada;
@@ -254,7 +307,7 @@ if (construccionTabla) {
     : 'N/D';
 }
 
-if (savedSelections["collapse-21"]?.valor === "Fachada B") {
+if (normalizarCategoria(fachadaSeleccionada).endsWith('b')) {
   document.querySelector('.imagen-casa').src = "/img/resumen-b.png";
 } else {
   document.querySelector('.imagen-casa').src = "/img/resumen.png";
@@ -274,7 +327,7 @@ if (savedSelections.Habitaciones) {
 
     // Obtener fachada (A o B)
     const fachadaEntry = Object.values(savedSelections)
-      .find(item => item.categoria === "Fachada");
+      .find(item => esCategoriaFachada(item));
 
     const fachada = fachadaEntry && /b/i.test(fachadaEntry.valor) ? 'B' : 'A';
 
@@ -465,37 +518,6 @@ document.querySelector('.gallery-nav.prev').onclick = () => {
 };
 
 
-// =======================
-// FUNCIONES DE PRECIOS
-// =======================
-function getClavePrecioFachada() {
-  const fachadaEntry = Object.values(savedSelections)
-    .find(item => item.categoria === "Fachada");
-
-  if (!fachadaEntry) return null;
-
-  let sufijo = fachadaEntry.valor.replace(/fachada/i, "").trim().toLowerCase();
-
-  return "precio_" + sufijo;
-}
-
-function getPrecioCorrecto(producto) {
-  if (!producto || typeof producto !== "object") return 0;
-
-  const clave = getClavePrecioFachada();
-
-  if (clave && producto[clave] !== undefined) {
-    const val = parseFloat(producto[clave]);
-    return isNaN(val) ? 0 : val;
-  }
-
-  if (producto.precio_a) return parseFloat(producto.precio_a) || 0;
-  if (producto.precio_b) return parseFloat(producto.precio_b) || 0;
-
-  return parseFloat(producto.precio) || 0;
-}
-
-
 function renderGalleryItem(index) {
   const item = miniaturasData[index];
   if (!item) return;
@@ -562,4 +584,3 @@ function normalizarLote(lote) {
       : (lote.development_display_name ?? null)
   };
 }
-

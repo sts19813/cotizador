@@ -10,8 +10,15 @@ use App\Models\Zone;
 
 class ProductFachadaController extends Controller
 {
+    private const VALID_STYLES = ['Minimalista', 'Tulum', 'Mexicano'];
+
     public function index(Request $request)
     {
+        $selectedStyle = $request->input('style', 'Minimalista');
+        if (!in_array($selectedStyle, self::VALID_STYLES, true)) {
+            abort(404);
+        }
+
         $selectedZone = $request->filled('zone')
             ? (int) $request->input('zone')
             : null;
@@ -21,6 +28,7 @@ class ProductFachadaController extends Controller
         }
 
         $products = Product::where('title', 'LIKE', '%fachada%')
+            ->where('style', $selectedStyle)
             ->with([
                 'zonePrices' => function ($query) use ($selectedZone) {
                     if ($selectedZone === null) {
@@ -37,6 +45,8 @@ class ProductFachadaController extends Controller
         return view('admin.products.fachadas.index', [
             'products' => $products,
             'selectedZone' => $selectedZone,
+            'selectedStyle' => $selectedStyle,
+            'styles' => self::VALID_STYLES,
             'zones' => Zone::orderBy('order')->orderBy('name')->get(),
         ]);
     }
@@ -46,6 +56,7 @@ class ProductFachadaController extends Controller
         $validated = $request->validate([
             'base_price' => 'required|numeric|min:0',
             'zone_id' => 'nullable|integer|exists:zones,id',
+            'style' => 'nullable|string|in:Minimalista,Tulum,Mexicano',
         ]);
 
         $zoneId = !empty($validated['zone_id']) ? (int) $validated['zone_id'] : null;
@@ -55,7 +66,12 @@ class ProductFachadaController extends Controller
                 'base_price' => $validated['base_price']
             ]);
 
-            return redirect()->back()->with('success', 'Precio base actualizado correctamente.');
+            return redirect()
+                ->route('admin.precio.fachadas', [
+                    'zone' => $zoneId,
+                    'style' => $validated['style'] ?? $product->style,
+                ])
+                ->with('success', 'Precio base actualizado correctamente.');
         }
 
         ProductZonePrice::updateOrCreate(
@@ -68,6 +84,11 @@ class ProductFachadaController extends Controller
             ]
         );
 
-        return redirect()->back()->with('success', 'Precio por zona actualizado correctamente.');
+        return redirect()
+            ->route('admin.precio.fachadas', [
+                'zone' => $zoneId,
+                'style' => $validated['style'] ?? $product->style,
+            ])
+            ->with('success', 'Precio por zona actualizado correctamente.');
     }
 }

@@ -49,6 +49,8 @@
                     <h4 class="fw-bold precio-total azulFuerte precio-sticky">
                         <img src="/img/tag.svg" alt="">
                         <span id="precioTotal">$0 MXN</span>
+                        <span id="totalPriceUpdating" class="spinner-border spinner-border-sm text-primary ms-2 d-none"
+                            role="status" aria-hidden="true"></span>
                     </h4>
 
                     <p>Bienvenido al configurador de casas UONDR. Explora y personaliza tu casa ideal eligiendo el

@@ -9,6 +9,7 @@ let currentLoadToken = 0; // Loader helpers y token global
 const OVERLAY_TRANSITION_MS = 1500;
 let isBootstrappingSelections = true;
 let lastOptionClickMeta = { trusted: false, ts: 0 };
+let totalPriceFeedbackTimer = null;
 
 const PREVENTA_DEVELOPMENT_IDS = new Set([43, 3, 2, 14, 8, 9, 10]);
 const DEFAULT_MAIN_DEVELOPMENT_ID = 33;
@@ -364,15 +365,34 @@ function hideLoader() {
 
 function actualizarPrecioPrincipal(precio) {
   const precioEl = document.getElementById('precioTotal');
+  const updatingEl = document.getElementById('totalPriceUpdating');
   if (!precioEl) return;
 
-  if (precio === 0) {
+  if (updatingEl) {
+    updatingEl.classList.remove('d-none');
+  }
+  precioEl.classList.add('price-updating');
 
-  } else {
+  if (precio !== 0) {
     precioEl.textContent = '$' + Number(precio)
       .toLocaleString('es-MX', { minimumFractionDigits: 2 }) + ' MXN';
     precioEl.classList.remove("incluido");
   }
+
+  if (totalPriceFeedbackTimer) {
+    clearTimeout(totalPriceFeedbackTimer);
+  }
+
+  totalPriceFeedbackTimer = setTimeout(() => {
+    precioEl.classList.remove('price-updating');
+    precioEl.classList.remove('price-updated');
+    void precioEl.offsetWidth;
+    precioEl.classList.add('price-updated');
+
+    if (updatingEl) {
+      updatingEl.classList.add('d-none');
+    }
+  }, 700);
 }
 
 /**********************************************************

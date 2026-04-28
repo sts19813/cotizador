@@ -29,25 +29,31 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <a href="{{ route('admin.precio.fachadas', ['style' => $selectedStyle]) }}"
+                    class="btn btn-sm {{ $selectedZone === null ? 'btn-primary' : 'btn-light-primary' }}">
+                    Default
+                </a>
+                @foreach($zones as $zone)
+                    <a href="{{ route('admin.precio.fachadas', ['zone' => $zone->id, 'style' => $selectedStyle]) }}"
+                        class="btn btn-sm {{ (int) $selectedZone === (int) $zone->id ? 'btn-primary' : 'btn-light-primary' }}">
+                        {{ $zone->name }}
+                    </a>
+                @endforeach
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                @foreach($styles as $styleOption)
+                    <a href="{{ route('admin.precio.fachadas', ['zone' => $selectedZone, 'style' => $styleOption]) }}"
+                        class="btn btn-sm {{ $selectedStyle === $styleOption ? 'btn-dark' : 'btn-light-dark' }}">
+                        {{ $styleOption }}
+                    </a>
+                @endforeach
+            </div>
+
             <div class="card mb-4">
                 <div class="card-body py-3">
-                    <form method="GET" action="{{ route('admin.precio.fachadas') }}" class="row g-2 align-items-end">
-                        <div class="col-md-5">
-                            <label class="form-label fw-semibold">Zona</label>
-                            <select name="zone" class="form-select">
-                                <option value="">Default (sin zona)</option>
-                                @foreach($zones as $zone)
-                                    <option value="{{ $zone->id }}" {{ (int) $selectedZone === (int) $zone->id ? 'selected' : '' }}>
-                                        {{ $zone->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <button class="btn btn-primary w-100">Aplicar</button>
-                        </div>
-                    </form>
-                    <div class="text-muted mt-2">
+                    <div class="text-muted">
                         Si no existe configuración de la zona, el sistema usa automáticamente el precio default.
                     </div>
                 </div>
@@ -87,6 +93,7 @@
                                         $priceValue = $override ?? $product->base_price;
                                     @endphp
                                     <input type="hidden" name="zone_id" value="{{ $selectedZone }}">
+                                    <input type="hidden" name="style" value="{{ $selectedStyle }}">
                                     <div class="input-group input-group-sm w-150px">
                                         <span class="input-group-text">$</span>
                                         <input 

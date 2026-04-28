@@ -233,6 +233,32 @@
     font-size: 20px;
 }
 
+#precioTotal.price-updating {
+    opacity: .65;
+    transition: opacity .2s ease;
+}
+
+#precioTotal.price-updated {
+    animation: totalPricePulse .9s ease;
+}
+
+@keyframes totalPricePulse {
+    0% {
+        transform: scale(1);
+        color: inherit;
+    }
+
+    35% {
+        transform: scale(1.04);
+        color: #386EFA;
+    }
+
+    100% {
+        transform: scale(1);
+        color: inherit;
+    }
+}
+
 .incluido {
     background: #386EFA12;
     width: 166px;
