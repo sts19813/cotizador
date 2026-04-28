@@ -27,6 +27,10 @@ const DEVELOPMENT_ROOT_MAP = {
   9: 3,
   10: 3
 };
+const ZONE_DEVELOPMENT_MAP = (window.ZONE_DEVELOPMENT_MAP && typeof window.ZONE_DEVELOPMENT_MAP === 'object')
+  ? window.ZONE_DEVELOPMENT_MAP
+  : {};
+const DEFAULT_ZONE_ID = Number(window.DEFAULT_ZONE_ID || 0);
 
 function normalizeFachadaSuffix(value = '') {
   if (!value) return null;
@@ -34,6 +38,40 @@ function normalizeFachadaSuffix(value = '') {
     .replace(/fachada/i, '')
     .trim()
     .toLowerCase();
+}
+
+function normalizeCategoryName(value = '') {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function isFacadeCategoryValue(value = '') {
+  return normalizeCategoryName(value).includes('fachada');
+}
+
+function isFacadeValueText(value = '') {
+  return normalizeCategoryName(value).includes('fachada');
+}
+
+function isFacadeCardElement(card) {
+  if (!card) return false;
+
+  const byCategory = isFacadeCategoryValue(card.dataset.categoria || '');
+  const byValue = isFacadeValueText(card.dataset.valor || '');
+  const byId = normalizeCategoryName(card.dataset.id || '').includes('fachada');
+
+  return byCategory || byValue || byId;
+}
+
+function getSelectedFacadeCard() {
+  const cards = Array.from(document.querySelectorAll('.option-card[data-categoria]'));
+  return cards.find(card =>
+    card.classList.contains('selected') &&
+    isFacadeCardElement(card)
+  ) || null;
 }
 
 function resolveMainDevelopmentId(developmentId) {
@@ -56,38 +94,119 @@ function hasSelectedLotForPricing() {
   return Boolean(resolveMainDevelopmentId(lotDevelopmentId));
 }
 
-function getSelectedDevelopmentRootId() {
-  if (hasSelectedLotForPricing()) {
-    const lotRoot = resolveMainDevelopmentId(
-      selections?.lote?.development_id ??
-      selections?.lote?.desarrollo_id
-    );
-    if (lotRoot) return lotRoot;
-  }
-
-  return DEFAULT_MAIN_DEVELOPMENT_ID;
+function resolveZoneId(zoneId) {
+  const numericId = Number(zoneId);
+  if (!numericId || Number.isNaN(numericId)) return null;
+  return numericId;
 }
 
-function setSelectedDevelopmentForPricing(developmentId, options = {}) {
-  const { recalculate = true, persist = true } = options;
-  const rootId = resolveMainDevelopmentId(developmentId) || DEFAULT_MAIN_DEVELOPMENT_ID;
+function resolveZoneIdFromDevelopment(developmentId) {
+  const mainDevelopmentId = resolveMainDevelopmentId(developmentId);
+  const fromMainKey = ZONE_DEVELOPMENT_MAP[String(mainDevelopmentId)];
+  if (fromMainKey !== undefined) {
+    return resolveZoneId(fromMainKey);
+  }
 
-  if (!selections || typeof selections !== 'object') {
+  const fromRawKey = ZONE_DEVELOPMENT_MAP[String(developmentId)];
+  if (fromRawKey !== undefined) {
+    return resolveZoneId(fromRawKey);
+  }
+
+  return null;
+}
+
+function getZoneCardById(zoneId) {
+  return document.querySelector(`.option-card[data-categoria="Zona"][data-zone-id="${zoneId}"]`);
+}
+
+function getZoneNameById(zoneId) {
+  const card = getZoneCardById(zoneId);
+  if (card) {
+    return card.dataset.valor || `Zona ${zoneId}`;
+  }
+
+  if (selections?.zona?.id === zoneId && selections?.zona?.name) {
+    return selections.zona.name;
+  }
+
+  return `Zona ${zoneId}`;
+}
+
+function getFirstAvailableZoneId() {
+  const firstZoneCard = document.querySelector('.option-card[data-categoria="Zona"][data-zone-id]');
+  if (!firstZoneCard) return null;
+  return resolveZoneId(firstZoneCard.dataset.zoneId);
+}
+
+function getSelectedZoneId() {
+  const selectedZoneId = resolveZoneId(selections?.zona?.id ?? selections?.zone?.id);
+  if (selectedZoneId) return selectedZoneId;
+
+  const lotDevelopmentId =
+    selections?.lote?.development_id ??
+    selections?.lote?.desarrollo_id ??
+    null;
+  const lotZoneId = resolveZoneIdFromDevelopment(lotDevelopmentId);
+  if (lotZoneId) return lotZoneId;
+
+  if (DEFAULT_ZONE_ID) return DEFAULT_ZONE_ID;
+
+  return getFirstAvailableZoneId();
+}
+
+function setSelectedZoneForPricing(zoneId, options = {}) {
+  const { recalculate = true, persist = true } = options;
+  const resolvedZoneId = resolveZoneId(zoneId) || getSelectedZoneId();
+
+  if (!resolvedZoneId) {
+    return null;
+  }
+
+  if (!selections || typeof selections !== 'object' || Array.isArray(selections)) {
     selections = {};
   }
 
-  selections.development = {
-    id: rootId,
-    root_id: rootId,
-    name: getMainDevelopmentLabel(rootId)
+  selections.zona = {
+    id: resolvedZoneId,
+    name: getZoneNameById(resolvedZoneId)
   };
+
+  const zoneCard = getZoneCardById(resolvedZoneId);
+  if (zoneCard) {
+    const row = zoneCard.closest('.row');
+    row?.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+    zoneCard.classList.add('selected');
+
+    const group = zoneCard.closest('.accordion-collapse');
+    const groupId = group?.id || 'Zonas';
+    selections[groupId] = {
+      id: zoneCard.dataset.id || `zona-${resolvedZoneId}`,
+      categoria: 'Zona',
+      valor: zoneCard.dataset.valor || getZoneNameById(resolvedZoneId),
+      precio: 0,
+      zone_id: resolvedZoneId
+    };
+  }
 
   if (persist) {
     localStorage.setItem('selections', JSON.stringify(selections));
   }
 
+  if (typeof window.updateDevelopmentOptionsForZone === 'function') {
+    window.updateDevelopmentOptionsForZone(resolvedZoneId);
+  }
+
   applyPricesForCurrentContext({ recalculate });
-  return rootId;
+  return resolvedZoneId;
+}
+
+function setSelectedZoneFromDevelopment(developmentId, options = {}) {
+  const zoneId = resolveZoneIdFromDevelopment(developmentId);
+  if (!zoneId) {
+    return null;
+  }
+
+  return setSelectedZoneForPricing(zoneId, options);
 }
 
 function getCurrentFacadeSuffix() {
@@ -100,64 +219,61 @@ function getCurrentFacadeSuffix() {
   return '4a';
 }
 
-function getDevelopmentSpecificPrice(card, developmentRootId, priceKey) {
+function getZoneSpecificPrice(card, zoneId, priceKey) {
   if (!card || !priceKey) return null;
 
   let parsedMap = {};
   try {
-    parsedMap = JSON.parse(card.dataset.developmentPrices || '{}');
+    parsedMap = JSON.parse(card.dataset.zonePrices || '{}');
   } catch (_error) {
     parsedMap = {};
   }
 
-  const developmentNode = parsedMap[String(developmentRootId)];
-  if (!developmentNode || developmentNode[priceKey] === undefined || developmentNode[priceKey] === null) {
+  const zoneNode = parsedMap[String(zoneId)];
+  if (!zoneNode || zoneNode[priceKey] === undefined || zoneNode[priceKey] === null) {
     return null;
   }
 
-  const value = parseFloat(developmentNode[priceKey]);
+  const value = parseFloat(zoneNode[priceKey]);
   return Number.isNaN(value) ? null : value;
 }
 
-function getDevelopmentSpecificBasePrice(card, developmentRootId) {
-  debugger;
+function getZoneSpecificBasePrice(card, zoneId) {
   if (!card) return null;
 
   let parsedMap = {};
   try {
-    parsedMap = JSON.parse(card.dataset.developmentPrices || '{}');
+    parsedMap = JSON.parse(card.dataset.zonePrices || '{}');
   } catch (_error) {
     parsedMap = {};
   }
 
-  const developmentNode = parsedMap[String(developmentRootId)];
-  if (!developmentNode || developmentNode.base_price === undefined || developmentNode.base_price === null) {
+  const zoneNode = parsedMap[String(zoneId)];
+  if (!zoneNode || zoneNode.base_price === undefined || zoneNode.base_price === null) {
     return null;
   }
 
-  const value = parseFloat(developmentNode.base_price);
+  const value = parseFloat(zoneNode.base_price);
   return Number.isNaN(value) ? null : value;
 }
 
 function getPriceByContextForCard(card, options = {}) {
   if (!card) return 0;
 
-  const developmentRootId = resolveMainDevelopmentId(
-    options.developmentRootId ?? getSelectedDevelopmentRootId()
-  ) || DEFAULT_MAIN_DEVELOPMENT_ID;
+  const zoneId = resolveZoneId(options.zoneId ?? getSelectedZoneId());
   const facadeSuffix = normalizeFachadaSuffix(options.facadeSuffix ?? getCurrentFacadeSuffix());
   const priceKey = facadeSuffix ? `precio_${facadeSuffix}` : null;
-  const useDevelopmentOverride = options.useDevelopmentOverride ?? hasSelectedLotForPricing();
-  const isFacadeCard = String(card.dataset.categoria || '').toLowerCase() === 'fachada';
+  const useZoneOverride = options.useZoneOverride ?? Boolean(zoneId);
+  const isFacadeCard = isFacadeCardElement(card);
 
-  if (isFacadeCard && useDevelopmentOverride) {
-    const developmentBasePrice = getDevelopmentSpecificBasePrice(card, developmentRootId);
-    if (developmentBasePrice !== null) return developmentBasePrice;
+  if (isFacadeCard && useZoneOverride && zoneId) {
+    const zoneBasePrice = getZoneSpecificBasePrice(card, zoneId);
+    if (zoneBasePrice !== null) return zoneBasePrice;
   }
 
-  if (priceKey && useDevelopmentOverride) {
-    const developmentPrice = getDevelopmentSpecificPrice(card, developmentRootId, priceKey);
-    if (developmentPrice !== null) return developmentPrice;
+  if (priceKey && useZoneOverride && zoneId) {
+    const zonePrice = getZoneSpecificPrice(card, zoneId, priceKey);
+    if (zonePrice !== null) return zonePrice;
   }
 
   if (priceKey && !isFacadeCard) {
@@ -173,11 +289,11 @@ function getPriceByContextForCard(card, options = {}) {
 
 function applyPricesForCurrentContext(options = {}) {
   const { recalculate = true } = options;
-  const developmentRootId = getSelectedDevelopmentRootId();
+  const zoneId = getSelectedZoneId();
   const facadeSuffix = getCurrentFacadeSuffix();
 
   document.querySelectorAll('.option-card[data-precio_a]').forEach(card => {
-    const newPrice = getPriceByContextForCard(card, { developmentRootId, facadeSuffix });
+    const newPrice = getPriceByContextForCard(card, { zoneId, facadeSuffix });
     card.dataset.precio = Number.isFinite(newPrice) ? String(newPrice) : '0';
 
     const priceLabel = card.querySelector('.precio-producto');
@@ -193,21 +309,22 @@ function applyPricesForCurrentContext(options = {}) {
     if (card.classList.contains('selected')) {
       const group = card.closest('.accordion-collapse');
       const groupId = group?.id || 'sin-id';
-      if (selections[groupId]) {
+      if (selections[groupId] && !isFacadeCardElement(card)) {
         selections[groupId].precio = newPrice;
       }
     }
   });
 
-  if (selections['opciones-fachada']) {
-    const selectedFacadeCard = document.querySelector(
-      `.option-card[data-categoria="Fachada"][data-valor="${selections['opciones-fachada'].valor}"]`
-    );
-    if (selectedFacadeCard) {
-      const facadePrice = getPriceByContextForCard(selectedFacadeCard, { developmentRootId, facadeSuffix });
-      selections['precio_base_fachada'] = facadePrice;
-      selections['opciones-fachada'].precio = facadePrice;
-    }
+  const selectedFacadeCard = getSelectedFacadeCard();
+  if (selectedFacadeCard) {
+    const facadePrice = getPriceByContextForCard(selectedFacadeCard, { zoneId, facadeSuffix });
+    selections['precio_base_fachada'] = facadePrice;
+    selections['opciones-fachada'] = {
+      id: selectedFacadeCard.dataset.id || null,
+      categoria: selectedFacadeCard.dataset.categoria || 'Fachada',
+      valor: selectedFacadeCard.dataset.valor || '',
+      precio: facadePrice
+    };
   }
 
   localStorage.setItem('selections', JSON.stringify(selections));
@@ -218,7 +335,10 @@ function applyPricesForCurrentContext(options = {}) {
 }
 
 window.resolveMainDevelopmentId = resolveMainDevelopmentId;
-window.setSelectedDevelopmentForPricing = setSelectedDevelopmentForPricing;
+window.getSelectedZoneId = getSelectedZoneId;
+window.setSelectedZoneForPricing = setSelectedZoneForPricing;
+window.setSelectedZoneFromDevelopment = setSelectedZoneFromDevelopment;
+window.setSelectedDevelopmentForPricing = setSelectedZoneFromDevelopment;
 window.applyPricesForCurrentContext = applyPricesForCurrentContext;
 
 document.addEventListener('click', function (e) {
@@ -641,6 +761,7 @@ function recalcularPrecioTotal() {
   Object.keys(selections).forEach(key => {
     if (key === "precio_base_fachada" || key === "opciones-fachada") return; // <-- importante
     const item = selections[key];
+    if (item && (isFacadeCategoryValue(item.categoria) || isFacadeValueText(item.valor))) return;
 
     if (item && item.precio) {
       const precioProducto = parseFloat(item.precio);
@@ -672,6 +793,20 @@ function seleccionarOpcion(elemento) {
   const animateSelection = shouldAnimateSelectionOverlay();
   const categoria = elemento.getAttribute('data-categoria');
   const valor = elemento.getAttribute('data-valor');
+
+  if (categoria === 'Zona') {
+    const zoneIdFromData = Number(elemento.getAttribute('data-zone-id'));
+    const zoneIdFromId = Number(String(elemento.getAttribute('data-id') || '').replace('zona-', ''));
+    const resolvedZoneId = !Number.isNaN(zoneIdFromData) && zoneIdFromData > 0
+      ? zoneIdFromData
+      : zoneIdFromId;
+
+    setSelectedZoneForPricing(resolvedZoneId, {
+      recalculate: true,
+      persist: true
+    });
+    return;
+  }
 
   // ===== Fachada =====
   if (categoria === 'Fachada') {
@@ -869,7 +1004,7 @@ document.querySelectorAll('.option-card').forEach(card => {
     }
 
     // ----- Manejo especial para Fachada: no guardamos la fachada como selección de grupo -----
-    if (data.categoria && data.categoria.toLowerCase() === 'fachada' || groupId === 'opciones-fachada') {
+    if (isFacadeCategoryValue(data.categoria) || isFacadeValueText(data.valor) || groupId === 'opciones-fachada') {
       //guarda la fachada para el resumen
       selections["opciones-fachada"] = {
         categoria: data.categoria,
@@ -918,10 +1053,11 @@ document.querySelectorAll('.option-card').forEach(card => {
  * AUTO-SELECCIÓN AL CARGAR
  **********************************************************/
 document.addEventListener('DOMContentLoaded', function () {
-  const initialDevelopmentId =
-    selections?.lote?.development_id ??
-    DEFAULT_MAIN_DEVELOPMENT_ID;
-  setSelectedDevelopmentForPricing(initialDevelopmentId, {
+  const initialZoneId =
+    resolveZoneId(selections?.zona?.id) ??
+    resolveZoneIdFromDevelopment(selections?.lote?.development_id ?? selections?.lote?.desarrollo_id) ??
+    (DEFAULT_ZONE_ID || getFirstAvailableZoneId());
+  setSelectedZoneForPricing(initialZoneId, {
     recalculate: false,
     persist: true
   });
@@ -1004,7 +1140,7 @@ document.addEventListener('DOMContentLoaded', function () {
 //para hacer la seleccion del primera opcion al cambio de fachada
 function autoSelectFirstOptions() {
   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
-    if (row.id === 'opciones-casas' || row.id === 'opciones-fachada' || row.id === 'opciones-habitaciones') return;
+    if (row.id === 'opciones-casas' || row.id === 'opciones-fachada' || row.id === 'opciones-habitaciones' || row.id === 'opciones-zonas') return;
     const firstOption = row.querySelector('.option-card');
     if (firstOption && !firstOption.classList.contains('selected')) {
       // Disparar click para mantener coherencia de UI y estado
@@ -1054,7 +1190,7 @@ function refreshSelectionsAndOverlays() {
     const rowId = row.id;
 
     // Omitir grupos especiales
-    if (rowId === 'opciones-casas' || rowId === 'opciones-fachada' || rowId === 'opciones-habitaciones') return;
+    if (rowId === 'opciones-casas' || rowId === 'opciones-fachada' || rowId === 'opciones-habitaciones' || rowId === 'opciones-zonas') return;
 
     // Ver si ya hay opción seleccionada
     let option = row.querySelector('.option-card.selected');

@@ -30,6 +30,14 @@ const DEVELOPMENT_TREE = [
         ]
     }
 ];
+const ZONE_DEVELOPMENTS_BY_ZONE = (window.ZONE_DEVELOPMENTS_BY_ZONE && typeof window.ZONE_DEVELOPMENTS_BY_ZONE === 'object')
+    ? window.ZONE_DEVELOPMENTS_BY_ZONE
+    : {};
+const ROOT_DEVELOPMENT_CARD_SELECTORS = {
+    33: '#collapseDevelopmentPiaro',
+    43: '#collapseDevelopmentPaseo',
+    3: '#collapseDevelopmentAhawell'
+};
 
 let isSelectingLot = false;
 let currentDevelopment = null;
@@ -39,6 +47,8 @@ let searchableLotsCache = [];
 let activeSearchDevelopmentId = 33;
 let selectedModalRootDevelopmentId = 33;
 let developmentLoadRequestId = 0;
+let allowedDevelopmentIdsForZone = new Set();
+let hasZoneDevelopmentRestriction = false;
 
 const AHAWELL_ROOT_ID = 3;
 const AHAWELL_CLUSTER_BASE_COLOR = 'rgba(52, 199, 89, 0.22)';
@@ -57,6 +67,77 @@ const DEVELOPMENT_LOGOS = {
         alt: 'Ahawell'
     }
 };
+
+function getAllowedDevelopmentIdsByZone(zoneId) {
+    const zoneKey = String(zoneId || '');
+    const rawList = ZONE_DEVELOPMENTS_BY_ZONE[zoneKey];
+
+    if (!Array.isArray(rawList) || rawList.length === 0) {
+        return [];
+    }
+
+    return rawList
+        .map(id => Number(id))
+        .filter(id => !Number.isNaN(id) && id > 0);
+}
+
+function isDevelopmentAllowed(developmentId) {
+    if (!hasZoneDevelopmentRestriction) {
+        return true;
+    }
+
+    const numericDevelopmentId = Number(developmentId);
+    if (allowedDevelopmentIdsForZone.has(numericDevelopmentId)) {
+        return true;
+    }
+
+    const parent = findParentDevelopmentByChildId(numericDevelopmentId);
+    if (parent && allowedDevelopmentIdsForZone.has(Number(parent.id))) {
+        return true;
+    }
+
+    return false;
+}
+
+function isRootDevelopmentAllowed(rootDevelopmentId) {
+    const numericRootId = Number(rootDevelopmentId);
+    if (numericRootId === AHAWELL_ROOT_ID) {
+        return isDevelopmentAllowed(AHAWELL_ROOT_ID) || DEVELOPMENT_TREE
+            .find(dev => Number(dev.id) === AHAWELL_ROOT_ID)
+            ?.children?.some(child => isDevelopmentAllowed(child.id));
+    }
+
+    return isDevelopmentAllowed(numericRootId);
+}
+
+function getFirstAvailableRootDevelopmentId() {
+    const orderedRoots = DEVELOPMENT_TREE.map(dev => Number(dev.id));
+    return orderedRoots.find(id => isRootDevelopmentAllowed(id)) || null;
+}
+
+function getDefaultDevelopmentForZone() {
+    const firstRoot = getFirstAvailableRootDevelopmentId();
+    if (!firstRoot) return null;
+
+    if (firstRoot !== AHAWELL_ROOT_ID) {
+        return firstRoot;
+    }
+
+    const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === AHAWELL_ROOT_ID);
+    const firstAllowedChild = ahawell?.children?.find(child => isDevelopmentAllowed(child.id));
+    return firstAllowedChild ? Number(firstAllowedChild.id) : AHAWELL_ROOT_ID;
+}
+
+function applyDevelopmentCardVisibilityForZone() {
+    Object.entries(ROOT_DEVELOPMENT_CARD_SELECTORS).forEach(([rootId, collapseSelector]) => {
+        const collapseElement = document.querySelector(collapseSelector);
+        const cardElement = collapseElement?.closest('.development-card');
+        if (!cardElement) return;
+
+        const isVisible = isRootDevelopmentAllowed(Number(rootId));
+        cardElement.classList.toggle('d-none', !isVisible);
+    });
+}
 
 function findParentDevelopmentByChildId(childId) {
     const numericChildId = Number(childId);
@@ -200,6 +281,8 @@ function setDevelopmentButtons(activeDevelopmentId) {
     rootButtons.className = 'development-selector-roots';
 
     DEVELOPMENT_TREE.forEach(development => {
+        if (!isRootDevelopmentAllowed(development.id)) return;
+
         const rootBtn = document.createElement('button');
         rootBtn.type = 'button';
         rootBtn.className = 'btn btn-sm development-btn development-root-btn ' + development.name + '-btn';
@@ -214,7 +297,6 @@ function setDevelopmentButtons(activeDevelopmentId) {
     });
 
     container.appendChild(rootButtons);
-    document.querySelector(".Ahawell-btn").disabled = true;
 
     if (activeRootId === AHAWELL_ROOT_ID) {
         const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === AHAWELL_ROOT_ID);
@@ -223,6 +305,8 @@ function setDevelopmentButtons(activeDevelopmentId) {
             childButtons.className = 'development-selector-cluster mt-2';
 
             ahawell.children.forEach(child => {
+                if (!isDevelopmentAllowed(child.id)) return;
+
                 const childBtn = document.createElement('button');
                 childBtn.type = 'button';
                 childBtn.className = 'btn btn-sm development-btn development-child-btn';
@@ -302,7 +386,9 @@ function resolveSearchLots(developmentId = null) {
 
     const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === 3);
     if (targetDevelopmentId === 3 && ahawell?.children?.length) {
-        const childIds = ahawell.children.map(child => Number(child.id));
+        const childIds = ahawell.children
+            .map(child => Number(child.id))
+            .filter(childId => isDevelopmentAllowed(childId));
         return searchableLotsCache.filter(lot => childIds.includes(Number(lot.development_id)));
     }
 
@@ -605,14 +691,7 @@ function bindSvgInteractions(svgLayer, lotsCache) {
             };
 
             localStorage.setItem('selections', JSON.stringify(selections));
-            if (typeof window.setSelectedDevelopmentForPricing === 'function') {
-                window.setSelectedDevelopmentForPricing(lotDevelopmentId, {
-                    recalculate: true,
-                    persist: true
-                });
-            } else {
-                recalcularPrecioTotal();
-            }
+            recalcularPrecioTotal();
 
             const { input, hiddenLotId } = getActiveInputElements();
             if (input) input.value = getSelectedLotLabel(matchedLot, lotDevelopmentDisplayName);
@@ -628,6 +707,12 @@ function bindSvgInteractions(svgLayer, lotsCache) {
 }
 
 async function loadDevelopment(developmentId) {
+    if (!isDevelopmentAllowed(developmentId)) {
+        const fallbackDevelopment = getDefaultDevelopmentForZone();
+        if (!fallbackDevelopment) return;
+        developmentId = fallbackDevelopment;
+    }
+
     const svgLayer = document.getElementById('dynamicSvgLayer');
     const requestId = ++developmentLoadRequestId;
 
@@ -692,15 +777,50 @@ function setSelectedModalRootDevelopment(developmentId) {
     selectedModalRootDevelopmentId = rootId;
     setDevelopmentButtons(developmentId);
 }
+
+function updateDevelopmentOptionsForZone(zoneId) {
+    const zoneKey = String(zoneId || '');
+    hasZoneDevelopmentRestriction = Object.prototype.hasOwnProperty.call(ZONE_DEVELOPMENTS_BY_ZONE, zoneKey);
+    const allowedIds = getAllowedDevelopmentIdsByZone(zoneId);
+    allowedDevelopmentIdsForZone = new Set(allowedIds);
+
+    const currentLotDevelopmentId = selections?.lote?.development_id ?? selections?.lote?.desarrollo_id ?? null;
+    if (currentLotDevelopmentId && !isDevelopmentAllowed(currentLotDevelopmentId)) {
+        clearSelectedLot();
+        document.getElementById('selectedLotCard')?.classList.add('d-none');
+        document.getElementById('piaroInitialContent')?.classList.remove('d-none');
+        document.querySelectorAll('.development-lot-input').forEach(input => input.value = '');
+        document.querySelectorAll('[id^="lotId-"]').forEach(hidden => hidden.value = '');
+        window.selectedLote = null;
+    }
+
+    applyDevelopmentCardVisibilityForZone();
+
+    const nextDevelopmentId = getDefaultDevelopmentForZone();
+    if (!nextDevelopmentId) {
+        const selectorContainer = document.getElementById('developmentSelector');
+        if (selectorContainer) {
+            selectorContainer.innerHTML = '';
+        }
+        return;
+    }
+
+    const nextRootId = getRootDevelopmentId(nextDevelopmentId) || nextDevelopmentId;
+    selectedModalRootDevelopmentId = nextRootId;
+    setActiveSearchDevelopment(nextDevelopmentId);
+    setDevelopmentButtons(nextDevelopmentId);
+    loadDevelopment(nextDevelopmentId);
+}
+
+window.updateDevelopmentOptionsForZone = updateDevelopmentOptionsForZone;
 /*************************************************
  * DOM READY
  *************************************************/
 document.addEventListener('DOMContentLoaded', function () {
     const changeLotBtn = document.getElementById('changeLotBtn');
 
-    setDevelopmentButtons(33);
-    setActiveSearchDevelopment(33);
-    loadDevelopment(33);
+    const initialZoneId = (typeof window.getSelectedZoneId === 'function' ? window.getSelectedZoneId() : null) || window.DEFAULT_ZONE_ID || null;
+    updateDevelopmentOptionsForZone(initialZoneId);
     preloadSearchableLots().catch(error => console.error(error));
 
     document.querySelectorAll('.js-open-development-modal').forEach(button => {
@@ -794,15 +914,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     };
                     localStorage.setItem('selections', JSON.stringify(selections));
 
-                    const selectedDevelopmentId = lot.development_id || currentDevelopment?.id || developmentId;
-                    if (typeof window.setSelectedDevelopmentForPricing === 'function') {
-                        window.setSelectedDevelopmentForPricing(selectedDevelopmentId, {
-                            recalculate: true,
-                            persist: true
-                        });
-                    } else {
-                        recalcularPrecioTotal();
-                    }
+                    recalcularPrecioTotal();
 
                     renderSelectedLot(lot, lotDevelopmentName);
                 };

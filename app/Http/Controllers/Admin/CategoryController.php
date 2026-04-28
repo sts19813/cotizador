@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\Models\Configuration;
 use Illuminate\Support\Str;
+use App\Models\Zone;
 
 class CategoryController extends Controller
 {
@@ -54,8 +55,6 @@ class CategoryController extends Controller
             abort(404);
         }
 
-        $mainDevelopmentIds = [33, 43, 3];
-
         // Categorías activas con productos y sus renders generales
         $categories = Category::with([
             'products' => function ($q) {
@@ -63,9 +62,7 @@ class CategoryController extends Controller
                     ->orderBy('fachada_7_price', 'asc');
             },
             'products.renders',
-            'products.developmentPrices' => function ($query) use ($mainDevelopmentIds) {
-                $query->whereIn('development_id', $mainDevelopmentIds);
-            },
+            'products.zonePrices',
         ])
             ->where('is_active', true)
             ->where('style', $style)
@@ -97,9 +94,45 @@ class CategoryController extends Controller
             });
         });
 
+        $zones = Zone::with('developments')
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->orderBy('name')
+            ->get();
 
+        $zoneDevelopmentMap = $zones
+            ->flatMap(function ($zone) {
+                return $zone->developments->mapWithKeys(function ($development) use ($zone) {
+                    return [(string) $development->development_id => (int) $zone->id];
+                });
+            })
+            ->all();
 
-        return view('test', compact('categories', 'style', 'baseImages', 'fachadas', 'rendersPorProducto'));
+        $zoneDevelopmentsByZone = $zones
+            ->mapWithKeys(function ($zone) {
+                $developmentIds = $zone->developments
+                    ->pluck('development_id')
+                    ->map(fn($id) => (int) $id)
+                    ->values()
+                    ->all();
+
+                return [(string) $zone->id => $developmentIds];
+            })
+            ->all();
+
+        $defaultZoneId = $zones->first()?->id;
+
+        return view('test', compact(
+            'categories',
+            'style',
+            'baseImages',
+            'fachadas',
+            'rendersPorProducto',
+            'zones',
+            'zoneDevelopmentMap',
+            'zoneDevelopmentsByZone',
+            'defaultZoneId'
+        ));
     }
 
     // Vista previa de configuración compartida

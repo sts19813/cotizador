@@ -107,6 +107,48 @@
                             </div>
                         </div>
 
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingZonas">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Zonas" aria-expanded="true" aria-controls="Zonas">
+                                    <span class="textAcordeon">¿En dónde quieres vivir?</span>
+                                    <x-accordion-toggle-icon class="ms-auto" />
+                                </button>
+                            </h2>
+                            <div id="Zonas" class="accordion-collapse collapse show" aria-labelledby="headingZonas">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Selecciona una zona</p>
+                                    <div class="row g-3 opcion-selected" id="opciones-zonas">
+                                        @forelse ($zones as $zone)
+                                            @php
+                                                $zoneImage = $zone->image_url ?: '/img/tulum.jpg';
+                                                if (!Str::startsWith($zoneImage, ['http://', 'https://', '/'])) {
+                                                    $zoneImage = '/' . ltrim($zoneImage, '/');
+                                                }
+                                            @endphp
+                                            <div class="col-6 col-md-6">
+                                                <div class="option-card estilo-color cursor-pointer"
+                                                    data-id="zona-{{ $zone->id }}" data-zone-id="{{ $zone->id }}"
+                                                    data-categoria="Zona" data-valor="{{ $zone->name }}" data-precio="0"
+                                                    onclick="seleccionarOpcion(this)">
+                                                    <img src="{{ $zoneImage }}"
+                                                        class="img-fluid rounded" alt="{{ $zone->name }}">
+                                                    <div class="option-title">{{ $zone->name }}</div>
+                                                    <div class="option-description">
+                                                        {{ $zone->developments->count() }} desarrollo(s)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div class="col-12">
+                                                <div class="alert alert-light mb-0">No hay zonas disponibles.</div>
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Número de habitaciones -->
                         <div class="accordion-item hover-shadow mb-4">
                             <h2 class="accordion-header" id="headingHabitaciones">
@@ -185,10 +227,10 @@
                                         <div class="row g-3 opcion-selected" id="opciones-{{ Str::slug($category->name) }}">
                                             @foreach ($category->products as $product)
                                                 @php
-                                                    $developmentPrices = $product->developmentPrices->mapWithKeys(
+                                                    $zonePrices = $product->zonePrices->mapWithKeys(
                                                         function ($price) {
                                                             return [
-                                                                (string) $price->development_id => [
+                                                                (string) $price->zone_id => [
                                                                     'base_price' => $price->base_price !== null ? (float) $price->base_price : null,
                                                                     'precio_a' => (float) $price->fachada_1_price,
                                                                     'precio_b' => (float) $price->fachada_2_price,
@@ -207,7 +249,7 @@
                                                         data-categoria="{{ $category->name }}" data-id="{{ $product->id }}"
                                                         data-renders='@json($product->renders)'
                                                         data-fachada-renders='@json($fachadas[$product->id] ?? [])'
-                                                        data-development-prices='@json($developmentPrices)'
+                                                        data-zone-prices='@json($zonePrices)'
                                                         data-valor="{{ $product->title }}"
                                                         data-precio="{{ $product->base_price }}"
                                                         data-precio_a="{{ $product->fachada_1_price }}"
@@ -242,8 +284,8 @@
                         @endforeach
 
                         <div class="development-section mb-4" id="piaroCard">
-                            <h2 class="development-section-title">¿En dónde quieres vivir?</h2>
-                            <h2 class="development-section-title subtitle-development">Selecciona un Desarrollo</h2>
+                            <h2 class="development-section-title">Desarrollo y lote</h2>
+                            <h2 class="development-section-title subtitle-development">Selecciona un desarrollo</h2>
                             <div id="piaroInitialContent">
                                 <div class="development-selector-main d-flex flex-column gap-3"
                                     id="developmentSelectorAccordion">
@@ -506,6 +548,9 @@
         /** Variables globales para compartir datos entre scripts. Por ejemplo, la configuración compartida se inyecta aquí desde Laravel y luego se puede acceder desde cualquier script incluido en esta página a través de window.SHARED_CONFIG. */
         window.SHARED_CONFIG = @json($sharedConfig ?? null);
         window.currentStyle = "{{ $style }}";
+        window.ZONE_DEVELOPMENT_MAP = @json($zoneDevelopmentMap ?? []);
+        window.ZONE_DEVELOPMENTS_BY_ZONE = @json($zoneDevelopmentsByZone ?? []);
+        window.DEFAULT_ZONE_ID = @json($defaultZoneId ?? null);
 
         window.DESARROLLOS_API_URL = 'https://lotes.beskar.mx/api/desarrollos';
         window.LOTS_API_URL = '{{ config('services.naboo.url') }}api/lots';

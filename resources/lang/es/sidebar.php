@@ -12,7 +12,8 @@ return [
     'renders_tulum' => 'Tulum',
     'renders_mexican' => 'Mexicano',
     'style_prices' => 'Precios por Estilo',
-    'development_prices' => 'Precios por Desarrollo',
+    'zones' => 'Zonas',
+    'zone_prices' => 'Precios por Zona',
     'categories' => 'Categorías',
     'requests' => 'Solicitudes de Contacto',
 ];

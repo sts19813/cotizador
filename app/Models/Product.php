@@ -65,4 +65,9 @@ class Product extends Model
     {
         return $this->hasMany(ProductDevelopmentPrice::class);
     }
+
+    public function zonePrices()
+    {
+        return $this->hasMany(ProductZonePrice::class);
+    }
 }

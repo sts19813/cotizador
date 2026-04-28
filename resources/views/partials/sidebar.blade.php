@@ -145,14 +145,24 @@
                     </div>
                 </div>
 
-                <!-- Precios por Desarrollo -->
                 <div class="menu-item">
-                    <a class="menu-link {{ request()->is('admin/products/development-prices*') ? 'active' : '' }}"
-                        href="{{ route('admin.products.development-prices.byStyle', [33, 'Minimalista']) }}">
+                    <a class="menu-link {{ request()->is('admin/zones*') ? 'active' : '' }}"
+                        href="{{ route('admin.zones.index') }}">
+                        <span class="menu-icon">
+                            <i class="ki-outline ki-map fs-2"></i>
+                        </span>
+                        <span class="menu-title">{{ __('sidebar.zones') }}</span>
+                    </a>
+                </div>
+
+                <!-- Precios por Zona -->
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->is('admin/products/zone-prices*') ? 'active' : '' }}"
+                        href="{{ route('admin.products.zone-prices') }}">
                         <span class="menu-icon">
                             <i class="ki-outline ki-abstract-26 fs-2"></i>
                         </span>
-                        <span class="menu-title">{{ __('sidebar.development_prices') }}</span>
+                        <span class="menu-title">{{ __('sidebar.zone_prices') }}</span>
                     </a>
                 </div>
 

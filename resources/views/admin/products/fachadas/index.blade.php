@@ -11,7 +11,7 @@
                     <i class="ki-outline ki-home fs-2 me-2 text-primary"></i>
                     Precios Base de Fachadas
                 </h1>
-                <span class="text-muted fs-7">Administración de los precios base por fachada y desarrollo</span>
+                <span class="text-muted fs-7">Administración de los precios base por fachada y zona</span>
             </div>
 
             <div class="d-flex align-items-center gap-2">
@@ -33,12 +33,12 @@
                 <div class="card-body py-3">
                     <form method="GET" action="{{ route('admin.precio.fachadas') }}" class="row g-2 align-items-end">
                         <div class="col-md-5">
-                            <label class="form-label fw-semibold">Desarrollo</label>
-                            <select name="development" class="form-select">
-                                <option value="">Default (sin desarrollo)</option>
-                                @foreach($developments as $id => $name)
-                                    <option value="{{ $id }}" {{ (int) $selectedDevelopment === (int) $id ? 'selected' : '' }}>
-                                        {{ $name }}
+                            <label class="form-label fw-semibold">Zona</label>
+                            <select name="zone" class="form-select">
+                                <option value="">Default (sin zona)</option>
+                                @foreach($zones as $zone)
+                                    <option value="{{ $zone->id }}" {{ (int) $selectedZone === (int) $zone->id ? 'selected' : '' }}>
+                                        {{ $zone->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -48,7 +48,7 @@
                         </div>
                     </form>
                     <div class="text-muted mt-2">
-                        Si no existe configuración del desarrollo, el sistema usa automáticamente el precio default.
+                        Si no existe configuración de la zona, el sistema usa automáticamente el precio default.
                     </div>
                 </div>
             </div>
@@ -81,12 +81,12 @@
                                       class="d-flex gap-2">
                                     @csrf
                                     @php
-                                        $override = $selectedDevelopment !== null
-                                            ? optional($product->developmentPrices->first())->base_price
+                                        $override = $selectedZone !== null
+                                            ? optional($product->zonePrices->first())->base_price
                                             : null;
                                         $priceValue = $override ?? $product->base_price;
                                     @endphp
-                                    <input type="hidden" name="development_id" value="{{ $selectedDevelopment }}">
+                                    <input type="hidden" name="zone_id" value="{{ $selectedZone }}">
                                     <div class="input-group input-group-sm w-150px">
                                         <span class="input-group-text">$</span>
                                         <input 
