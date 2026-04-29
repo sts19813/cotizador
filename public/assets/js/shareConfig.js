@@ -79,7 +79,6 @@ async function copyToClipboard(text) {
  * @returns 
  */
 function aplicarConfiguracion(data) {
-    debugger
     if (!data) return;
 
     console.log('Aplicando configuración compartida...', data);
@@ -94,6 +93,13 @@ function aplicarConfiguracion(data) {
 
     // Guardar en localStorage para integrarse con tu sistema actual
     localStorage.setItem('selections', JSON.stringify(selections));
+
+    if (selections?.zona?.id && typeof window.setSelectedZoneForPricing === 'function') {
+        window.setSelectedZoneForPricing(selections.zona.id, {
+            recalculate: false,
+            persist: false
+        });
+    }
 
     // ============================
     // 2. APLICAR FACHADA PRIMERO
@@ -115,6 +121,7 @@ function aplicarConfiguracion(data) {
         const item = selections[groupId];
 
         if (!item || typeof item !== 'object') return;
+        if (groupId === 'zona' || groupId === 'development') return;
 
         // ignorar fachada (ya aplicada)
         if (item.categoria === 'Fachada') return;
@@ -152,6 +159,13 @@ function aplicarConfiguracion(data) {
     // ============================
     if (data.lote) {
         selections.lote = data.lote;
+        if (typeof window.applyPricesForCurrentContext === 'function') {
+            window.applyPricesForCurrentContext({ recalculate: true });
+        } else if (typeof recalcularPrecioTotal === 'function') {
+            recalcularPrecioTotal();
+        }
+    } else if (typeof window.applyPricesForCurrentContext === 'function') {
+        window.applyPricesForCurrentContext({ recalculate: true });
     }
 
     console.log('Configuración aplicada correctamente');

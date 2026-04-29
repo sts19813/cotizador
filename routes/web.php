@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use App\Models\Zone;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\HouseConfigurationController;
 use App\Http\Controllers\AdminController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\Admin\RenderController;
 use App\Http\Controllers\Admin\LeadController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductFachadaController;
+use App\Http\Controllers\Admin\ProductZonePriceController;
+use App\Http\Controllers\Admin\ZoneController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -105,7 +108,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     ->name('admin.')
     ->group(function () {
         Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
-        Route::resource('products', ProductController::class)->names('products');
+        Route::resource('products', ProductController::class)->except(['show'])->names('products');
         Route::get('renders/{style?}', [RenderController::class, 'index'])
             ->name('renders.index');
 
@@ -125,6 +128,26 @@ Route::middleware(['auth', AdminMiddleware::class])
         // Guardado masivo de precios por estilo
         Route::put('products/update-mass/{style}', [ProductController::class, 'updateMassPrices'])
             ->name('products.update-mass');
+
+        Route::resource('zones', ZoneController::class)->except(['show', 'create', 'edit']);
+        Route::post('zones/{zone}/developments', [ZoneController::class, 'addDevelopment'])
+            ->name('zones.developments.store');
+        Route::delete('zones/{zone}/developments/{development}', [ZoneController::class, 'removeDevelopment'])
+            ->name('zones.developments.destroy');
+
+        Route::get('products/zone-prices/{zone}/{style}', [ProductZonePriceController::class, 'showByZoneAndStyle'])
+            ->name('products.zone-prices.byStyle');
+        Route::put('products/zone-prices/{zone}/{style}', [ProductZonePriceController::class, 'updateMassPrices'])
+            ->name('products.zone-prices.update-mass');
+        Route::get('products/zone-prices', function () {
+            $firstZoneId = Zone::orderBy('order')->orderBy('name')->value('id');
+
+            if (!$firstZoneId) {
+                return redirect()->route('admin.zones.index');
+            }
+
+            return redirect()->route('admin.products.zone-prices.byStyle', [$firstZoneId, 'Minimalista']);
+        })->name('products.zone-prices');
 
         //perfil administrador
         Route::get('/perfil', [ProfileController::class, 'index'])->name('profile.index');

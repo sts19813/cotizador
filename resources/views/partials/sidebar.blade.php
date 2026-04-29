@@ -68,16 +68,7 @@
                     </a>
                 </div>
 
-                <!-- Precios base -->
-                <div class="menu-item">
-                    <a class="menu-link {{ request()->is('admin/precio/fachadas*') ? 'active' : '' }}"
-                        href="/admin/precio/fachadas">
-                        <span class="menu-icon">
-                            <i class="ki-outline ki-dollar fs-2"></i>
-                        </span>
-                        <span class="menu-title">{{ __('sidebar.base_prices') }}</span>
-                    </a>
-                </div>
+
 
                 <!-- Renderizados -->
                 <div class="menu-item menu-accordion {{ request()->is('admin/renders*') ? 'show' : '' }}"
@@ -113,7 +104,7 @@
                 </div>
 
                 <!-- Precios por Estilo -->
-                <div class="menu-item menu-accordion {{ request()->is('admin/products/prices*') ? 'show' : '' }}"
+                <div class="menu-item menu-accordion d-none {{ request()->is('admin/products/prices*') ? 'show' : '' }}"
                     data-kt-menu-trigger="click">
                     <span class="menu-link">
                         <span class="menu-icon">
@@ -142,6 +133,49 @@
                                 <span class="menu-title">Mexicano</span>
                             </a>
                         </div>
+                    </div>
+                </div>
+
+                <div class="menu-item menu-accordion {{ request()->is('admin/zones*') || request()->is('admin/precio/fachadas*') || request()->is('admin/products/zone-prices*') ? 'show' : '' }}"
+                    data-kt-menu-trigger="click">
+
+                    <span class="menu-link">
+                        <span class="menu-icon">
+                            <i class="ki-outline ki-dollar fs-2"></i>
+                        </span>
+                        <span class="menu-title">Precios</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+
+                    <div class="menu-sub menu-sub-accordion">
+
+                        <!-- Zonas -->
+                        <div class="menu-item">
+                            <a class="menu-link {{ request()->is('admin/zones*') ? 'active' : '' }}"
+                                href="{{ route('admin.zones.index') }}">
+                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                <span class="menu-title">{{ __('sidebar.zones') }}</span>
+                            </a>
+                        </div>
+
+                        <!-- Precios base -->
+                        <div class="menu-item">
+                            <a class="menu-link {{ request()->is('admin/precio/fachadas*') ? 'active' : '' }}"
+                                href="/admin/precio/fachadas">
+                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                <span class="menu-title">{{ __('sidebar.base_prices') }}</span>
+                            </a>
+                        </div>
+
+                        <!-- Precios por zona (productos) -->
+                        <div class="menu-item">
+                            <a class="menu-link {{ request()->is('admin/products/zone-prices*') ? 'active' : '' }}"
+                                href="{{ route('admin.products.zone-prices') }}">
+                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                <span class="menu-title">{{ __('sidebar.zone_prices') }}</span>
+                            </a>
+                        </div>
+
                     </div>
                 </div>
 

@@ -9,8 +9,338 @@ let currentLoadToken = 0; // Loader helpers y token global
 const OVERLAY_TRANSITION_MS = 1500;
 let isBootstrappingSelections = true;
 let lastOptionClickMeta = { trusted: false, ts: 0 };
+let totalPriceFeedbackTimer = null;
 
 const PREVENTA_DEVELOPMENT_IDS = new Set([43, 3, 2, 14, 8, 9, 10]);
+const DEFAULT_MAIN_DEVELOPMENT_ID = 33;
+const MAIN_DEVELOPMENT_NAME_MAP = {
+  33: 'Piaró',
+  43: 'Paseo Península',
+  3: 'Ahawell'
+};
+const DEVELOPMENT_ROOT_MAP = {
+  33: 33,
+  43: 43,
+  3: 3,
+  2: 3,
+  14: 3,
+  8: 3,
+  9: 3,
+  10: 3
+};
+const ZONE_DEVELOPMENT_MAP = (window.ZONE_DEVELOPMENT_MAP && typeof window.ZONE_DEVELOPMENT_MAP === 'object')
+  ? window.ZONE_DEVELOPMENT_MAP
+  : {};
+const DEFAULT_ZONE_ID = Number(window.DEFAULT_ZONE_ID || 0);
+
+function normalizeFachadaSuffix(value = '') {
+  if (!value) return null;
+  return String(value)
+    .replace(/fachada/i, '')
+    .trim()
+    .toLowerCase();
+}
+
+function normalizeCategoryName(value = '') {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function isFacadeCategoryValue(value = '') {
+  return normalizeCategoryName(value).includes('fachada');
+}
+
+function isFacadeValueText(value = '') {
+  return normalizeCategoryName(value).includes('fachada');
+}
+
+function isFacadeCardElement(card) {
+  if (!card) return false;
+
+  const byCategory = isFacadeCategoryValue(card.dataset.categoria || '');
+  const byValue = isFacadeValueText(card.dataset.valor || '');
+  const byId = normalizeCategoryName(card.dataset.id || '').includes('fachada');
+
+  return byCategory || byValue || byId;
+}
+
+function getSelectedFacadeCard() {
+  const cards = Array.from(document.querySelectorAll('.option-card[data-categoria]'));
+  return cards.find(card =>
+    card.classList.contains('selected') &&
+    isFacadeCardElement(card)
+  ) || null;
+}
+
+function resolveMainDevelopmentId(developmentId) {
+  const numericId = Number(developmentId);
+  if (!numericId || Number.isNaN(numericId)) return null;
+  return DEVELOPMENT_ROOT_MAP[numericId] || numericId;
+}
+
+function getMainDevelopmentLabel(developmentId) {
+  const rootId = resolveMainDevelopmentId(developmentId);
+  return MAIN_DEVELOPMENT_NAME_MAP[rootId] || 'Desarrollo';
+}
+
+function hasSelectedLotForPricing() {
+  const lotDevelopmentId =
+    selections?.lote?.development_id ??
+    selections?.lote?.desarrollo_id ??
+    null;
+
+  return Boolean(resolveMainDevelopmentId(lotDevelopmentId));
+}
+
+function resolveZoneId(zoneId) {
+  const numericId = Number(zoneId);
+  if (!numericId || Number.isNaN(numericId)) return null;
+  return numericId;
+}
+
+function resolveZoneIdFromDevelopment(developmentId) {
+  const mainDevelopmentId = resolveMainDevelopmentId(developmentId);
+  const fromMainKey = ZONE_DEVELOPMENT_MAP[String(mainDevelopmentId)];
+  if (fromMainKey !== undefined) {
+    return resolveZoneId(fromMainKey);
+  }
+
+  const fromRawKey = ZONE_DEVELOPMENT_MAP[String(developmentId)];
+  if (fromRawKey !== undefined) {
+    return resolveZoneId(fromRawKey);
+  }
+
+  return null;
+}
+
+function getZoneCardById(zoneId) {
+  return document.querySelector(`.option-card[data-categoria="Zona"][data-zone-id="${zoneId}"]`);
+}
+
+function getZoneNameById(zoneId) {
+  const card = getZoneCardById(zoneId);
+  if (card) {
+    return card.dataset.valor || `Zona ${zoneId}`;
+  }
+
+  if (selections?.zona?.id === zoneId && selections?.zona?.name) {
+    return selections.zona.name;
+  }
+
+  return `Zona ${zoneId}`;
+}
+
+function getFirstAvailableZoneId() {
+  const firstZoneCard = document.querySelector('.option-card[data-categoria="Zona"][data-zone-id]');
+  if (!firstZoneCard) return null;
+  return resolveZoneId(firstZoneCard.dataset.zoneId);
+}
+
+function getSelectedZoneId() {
+  const selectedZoneId = resolveZoneId(selections?.zona?.id ?? selections?.zone?.id);
+  if (selectedZoneId) return selectedZoneId;
+
+  const lotDevelopmentId =
+    selections?.lote?.development_id ??
+    selections?.lote?.desarrollo_id ??
+    null;
+  const lotZoneId = resolveZoneIdFromDevelopment(lotDevelopmentId);
+  if (lotZoneId) return lotZoneId;
+
+  if (DEFAULT_ZONE_ID) return DEFAULT_ZONE_ID;
+
+  return getFirstAvailableZoneId();
+}
+
+function setSelectedZoneForPricing(zoneId, options = {}) {
+  const { recalculate = true, persist = true } = options;
+  const resolvedZoneId = resolveZoneId(zoneId) || getSelectedZoneId();
+
+  if (!resolvedZoneId) {
+    return null;
+  }
+
+  if (!selections || typeof selections !== 'object' || Array.isArray(selections)) {
+    selections = {};
+  }
+
+  selections.zona = {
+    id: resolvedZoneId,
+    name: getZoneNameById(resolvedZoneId)
+  };
+
+  const zoneCard = getZoneCardById(resolvedZoneId);
+  if (zoneCard) {
+    const row = zoneCard.closest('.row');
+    row?.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+    zoneCard.classList.add('selected');
+
+    const group = zoneCard.closest('.accordion-collapse');
+    const groupId = group?.id || 'Zonas';
+    selections[groupId] = {
+      id: zoneCard.dataset.id || `zona-${resolvedZoneId}`,
+      categoria: 'Zona',
+      valor: zoneCard.dataset.valor || getZoneNameById(resolvedZoneId),
+      precio: 0,
+      zone_id: resolvedZoneId
+    };
+  }
+
+  if (persist) {
+    localStorage.setItem('selections', JSON.stringify(selections));
+  }
+
+  if (typeof window.updateDevelopmentOptionsForZone === 'function') {
+    window.updateDevelopmentOptionsForZone(resolvedZoneId);
+  }
+
+  applyPricesForCurrentContext({ recalculate });
+  return resolvedZoneId;
+}
+
+function setSelectedZoneFromDevelopment(developmentId, options = {}) {
+  const zoneId = resolveZoneIdFromDevelopment(developmentId);
+  if (!zoneId) {
+    return null;
+  }
+
+  return setSelectedZoneForPricing(zoneId, options);
+}
+
+function getCurrentFacadeSuffix() {
+  const fromSelected = normalizeFachadaSuffix(selectedFachada);
+  if (fromSelected) return fromSelected;
+
+  const fromSelection = normalizeFachadaSuffix(selections?.['opciones-fachada']?.valor);
+  if (fromSelection) return fromSelection;
+
+  return '4a';
+}
+
+function getZoneSpecificPrice(card, zoneId, priceKey) {
+  if (!card || !priceKey) return null;
+
+  let parsedMap = {};
+  try {
+    parsedMap = JSON.parse(card.dataset.zonePrices || '{}');
+  } catch (_error) {
+    parsedMap = {};
+  }
+
+  const zoneNode = parsedMap[String(zoneId)];
+  if (!zoneNode || zoneNode[priceKey] === undefined || zoneNode[priceKey] === null) {
+    return null;
+  }
+
+  const value = parseFloat(zoneNode[priceKey]);
+  return Number.isNaN(value) ? null : value;
+}
+
+function getZoneSpecificBasePrice(card, zoneId) {
+  if (!card) return null;
+
+  let parsedMap = {};
+  try {
+    parsedMap = JSON.parse(card.dataset.zonePrices || '{}');
+  } catch (_error) {
+    parsedMap = {};
+  }
+
+  const zoneNode = parsedMap[String(zoneId)];
+  if (!zoneNode || zoneNode.base_price === undefined || zoneNode.base_price === null) {
+    return null;
+  }
+
+  const value = parseFloat(zoneNode.base_price);
+  return Number.isNaN(value) ? null : value;
+}
+
+function getPriceByContextForCard(card, options = {}) {
+  if (!card) return 0;
+
+  const zoneId = resolveZoneId(options.zoneId ?? getSelectedZoneId());
+  const facadeSuffix = normalizeFachadaSuffix(options.facadeSuffix ?? getCurrentFacadeSuffix());
+  const priceKey = facadeSuffix ? `precio_${facadeSuffix}` : null;
+  const useZoneOverride = options.useZoneOverride ?? Boolean(zoneId);
+  const isFacadeCard = isFacadeCardElement(card);
+
+  if (isFacadeCard && useZoneOverride && zoneId) {
+    const zoneBasePrice = getZoneSpecificBasePrice(card, zoneId);
+    if (zoneBasePrice !== null) return zoneBasePrice;
+  }
+
+  if (priceKey && useZoneOverride && zoneId) {
+    const zonePrice = getZoneSpecificPrice(card, zoneId, priceKey);
+    if (zonePrice !== null) return zonePrice;
+  }
+
+  if (priceKey && !isFacadeCard) {
+    if (card.dataset[priceKey] !== undefined) {
+      const value = parseFloat(card.dataset[priceKey]);
+      if (!Number.isNaN(value)) return value;
+    }
+  }
+
+  const fallback = parseFloat(card.dataset.precio);
+  return Number.isNaN(fallback) ? 0 : fallback;
+}
+
+function applyPricesForCurrentContext(options = {}) {
+  const { recalculate = true } = options;
+  const zoneId = getSelectedZoneId();
+  const facadeSuffix = getCurrentFacadeSuffix();
+
+  document.querySelectorAll('.option-card[data-precio_a]').forEach(card => {
+    const newPrice = getPriceByContextForCard(card, { zoneId, facadeSuffix });
+    card.dataset.precio = Number.isFinite(newPrice) ? String(newPrice) : '0';
+
+    const priceLabel = card.querySelector('.precio-producto');
+    if (priceLabel) {
+      if (newPrice === 0) {
+        priceLabel.textContent = '';
+      } else {
+        priceLabel.textContent = formatoMXN(newPrice);
+        priceLabel.classList.remove('incluido');
+      }
+    }
+
+    if (card.classList.contains('selected')) {
+      const group = card.closest('.accordion-collapse');
+      const groupId = group?.id || 'sin-id';
+      if (selections[groupId] && !isFacadeCardElement(card)) {
+        selections[groupId].precio = newPrice;
+      }
+    }
+  });
+
+  const selectedFacadeCard = getSelectedFacadeCard();
+  if (selectedFacadeCard) {
+    const facadePrice = getPriceByContextForCard(selectedFacadeCard, { zoneId, facadeSuffix });
+    selections['precio_base_fachada'] = facadePrice;
+    selections['opciones-fachada'] = {
+      id: selectedFacadeCard.dataset.id || null,
+      categoria: selectedFacadeCard.dataset.categoria || 'Fachada',
+      valor: selectedFacadeCard.dataset.valor || '',
+      precio: facadePrice
+    };
+  }
+
+  localStorage.setItem('selections', JSON.stringify(selections));
+
+  if (recalculate) {
+    recalcularPrecioTotal();
+  }
+}
+
+window.resolveMainDevelopmentId = resolveMainDevelopmentId;
+window.getSelectedZoneId = getSelectedZoneId;
+window.setSelectedZoneForPricing = setSelectedZoneForPricing;
+window.setSelectedZoneFromDevelopment = setSelectedZoneFromDevelopment;
+window.setSelectedDevelopmentForPricing = setSelectedZoneFromDevelopment;
+window.applyPricesForCurrentContext = applyPricesForCurrentContext;
 
 document.addEventListener('click', function (e) {
   if (e.target && e.target.closest('.option-card')) {
@@ -35,15 +365,34 @@ function hideLoader() {
 
 function actualizarPrecioPrincipal(precio) {
   const precioEl = document.getElementById('precioTotal');
+  const updatingEl = document.getElementById('totalPriceUpdating');
   if (!precioEl) return;
 
-  if (precio === 0) {
+  if (updatingEl) {
+    updatingEl.classList.remove('d-none');
+  }
+  precioEl.classList.add('price-updating');
 
-  } else {
+  if (precio !== 0) {
     precioEl.textContent = '$' + Number(precio)
       .toLocaleString('es-MX', { minimumFractionDigits: 2 }) + ' MXN';
     precioEl.classList.remove("incluido");
   }
+
+  if (totalPriceFeedbackTimer) {
+    clearTimeout(totalPriceFeedbackTimer);
+  }
+
+  totalPriceFeedbackTimer = setTimeout(() => {
+    precioEl.classList.remove('price-updating');
+    precioEl.classList.remove('price-updated');
+    void precioEl.offsetWidth;
+    precioEl.classList.add('price-updated');
+
+    if (updatingEl) {
+      updatingEl.classList.add('d-none');
+    }
+  }, 700);
 }
 
 /**********************************************************
@@ -317,11 +666,9 @@ function cambiarImagen(index) {
 }
 
 function getSelectedDevelopmentId() {
-  const developmentId = Number(
-    selections?.lote?.development_id ??
-    selections?.lote?.desarrollo_id ??
-    0
-  );
+  const developmentId = Number(hasSelectedLotForPricing()
+    ? (selections?.lote?.development_id ?? selections?.lote?.desarrollo_id ?? DEFAULT_MAIN_DEVELOPMENT_ID)
+    : DEFAULT_MAIN_DEVELOPMENT_ID);
 
   return Number.isNaN(developmentId) ? 0 : developmentId;
 }
@@ -434,6 +781,7 @@ function recalcularPrecioTotal() {
   Object.keys(selections).forEach(key => {
     if (key === "precio_base_fachada" || key === "opciones-fachada") return; // <-- importante
     const item = selections[key];
+    if (item && (isFacadeCategoryValue(item.categoria) || isFacadeValueText(item.valor))) return;
 
     if (item && item.precio) {
       const precioProducto = parseFloat(item.precio);
@@ -466,11 +814,27 @@ function seleccionarOpcion(elemento) {
   const categoria = elemento.getAttribute('data-categoria');
   const valor = elemento.getAttribute('data-valor');
 
+  if (categoria === 'Zona') {
+    const zoneIdFromData = Number(elemento.getAttribute('data-zone-id'));
+    const zoneIdFromId = Number(String(elemento.getAttribute('data-id') || '').replace('zona-', ''));
+    const resolvedZoneId = !Number.isNaN(zoneIdFromData) && zoneIdFromData > 0
+      ? zoneIdFromData
+      : zoneIdFromId;
+
+    setSelectedZoneForPricing(resolvedZoneId, {
+      recalculate: true,
+      persist: true
+    });
+    return;
+  }
+
   // ===== Fachada =====
   if (categoria === 'Fachada') {
     selectedFachada = valor;
 
-    const precioBase = parseFloat(elemento.dataset.precio) || 0;
+    const precioBase = getPriceByContextForCard(elemento, {
+      facadeSuffix: normalizeFachadaSuffix(valor)
+    });
     selections["precio_base_fachada"] = precioBase;
 
     // Actualizar precio principal
@@ -498,46 +862,7 @@ function seleccionarOpcion(elemento) {
 
     // EN LUGAR de autoSelectFirstOptions(); ... -> llamamos a la nueva función que reaplica todo
     refreshSelectionsAndOverlays();
-
-    // === ACTUALIZAR PRECIOS AL CAMBIAR DE FACHADA ===
-    const fachada = valor.trim().toLowerCase(); // ej. 'fachada 3a'
-    const sufijo = fachada.replace('fachada', '').trim(); // '3a'
-    const precioKey = 'precio_' + sufijo; // ej. 'precio_3a'
-
-    document.querySelectorAll('.option-card').forEach(card => {
-      const nuevoPrecio = parseFloat(card.dataset[precioKey]) || parseFloat(card.dataset.precio) || 0;
-      const priceLabel = card.querySelector('.precio-producto');
-
-      // Mostrar nuevo precio en UI
-      if (priceLabel) {
-        if (nuevoPrecio === 0) {
-        } else {
-          priceLabel.textContent = formatoMXN(nuevoPrecio);
-          priceLabel.classList.remove("incluido");
-        }
-      }
-
-      // Actualizar atributo para futuros clics
-      card.dataset.precio = nuevoPrecio;
-
-      // 🔥 CORRECCIÓN IMPORTANTE:
-      // Si esta tarjeta está seleccionada, actualizar también selections[groupId].precio
-      if (card.classList.contains('selected')) {
-        const group = card.closest('.accordion-collapse');
-        const groupId = group?.id || 'sin-id';
-
-        if (selections[groupId]) {
-          selections[groupId].precio = nuevoPrecio;
-        }
-      }
-    });
-
-    // Guardar selections corregido
-    localStorage.setItem('selections', JSON.stringify(selections));
-
-    // Recalcular total una vez que TODAS las selecciones tienen el precio correcto
-    recalcularPrecioTotal();
-
+    applyPricesForCurrentContext({ recalculate: true });
 
     return;
   }
@@ -699,7 +1024,7 @@ document.querySelectorAll('.option-card').forEach(card => {
     }
 
     // ----- Manejo especial para Fachada: no guardamos la fachada como selección de grupo -----
-    if (data.categoria && data.categoria.toLowerCase() === 'fachada' || groupId === 'opciones-fachada') {
+    if (isFacadeCategoryValue(data.categoria) || isFacadeValueText(data.valor) || groupId === 'opciones-fachada') {
       //guarda la fachada para el resumen
       selections["opciones-fachada"] = {
         categoria: data.categoria,
@@ -748,6 +1073,14 @@ document.querySelectorAll('.option-card').forEach(card => {
  * AUTO-SELECCIÓN AL CARGAR
  **********************************************************/
 document.addEventListener('DOMContentLoaded', function () {
+  const initialZoneId =
+    resolveZoneId(selections?.zona?.id) ??
+    resolveZoneIdFromDevelopment(selections?.lote?.development_id ?? selections?.lote?.desarrollo_id) ??
+    (DEFAULT_ZONE_ID || getFirstAvailableZoneId());
+  setSelectedZoneForPricing(initialZoneId, {
+    recalculate: false,
+    persist: true
+  });
 
   document.getElementById('selectEnganche').addEventListener('change', e => {
     if (getFinancingMode() !== 'PIARO') return;
@@ -827,7 +1160,7 @@ document.addEventListener('DOMContentLoaded', function () {
 //para hacer la seleccion del primera opcion al cambio de fachada
 function autoSelectFirstOptions() {
   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
-    if (row.id === 'opciones-casas' || row.id === 'opciones-fachada' || row.id === 'opciones-habitaciones') return;
+    if (row.id === 'opciones-casas' || row.id === 'opciones-fachada' || row.id === 'opciones-habitaciones' || row.id === 'opciones-zonas') return;
     const firstOption = row.querySelector('.option-card');
     if (firstOption && !firstOption.classList.contains('selected')) {
       // Disparar click para mantener coherencia de UI y estado
@@ -877,7 +1210,7 @@ function refreshSelectionsAndOverlays() {
     const rowId = row.id;
 
     // Omitir grupos especiales
-    if (rowId === 'opciones-casas' || rowId === 'opciones-fachada' || rowId === 'opciones-habitaciones') return;
+    if (rowId === 'opciones-casas' || rowId === 'opciones-fachada' || rowId === 'opciones-habitaciones' || rowId === 'opciones-zonas') return;
 
     // Ver si ya hay opción seleccionada
     let option = row.querySelector('.option-card.selected');

@@ -61,14 +61,6 @@ $(document).on('click', '.btn-edit-product', function() {
     );
 
     // ==========================
-    // Precios por fachadas
-    // ==========================
-    for (let i = 1; i <= 7; i++) {
-        form.find(`[name="fachada_${i}_price"]`)
-            .val(button.data(`fachada_${i}_price`));
-    }
-
-    // ==========================
     // Preview imagen
     // ==========================
     const imageUrl = button.data('image_url');

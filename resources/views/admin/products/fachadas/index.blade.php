@@ -11,7 +11,7 @@
                     <i class="ki-outline ki-home fs-2 me-2 text-primary"></i>
                     Precios Base de Fachadas
                 </h1>
-                <span class="text-muted fs-7">Administración de los precios base por estilo</span>
+                <span class="text-muted fs-7">Administración de los precios base por fachada y zona</span>
             </div>
 
             <div class="d-flex align-items-center gap-2">
@@ -28,6 +28,28 @@
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
+
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <a href="{{ route('admin.precio.fachadas', ['style' => $selectedStyle]) }}"
+                    class="btn btn-sm {{ $selectedZone === null ? 'btn-primary' : 'btn-light-primary' }}">
+                    Default
+                </a>
+                @foreach($zones as $zone)
+                    <a href="{{ route('admin.precio.fachadas', ['zone' => $zone->id, 'style' => $selectedStyle]) }}"
+                        class="btn btn-sm {{ (int) $selectedZone === (int) $zone->id ? 'btn-primary' : 'btn-light-primary' }}">
+                        {{ $zone->name }}
+                    </a>
+                @endforeach
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                @foreach($styles as $styleOption)
+                    <a href="{{ route('admin.precio.fachadas', ['zone' => $selectedZone, 'style' => $styleOption]) }}"
+                        class="btn btn-sm {{ $selectedStyle === $styleOption ? 'btn-dark' : 'btn-light-dark' }}">
+                        {{ $styleOption }}
+                    </a>
+                @endforeach
+            </div>
 
             <table id="fachadas_table"
                    class="table table-row-bordered table-hover table-striped align-middle gy-3">
@@ -56,13 +78,21 @@
                                       method="POST"
                                       class="d-flex gap-2">
                                     @csrf
+                                    @php
+                                        $override = $selectedZone !== null
+                                            ? optional($product->zonePrices->first())->base_price
+                                            : null;
+                                        $priceValue = $override ?? $product->base_price;
+                                    @endphp
+                                    <input type="hidden" name="zone_id" value="{{ $selectedZone }}">
+                                    <input type="hidden" name="style" value="{{ $selectedStyle }}">
                                     <div class="input-group input-group-sm w-150px">
                                         <span class="input-group-text">$</span>
                                         <input 
                                             type="text"
                                             name="base_price"
                                             class="form-control price-input"
-                                            value="{{ number_format($product->base_price, 2, '.', ',') }}"
+                                            value="{{ number_format((float) $priceValue, 2, '.', ',') }}"
                                         >
                                     </div>
                             </td>
