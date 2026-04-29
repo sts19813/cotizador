@@ -19,6 +19,18 @@ const DEVELOPMENT_TREE = [
     { id: 33, name: 'Piaró' },
     { id: 43, name: 'Paseo Península' },
     {
+        id: 32, name: 'Hacienda Piaro',
+        children: [
+            { id: 30, name: 'Etapa 1' },
+            { id: 29, name: 'Etapa 2' },
+            { id: 28, name: 'Etapa 3' },
+            { id: 27, name: 'Etapa 4' },
+            { id: 26, name: 'Etapa 5' },
+            { id: 25, name: 'Etapa 6' },
+            { id: 24, name: 'Etapa 7' }
+        ]
+    },
+    {
         id: 3,
         name: 'Ahawell',
         children: [
@@ -36,6 +48,7 @@ const ZONE_DEVELOPMENTS_BY_ZONE = (window.ZONE_DEVELOPMENTS_BY_ZONE && typeof wi
 const ROOT_DEVELOPMENT_CARD_SELECTORS = {
     33: '#collapseDevelopmentPiaro',
     43: '#collapseDevelopmentPaseo',
+    32: '#collapseDevelopmentHaciendaPiaro',
     3: '#collapseDevelopmentAhawell'
 };
 
@@ -50,9 +63,20 @@ let developmentLoadRequestId = 0;
 let allowedDevelopmentIdsForZone = new Set();
 let hasZoneDevelopmentRestriction = false;
 
-const AHAWELL_ROOT_ID = 3;
-const AHAWELL_CLUSTER_BASE_COLOR = 'rgba(52, 199, 89, 0.22)';
-const AHAWELL_CLUSTER_ACTIVE_COLOR = 'rgba(52, 199, 89, 1)';
+const CLUSTER_ROOT_CONFIG = {
+    32: {
+        subtitle: 'Selecciona una de las 7 etapas de Hacienda Piaro.',
+        childSubtitlePrefix: 'Hacienda Piaro',
+        clusterBaseColor: 'rgba(56, 110, 250, 0.25)',
+        clusterActiveColor: 'rgba(56, 110, 250, 0.55)'
+    },
+    3: {
+        subtitle: 'Selecciona uno de los 5 desarrollos del cluster Ahawell.',
+        childSubtitlePrefix: 'Ahawell',
+        clusterBaseColor: 'rgba(52, 199, 89, 0.22)',
+        clusterActiveColor: 'rgba(52, 199, 89, 1)'
+    }
+};
 const DEVELOPMENT_LOGOS = {
     33: {
         src: '/img/logos/piaro.svg',
@@ -61,6 +85,10 @@ const DEVELOPMENT_LOGOS = {
     43: {
         src: '/img/logos/pase%20peninsula.svg',
         alt: 'Paseo Peninsula'
+    },
+    32: {
+        src: '/img/logos/piaro.svg',
+        alt: 'Hacienda Piaro'
     },
     3: {
         src: '/img/logos/ahawell.svg',
@@ -101,10 +129,11 @@ function isDevelopmentAllowed(developmentId) {
 
 function isRootDevelopmentAllowed(rootDevelopmentId) {
     const numericRootId = Number(rootDevelopmentId);
-    if (numericRootId === AHAWELL_ROOT_ID) {
-        return isDevelopmentAllowed(AHAWELL_ROOT_ID) || DEVELOPMENT_TREE
-            .find(dev => Number(dev.id) === AHAWELL_ROOT_ID)
-            ?.children?.some(child => isDevelopmentAllowed(child.id));
+    const rootDevelopment = DEVELOPMENT_TREE.find(dev => Number(dev.id) === numericRootId);
+
+    if (rootDevelopment?.children?.length) {
+        return isDevelopmentAllowed(numericRootId)
+            || rootDevelopment.children.some(child => isDevelopmentAllowed(child.id));
     }
 
     return isDevelopmentAllowed(numericRootId);
@@ -119,13 +148,13 @@ function getDefaultDevelopmentForZone() {
     const firstRoot = getFirstAvailableRootDevelopmentId();
     if (!firstRoot) return null;
 
-    if (firstRoot !== AHAWELL_ROOT_ID) {
+    const rootDevelopment = DEVELOPMENT_TREE.find(dev => Number(dev.id) === Number(firstRoot));
+    if (!rootDevelopment?.children?.length) {
         return firstRoot;
     }
 
-    const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === AHAWELL_ROOT_ID);
-    const firstAllowedChild = ahawell?.children?.find(child => isDevelopmentAllowed(child.id));
-    return firstAllowedChild ? Number(firstAllowedChild.id) : AHAWELL_ROOT_ID;
+    const firstAllowedChild = rootDevelopment.children.find(child => isDevelopmentAllowed(child.id));
+    return firstAllowedChild ? Number(firstAllowedChild.id) : Number(firstRoot);
 }
 
 function applyDevelopmentCardVisibilityForZone() {
@@ -160,8 +189,7 @@ function getRootDevelopmentId(developmentId) {
 }
 
 function isAhawellChildDevelopment(developmentId) {
-    const parent = findParentDevelopmentByChildId(developmentId);
-    return Number(parent?.id) === AHAWELL_ROOT_ID;
+    return Boolean(findParentDevelopmentByChildId(developmentId));
 }
 
 function getLogoConfigForDevelopment(developmentId) {
@@ -220,11 +248,7 @@ function getDevelopmentDisplayNameById(developmentId, fallbackName = '') {
         return fallbackName || `desarrollo ${developmentId}`;
     }
 
-    if (Number(parentDevelopment.id) === AHAWELL_ROOT_ID) {
-        return `${parentDevelopment.name} - ${childDevelopment.name}`;
-    }
-
-    return childDevelopment.name || fallbackName || `desarrollo ${developmentId}`;
+    return `${parentDevelopment.name} - ${childDevelopment.name}`;
 }
 
 function getSelectedLotLabel(lot, developmentName = null) {
@@ -298,13 +322,12 @@ function setDevelopmentButtons(activeDevelopmentId) {
 
     container.appendChild(rootButtons);
 
-    if (activeRootId === AHAWELL_ROOT_ID) {
-        const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === AHAWELL_ROOT_ID);
-        if (ahawell?.children?.length) {
+    const activeRootDevelopment = DEVELOPMENT_TREE.find(dev => Number(dev.id) === activeRootId);
+    if (activeRootDevelopment?.children?.length) {
             const childButtons = document.createElement('div');
             childButtons.className = 'development-selector-cluster mt-2';
 
-            ahawell.children.forEach(child => {
+            activeRootDevelopment.children.forEach(child => {
                 if (!isDevelopmentAllowed(child.id)) return;
 
                 const childBtn = document.createElement('button');
@@ -322,7 +345,6 @@ function setDevelopmentButtons(activeDevelopmentId) {
 
             container.appendChild(childButtons);
         }
-    }
 }
 
 function toggleDevelopmentButtonState(button, isActive) {
@@ -384,9 +406,9 @@ function resolveSearchLots(developmentId = null) {
 
     if (!targetDevelopmentId) return searchableLotsCache;
 
-    const ahawell = DEVELOPMENT_TREE.find(dev => Number(dev.id) === 3);
-    if (targetDevelopmentId === 3 && ahawell?.children?.length) {
-        const childIds = ahawell.children
+    const rootDevelopment = DEVELOPMENT_TREE.find(dev => Number(dev.id) === targetDevelopmentId);
+    if (rootDevelopment?.children?.length) {
+        const childIds = rootDevelopment.children
             .map(child => Number(child.id))
             .filter(childId => isDevelopmentAllowed(childId));
         return searchableLotsCache.filter(lot => childIds.includes(Number(lot.development_id)));
@@ -454,22 +476,31 @@ function updateModalHeader(development) {
     if (!modalTitle || !modalSubtitle) return;
 
     const logoConfig = getLogoConfigForDevelopment(development.id);
-    if (modalLogo && logoConfig) {
-        modalLogo.src = logoConfig.src;
-        modalLogo.alt = logoConfig.alt;
-        modalTitle.setAttribute('aria-label', logoConfig.alt);
+    if (modalLogo) {
+        if (logoConfig) {
+            modalLogo.src = logoConfig.src;
+            modalLogo.alt = logoConfig.alt;
+            modalTitle.setAttribute('aria-label', logoConfig.alt);
+        } else {
+            modalLogo.removeAttribute('src');
+            modalLogo.alt = '';
+            modalTitle.removeAttribute('aria-label');
+        }
     }
 
-    const isAhawellRootView = Number(development.id) === AHAWELL_ROOT_ID;
-    const isAhawellChildView = isAhawellChildDevelopment(development.id);
+    const rootId = getRootDevelopmentId(development.id);
+    const isClusterRootView = rootId && Number(rootId) === Number(development.id)
+        && Array.isArray(DEVELOPMENT_TREE.find(dev => Number(dev.id) === Number(rootId))?.children);
+    const isClusterChildView = Boolean(rootId && Number(rootId) !== Number(development.id));
+    const clusterConfig = rootId ? CLUSTER_ROOT_CONFIG[Number(rootId)] : null;
 
-    if (isAhawellRootView) {
-        modalSubtitle.textContent = 'Selecciona uno de los 5 desarrollos del cluster Ahawell.';
+    if (isClusterRootView && clusterConfig) {
+        modalSubtitle.textContent = clusterConfig.subtitle;
         return;
     }
 
-    if (isAhawellChildView) {
-        modalSubtitle.textContent = `Ahawell - ${development.name}: selecciona un lote para agregar al proyecto de tu casa`;
+    if (isClusterChildView && clusterConfig) {
+        modalSubtitle.textContent = `${clusterConfig.childSubtitlePrefix} - ${development.name}: selecciona un lote para agregar al proyecto de tu casa`;
         return;
     }
 
@@ -595,12 +626,14 @@ function bindSvgInteractions(svgLayer, lotsCache) {
 
         const redirectTargetId = getRedirectTargetDevelopmentId(item);
         if (redirectTargetId) {
-            const isAhawellRootView = Number(currentDevelopment?.id) === AHAWELL_ROOT_ID;
-            const baseColor = isAhawellRootView
-                ? AHAWELL_CLUSTER_BASE_COLOR
+            const currentRootId = getRootDevelopmentId(currentDevelopment?.id);
+            const clusterConfig = currentRootId ? CLUSTER_ROOT_CONFIG[Number(currentRootId)] : null;
+            const isClusterRootView = currentRootId && Number(currentDevelopment?.id) === Number(currentRootId);
+            const baseColor = (isClusterRootView && clusterConfig)
+                ? clusterConfig.clusterBaseColor
                 : (normalizeHexColor(item.color) || 'rgba(56, 110, 250, 0.25)');
-            const activeColor = isAhawellRootView
-                ? AHAWELL_CLUSTER_ACTIVE_COLOR
+            const activeColor = (isClusterRootView && clusterConfig)
+                ? clusterConfig.clusterActiveColor
                 : (normalizeHexColor(item.color_active) || 'rgba(56, 110, 250, 0.55)');
 
             paintSvg(svgElement, baseColor);
@@ -740,8 +773,10 @@ async function loadDevelopment(developmentId) {
 
         highlightActiveDevelopment(development.id);
 
-        const isAhawellRootView = Number(development.id) === AHAWELL_ROOT_ID;
-        if (isAhawellRootView) {
+        const rootId = getRootDevelopmentId(development.id);
+        const isClusterRootView = rootId && Number(rootId) === Number(development.id)
+            && Array.isArray(DEVELOPMENT_TREE.find(dev => Number(dev.id) === Number(rootId))?.children);
+        if (isClusterRootView) {
             window.lotsCache = [];
             if (svgLayer) {
                 bindSvgInteractions(svgLayer, window.lotsCache);
@@ -838,6 +873,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const developmentByTarget = {
                 '#collapseDevelopmentPiaro': 33,
                 '#collapseDevelopmentPaseo': 43,
+                '#collapseDevelopmentHaciendaPiaro': 32,
                 '#collapseDevelopmentAhawell': 3
             };
 

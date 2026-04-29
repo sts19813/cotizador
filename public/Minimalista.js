@@ -16,11 +16,20 @@ const DEFAULT_MAIN_DEVELOPMENT_ID = 33;
 const MAIN_DEVELOPMENT_NAME_MAP = {
   33: 'Piaró',
   43: 'Paseo Península',
+  32: 'Hacienda Piaro',
   3: 'Ahawell'
 };
 const DEVELOPMENT_ROOT_MAP = {
   33: 33,
   43: 43,
+  32: 32,
+  30: 32,
+  29: 32,
+  28: 32,
+  27: 32,
+  26: 32,
+  25: 32,
+  24: 32,
   3: 3,
   2: 3,
   14: 3,
@@ -1073,15 +1082,74 @@ document.querySelectorAll('.option-card').forEach(card => {
  * AUTO-SELECCIÓN AL CARGAR
  **********************************************************/
 document.addEventListener('DOMContentLoaded', function () {
+
+  /*****************************************************
+   * 1. DETECTAR CAMBIO DE ESTILO Y LIMPIAR
+   *****************************************************/
+  const estiloActual = window.currentStyle;
+  const estiloGuardado = localStorage.getItem('currentStyle');
+
+  if (estiloGuardado && estiloGuardado !== estiloActual) {
+    const saved = localStorage.getItem('selections');
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+
+        const nuevaSeleccion = {};
+
+        // 🔥 conservar solo zona
+        if (parsed.zona) {
+          nuevaSeleccion.zona = parsed.zona;
+        }
+
+        // 🔥 IMPORTANTE: sincronizar memoria + storage
+        selections = nuevaSeleccion;
+        localStorage.setItem('selections', JSON.stringify(nuevaSeleccion));
+
+      } catch (e) {
+        selections = {};
+        localStorage.removeItem('selections');
+      }
+    }
+  }
+
+  // guardar estilo actual
+  localStorage.setItem('currentStyle', estiloActual);
+
+
+  /*****************************************************
+   * 2. CARGAR selections SI NO SE LIMPIÓ
+   *****************************************************/
+  if (!selections || Object.keys(selections).length === 0) {
+    const saved = localStorage.getItem('selections');
+    if (saved) {
+      try {
+        selections = JSON.parse(saved);
+      } catch (e) {
+        selections = {};
+      }
+    }
+  }
+
+
+  /*****************************************************
+   * 3. RESTAURAR ZONA
+   *****************************************************/
   const initialZoneId =
     resolveZoneId(selections?.zona?.id) ??
     resolveZoneIdFromDevelopment(selections?.lote?.development_id ?? selections?.lote?.desarrollo_id) ??
     (DEFAULT_ZONE_ID || getFirstAvailableZoneId());
+
   setSelectedZoneForPricing(initialZoneId, {
     recalculate: false,
     persist: true
   });
 
+
+  /*****************************************************
+   * 4. EVENTOS DE FINANCIAMIENTO
+   *****************************************************/
   document.getElementById('selectEnganche').addEventListener('change', e => {
     if (getFinancingMode() !== 'PIARO') return;
     FINANCIAMIENTO.anticipoPorcentaje = parseFloat(e.target.value);
@@ -1099,25 +1167,40 @@ document.addEventListener('DOMContentLoaded', function () {
     actualizarFinanciamiento(window.precioTotalActual);
   });
 
+
+  /*****************************************************
+   * 5. AUTO-SELECCIÓN CONTROLADA (NO PISAR ZONA)
+   *****************************************************/
+  const hayZonaGuardada = selections?.zona?.id ? true : false;
+
   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
+
     if (row.id === 'opciones-casas') return;
+
+    // no tocar zona si ya existe
+    if (row.id === 'opciones-zonas' && hayZonaGuardada) return;
+
     const firstOption = row.querySelector('.option-card');
     if (firstOption) firstOption.click();
   });
 
+
+  /*****************************************************
+   * 6. POST-INIT (renders, overlays, defaults)
+   *****************************************************/
   setTimeout(() => {
     const recamara = document.querySelector('#Habitaciones [data-id="4Recamaras"]');
     if (recamara && !recamara.classList.contains('selected')) recamara.click();
 
-    // 🔥 Forzar selección de las primeras opciones en todas las categorías
     autoSelectFirstOptions();
     Object.keys(activeOverlays).forEach(idx => updateThumbnailOverlay(idx));
     updateMainPreview(globalindex);
   }, 300);
 
-  // ===============================
-  // Auto-selección de estilo según slug
-  // ===============================
+
+  /*****************************************************
+   * 7. AUTO-SELECCIÓN DE ESTILO POR URL
+   *****************************************************/
   let parts = window.location.pathname.split("/").filter(Boolean);
   let slug = parts[0] || "home";
 
@@ -1139,24 +1222,47 @@ document.addEventListener('DOMContentLoaded', function () {
           data[key] = attr.value;
         }
       });
-      if (data.precio) data.precio = parseFloat(data.precio) || 0;
-      selections["opciones-casas"] = data;
 
+      if (data.precio) data.precio = parseFloat(data.precio) || 0;
+
+      selections["opciones-casas"] = data;
       localStorage.setItem("selections", JSON.stringify(selections));
     }
   }
 
+
+  /*****************************************************
+   * 8. BASES INICIALES
+   *****************************************************/
   setTimeout(() => {
     const items = document.querySelectorAll('#owl-demo .item img.tumb-original');
     CambioBases(items, 'Fachada 4A');
   }, 400);
 
+
+  /*****************************************************
+   * 9. PRELOAD
+   *****************************************************/
   preloadAllRenderImages();
+
+
+  /*****************************************************
+   * 10. REAPLICAR ZONA AL FINAL (CRÍTICO)
+   *****************************************************/
   setTimeout(() => {
+    if (selections?.zona?.id) {
+      setSelectedZoneForPricing(selections.zona.id, {
+        recalculate: true,
+        persist: false
+      });
+    }
+  }, 500);
+
+   setTimeout(() => {
     isBootstrappingSelections = false;
   }, 1200);
-});
 
+});
 //para hacer la seleccion del primera opcion al cambio de fachada
 function autoSelectFirstOptions() {
   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {

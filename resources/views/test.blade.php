@@ -60,6 +60,47 @@
 
                     <div class="accordion " id="configAccordion">
 
+                        <div class="accordion-item hover-shadow mb-4">
+                            <h2 class="accordion-header" id="headingZonas">
+                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Zonas" aria-expanded="true" aria-controls="Zonas">
+                                    <span class="textAcordeon">¿En dónde quieres vivir?</span>
+                                    <x-accordion-toggle-icon class="ms-auto" />
+                                </button>
+                            </h2>
+                            <div id="Zonas" class="accordion-collapse collapse show" aria-labelledby="headingZonas">
+                                <div class="accordion-body">
+                                    <p class="fw-bold mb-1">Selecciona una zona</p>
+                                    <div class="row g-3 opcion-selected" id="opciones-zonas">
+                                        @forelse ($zones as $zone)
+                                            @php
+                                                $zoneImage = $zone->image_url ?: '/img/tulum.jpg';
+                                                if (!Str::startsWith($zoneImage, ['http://', 'https://', '/'])) {
+                                                    $zoneImage = '/' . ltrim($zoneImage, '/');
+                                                }
+                                            @endphp
+                                            <div class="col-6 col-md-6">
+                                                <div class="option-card estilo-color cursor-pointer"
+                                                    data-id="zona-{{ $zone->id }}" data-zone-id="{{ $zone->id }}"
+                                                    data-categoria="Zona" data-valor="{{ $zone->name }}" data-precio="0"
+                                                    onclick="seleccionarOpcion(this)">
+                                                    <img src="{{ $zoneImage }}" class="img-fluid rounded"
+                                                        alt="{{ $zone->name }}">
+                                                    <div class="option-title">{{ $zone->name }}</div>
+                                                    <div class="option-description d-none">
+                                                        {{ $zone->developments->count() }} desarrollo(s)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div class="col-12">
+                                                <div class="alert alert-light mb-0">No hay zonas disponibles.</div>
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- General -->
                         <div class="accordion-item hover-shadow mb-4">
@@ -109,47 +150,6 @@
                             </div>
                         </div>
 
-                        <div class="accordion-item hover-shadow mb-4">
-                            <h2 class="accordion-header" id="headingZonas">
-                                <button class="accordion-button custom-toggle" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#Zonas" aria-expanded="true" aria-controls="Zonas">
-                                    <span class="textAcordeon">¿En dónde quieres vivir?</span>
-                                    <x-accordion-toggle-icon class="ms-auto" />
-                                </button>
-                            </h2>
-                            <div id="Zonas" class="accordion-collapse collapse show" aria-labelledby="headingZonas">
-                                <div class="accordion-body">
-                                    <p class="fw-bold mb-1">Selecciona una zona</p>
-                                    <div class="row g-3 opcion-selected" id="opciones-zonas">
-                                        @forelse ($zones as $zone)
-                                            @php
-                                                $zoneImage = $zone->image_url ?: '/img/tulum.jpg';
-                                                if (!Str::startsWith($zoneImage, ['http://', 'https://', '/'])) {
-                                                    $zoneImage = '/' . ltrim($zoneImage, '/');
-                                                }
-                                            @endphp
-                                            <div class="col-6 col-md-6">
-                                                <div class="option-card estilo-color cursor-pointer"
-                                                    data-id="zona-{{ $zone->id }}" data-zone-id="{{ $zone->id }}"
-                                                    data-categoria="Zona" data-valor="{{ $zone->name }}" data-precio="0"
-                                                    onclick="seleccionarOpcion(this)">
-                                                    <img src="{{ $zoneImage }}"
-                                                        class="img-fluid rounded" alt="{{ $zone->name }}">
-                                                    <div class="option-title">{{ $zone->name }}</div>
-                                                    <div class="option-description">
-                                                        {{ $zone->developments->count() }} desarrollo(s)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @empty
-                                            <div class="col-12">
-                                                <div class="alert alert-light mb-0">No hay zonas disponibles.</div>
-                                            </div>
-                                        @endforelse
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Número de habitaciones -->
                         <div class="accordion-item hover-shadow mb-4">
@@ -251,8 +251,7 @@
                                                         data-categoria="{{ $category->name }}" data-id="{{ $product->id }}"
                                                         data-renders='@json($product->renders)'
                                                         data-fachada-renders='@json($fachadas[$product->id] ?? [])'
-                                                        data-zone-prices='@json($zonePrices)'
-                                                        data-valor="{{ $product->title }}"
+                                                        data-zone-prices='@json($zonePrices)' data-valor="{{ $product->title }}"
                                                         data-precio="{{ $product->base_price }}"
                                                         data-precio_a="{{ $product->fachada_1_price }}"
                                                         data-precio_b="{{ $product->fachada_2_price }}"
@@ -357,6 +356,42 @@
                                                 <button
                                                     class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
                                                     data-development-id="43" data-bs-toggle="modal"
+                                                    data-bs-target="#modalPiaro">Seleccionar lote</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="development-card">
+                                        <button class="development-card-toggle collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#collapseDevelopmentHaciendaPiaro"
+                                            aria-expanded="false" aria-controls="collapseDevelopmentHaciendaPiaro">
+                                            <span class="development-card-title">Hacienda Piaro</span>
+                                            <span class="development-badge development-badge-immediate">Entrega
+                                                inmediata</span>
+                                            <x-accordion-toggle-icon class="ms-auto development-toggle-icon" />
+                                        </button>
+
+                                        <div id="collapseDevelopmentHaciendaPiaro"
+                                            class="collapse development-card-collapse"
+                                            data-bs-parent="#developmentSelectorAccordion">
+                                            <div class="development-card-body">
+                                                <p class="development-copy mb-2">¿Ya formas parte de Hacienda Piaro?
+                                                    Busca tu lote para continuar.</p>
+
+                                                <div class="position-relative mb-3">
+                                                    <input type="text" id="lotInput-32"
+                                                        class="form-control development-lot-input"
+                                                        data-development-id="32" placeholder="Num. de lote"
+                                                        autocomplete="off" disabled>
+                                                    <input type="hidden" id="lotId-32" disabled>
+                                                    <div id="lotDropdown-32"
+                                                        class="list-group position-absolute w-100 shadow-sm development-lot-dropdown"
+                                                        style="z-index:1000; display:none;"></div>
+                                                </div>
+
+                                                <button
+                                                    class="btn btn-outline-primary w-100 btn-radius js-open-development-modal"
+                                                    data-development-id="32" data-bs-toggle="modal"
                                                     data-bs-target="#modalPiaro">Seleccionar lote</button>
                                             </div>
                                         </div>
@@ -584,6 +619,7 @@
     <script src="/assets/js/ui/info-modal.js?v={{ filemtime(public_path('assets/js/ui/info-modal.js')) }}"></script>
     <script src="/assets/js/piaro-map.js?v={{ filemtime(public_path('assets/js/piaro-map.js')) }}"></script>
     <script src="/assets/js/app.js?v={{ filemtime(public_path('assets/js/app.js')) }}"></script>
+
 </body>
 
 </html>
