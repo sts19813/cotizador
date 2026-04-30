@@ -377,7 +377,7 @@
                                             <div class="development-card-body">
                                                 <p class="development-copy mb-2">¿Ya formas parte de Hacienda Piaro?
                                                     Busca tu lote para continuar.</p>
- 
+
                                                 <div class="position-relative mb-3">
                                                     <input type="text" id="lotInput-32"
                                                         class="form-control development-lot-input"
@@ -398,12 +398,14 @@
                                     </div>
 
                                     <div class="development-card">
-                                        <button class="development-card-toggle" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseDevelopmentAhawell" aria-expanded="false"
-                                            aria-controls="collapseDevelopmentAhawell" disabled>
+
+                                        <button class="development-card-toggle collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#collapseDevelopmentAhawell"
+                                            aria-expanded="false" aria-controls="collapseDevelopmentAhawell">
                                             <span class="development-card-title">Ahawell</span>
-                                            <span
-                                                class="development-badge development-badge-comming-soon">Próximamente</span>
+                                            <span class="development-badge development-badge-presale">Preventa - 20%
+                                                Enganche</span>
+                                            <x-accordion-toggle-icon class="ms-auto development-toggle-icon" />
                                         </button>
 
                                         <div id="collapseDevelopmentAhawell" class="collapse development-card-collapse"
