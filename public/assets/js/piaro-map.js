@@ -300,34 +300,19 @@ function setDevelopmentButtons(activeDevelopmentId) {
 
     const numericActiveId = Number(activeDevelopmentId);
     const activeRootId = getRootDevelopmentId(numericActiveId) || Number(selectedModalRootDevelopmentId) || 33;
+    const isChildDevelopment = isAhawellChildDevelopment(numericActiveId);
 
-    const rootButtons = document.createElement('div');
-    rootButtons.className = 'development-selector-roots';
-
-    DEVELOPMENT_TREE.forEach(development => {
-        if (!isRootDevelopmentAllowed(development.id)) return;
-
-        const rootBtn = document.createElement('button');
-        rootBtn.type = 'button';
-        rootBtn.className = 'btn btn-sm development-btn development-root-btn ' + development.name + '-btn';
-        rootBtn.textContent = development.name;
-        rootBtn.dataset.developmentId = development.id;
-        rootBtn.dataset.developmentGroup = 'root';
-        rootBtn.addEventListener('click', () => {
-            setActiveSearchDevelopment(development.id);
-            loadDevelopment(development.id);
-        });
-        rootButtons.appendChild(rootBtn);
-    });
-
-    container.appendChild(rootButtons);
-
-    const activeRootDevelopment = DEVELOPMENT_TREE.find(dev => Number(dev.id) === activeRootId);
-    if (activeRootDevelopment?.children?.length) {
+    // Si se selecciona un desarrollo hijo, solo mostrar los hermanos (navegación entre hijos)
+    if (isChildDevelopment) {
+        const parentDevelopment = DEVELOPMENT_TREE.find(dev =>
+            Array.isArray(dev.children) && dev.children.some(child => Number(child.id) === numericActiveId)
+        );
+        
+        if (parentDevelopment?.children?.length) {
             const childButtons = document.createElement('div');
-            childButtons.className = 'development-selector-cluster mt-2';
-
-            activeRootDevelopment.children.forEach(child => {
+            childButtons.className = 'development-selector-cluster';
+            
+            parentDevelopment.children.forEach(child => {
                 if (!isDevelopmentAllowed(child.id)) return;
 
                 const childBtn = document.createElement('button');
@@ -336,15 +321,67 @@ function setDevelopmentButtons(activeDevelopmentId) {
                 childBtn.textContent = child.name;
                 childBtn.dataset.developmentId = child.id;
                 childBtn.dataset.developmentGroup = 'child';
+                const isCurrentChild = Number(child.id) === numericActiveId;
+                if (isCurrentChild) {
+                    childBtn.classList.add('active', 'btn-primary');
+                    childBtn.classList.remove('btn-light');
+                    childBtn.classList.add('text-white');
+                }
                 childBtn.addEventListener('click', () => {
                     setActiveSearchDevelopment(child.id);
                     loadDevelopment(child.id);
                 });
                 childButtons.appendChild(childBtn);
             });
-
+            
             container.appendChild(childButtons);
         }
+        return;
+    }
+
+    // Si se selecciona un desarrollo raíz
+    const activeRootDevelopment = DEVELOPMENT_TREE.find(dev => Number(dev.id) === activeRootId);
+    
+    // Si el desarrollo raíz tiene hijos, mostrar solo esos hijos
+    if (activeRootDevelopment?.children?.length) {
+        const childButtons = document.createElement('div');
+        childButtons.className = 'development-selector-cluster';
+
+        activeRootDevelopment.children.forEach(child => {
+            if (!isDevelopmentAllowed(child.id)) return;
+
+            const childBtn = document.createElement('button');
+            childBtn.type = 'button';
+            childBtn.className = 'btn btn-sm development-btn development-child-btn';
+            childBtn.textContent = child.name;
+            childBtn.dataset.developmentId = child.id;
+            childBtn.dataset.developmentGroup = 'child';
+            childBtn.addEventListener('click', () => {
+                setActiveSearchDevelopment(child.id);
+                loadDevelopment(child.id);
+            });
+            childButtons.appendChild(childBtn);
+        });
+
+        container.appendChild(childButtons);
+        return;
+    }
+
+    // Si el desarrollo raíz NO tiene hijos, mostrar solo ese desarrollo (bloqueado)
+    const rootButton = document.createElement('button');
+    rootButton.type = 'button';
+    rootButton.className = 'btn btn-sm development-btn development-root-btn active ' + activeRootDevelopment.name + '-btn';
+    rootButton.textContent = activeRootDevelopment.name;
+    rootButton.dataset.developmentId = activeRootDevelopment.id;
+    rootButton.dataset.developmentGroup = 'root';
+    rootButton.disabled = true;
+    rootButton.classList.add('btn-primary', 'text-white');
+    rootButton.classList.remove('btn-light');
+    
+    const rootButtons = document.createElement('div');
+    rootButtons.className = 'development-selector-roots';
+    rootButtons.appendChild(rootButton);
+    container.appendChild(rootButtons);
 }
 
 function toggleDevelopmentButtonState(button, isActive) {
@@ -364,10 +401,25 @@ function highlightActiveDevelopment(id) {
         toggleDevelopmentButtonState(btn, isActive);
     });
 
-    document.querySelectorAll('.development-child-btn').forEach(btn => {
-        const isActive = isChildView && Number(btn.dataset.developmentId) === numericId;
-        toggleDevelopmentButtonState(btn, isActive);
-    });
+    // Si es vista de hijo, resaltar el único botón hijo visible
+    if (isChildView) {
+        document.querySelectorAll('.development-child-btn').forEach(btn => {
+            const isActive = Number(btn.dataset.developmentId) === numericId;
+            toggleDevelopmentButtonState(btn, isActive);
+            // El botón ya tiene la clase 'active' y está disabled, solo asegurar
+            if (isActive) {
+                btn.classList.add('active', 'btn-primary');
+                btn.classList.remove('btn-light');
+                btn.classList.add('text-white');
+            }
+        });
+    } else {
+        // En vista de raíz, resaltar los botones hijos correspondientes
+        document.querySelectorAll('.development-child-btn').forEach(btn => {
+            const isActive = Number(btn.dataset.developmentId) === numericId;
+            toggleDevelopmentButtonState(btn, isActive);
+        });
+    }
 }
 async function fetchDevelopment(id) {
     const response = await fetch(`${window.DESARROLLOS_API_URL}/${id}`);
