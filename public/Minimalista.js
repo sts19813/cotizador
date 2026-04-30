@@ -11,7 +11,7 @@ let isBootstrappingSelections = true;
 let lastOptionClickMeta = { trusted: false, ts: 0 };
 let totalPriceFeedbackTimer = null;
 
-const PREVENTA_DEVELOPMENT_IDS = new Set([43, 3, 2, 14, 8, 9, 10]);
+const PREVENTA_DEVELOPMENT_IDS = new Set([43, 3, 2, 14, 8, 9, 10, 32, 30, 29, 28, 27, 26, 25, 24]);
 const DEFAULT_MAIN_DEVELOPMENT_ID = 33;
 const MAIN_DEVELOPMENT_NAME_MAP = {
   33: 'Piaró',
@@ -711,7 +711,7 @@ function setFinancingUIByMode(mode) {
     if (tasaValue) tasaValue.textContent = '20% del total';
     if (mensualidadHint) mensualidadHint.textContent = '/mes a 36 meses';
     if (schemeNote) {
-      schemeNote.textContent = 'En Ahawell y Paseo Península aplicas un esquema especial de preventa con solo 20% de anticipo y el resto se definira mediante un credito hipotecario';
+      schemeNote.textContent = 'En Ahawell, Paseo Península y Hacienda Piaro aplicas un esquema especial de preventa con solo 20% de anticipo y el resto se definira mediante un credito hipotecario';
     }
     return;
   }

@@ -366,8 +366,8 @@
                                             data-bs-toggle="collapse" data-bs-target="#collapseDevelopmentHaciendaPiaro"
                                             aria-expanded="false" aria-controls="collapseDevelopmentHaciendaPiaro">
                                             <span class="development-card-title">Hacienda Piaro</span>
-                                            <span class="development-badge development-badge-immediate">Entrega
-                                                inmediata</span>
+                                            <span class="development-badge development-badge-presale">Preventa - 20%
+                                                Enganche</span>
                                             <x-accordion-toggle-icon class="ms-auto development-toggle-icon" />
                                         </button>
 
@@ -377,7 +377,7 @@
                                             <div class="development-card-body">
                                                 <p class="development-copy mb-2">¿Ya formas parte de Hacienda Piaro?
                                                     Busca tu lote para continuar.</p>
-
+ 
                                                 <div class="position-relative mb-3">
                                                     <input type="text" id="lotInput-32"
                                                         class="form-control development-lot-input"
