@@ -87,7 +87,7 @@ const DEVELOPMENT_LOGOS = {
         alt: 'Paseo Peninsula'
     },
     32: {
-        src: '/img/logos/piaro.svg',
+        src: '/img/logos/HaciendaPiaro.svg',
         alt: 'Hacienda Piaro'
     },
     3: {

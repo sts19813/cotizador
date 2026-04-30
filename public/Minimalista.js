@@ -293,6 +293,9 @@ function getPriceByContextForCard(card, options = {}) {
     }
   }
 
+  const immutableBase = parseFloat(card.dataset.precioBase);
+  if (!Number.isNaN(immutableBase)) return immutableBase;
+
   const fallback = parseFloat(card.dataset.precio);
   return Number.isNaN(fallback) ? 0 : fallback;
 }
@@ -303,6 +306,11 @@ function applyPricesForCurrentContext(options = {}) {
   const facadeSuffix = getCurrentFacadeSuffix();
 
   document.querySelectorAll('.option-card[data-precio_a]').forEach(card => {
+    if (card.dataset.precioBase === undefined) {
+      const originalPrice = parseFloat(card.dataset.precio);
+      card.dataset.precioBase = Number.isNaN(originalPrice) ? '0' : String(originalPrice);
+    }
+
     const newPrice = getPriceByContextForCard(card, { zoneId, facadeSuffix });
     card.dataset.precio = Number.isFinite(newPrice) ? String(newPrice) : '0';
 
@@ -1019,7 +1027,8 @@ document.querySelectorAll('.option-card').forEach(card => {
     });
 
     // Validar precios
-    if (data.precio) data.precio = parseFloat(data.precio) || 0;
+    data.precio = parseFloat(data.precio);
+    if (Number.isNaN(data.precio)) data.precio = 0;
 
     // Si falta la categoría, la obtiene desde el DOM
     if (!data.categoria) {
@@ -1032,8 +1041,20 @@ document.querySelectorAll('.option-card').forEach(card => {
       data.valor = label ? label.textContent.trim() : 'Sin nombre';
     }
 
+    // La zona se maneja en setSelectedZoneForPricing (invocado desde seleccionarOpcion).
+    // Evita recalcular con estado intermedio desde este listener genérico.
+    if (data.categoria === 'Zona') {
+      return;
+    }
+
     // ----- Manejo especial para Fachada: no guardamos la fachada como selección de grupo -----
     if (isFacadeCategoryValue(data.categoria) || isFacadeValueText(data.valor) || groupId === 'opciones-fachada') {
+      data.precio = getPriceByContextForCard(this, {
+        zoneId: getSelectedZoneId(),
+        facadeSuffix: normalizeFachadaSuffix(data.valor)
+      });
+      if (!Number.isFinite(data.precio)) data.precio = 0;
+
       //guarda la fachada para el resumen
       selections["opciones-fachada"] = {
         categoria: data.categoria,
@@ -1063,6 +1084,12 @@ document.querySelectorAll('.option-card').forEach(card => {
     }
 
     // Guarda selección normal (no fachada)
+    data.precio = getPriceByContextForCard(this, {
+      zoneId: getSelectedZoneId(),
+      facadeSuffix: getCurrentFacadeSuffix()
+    });
+    if (!Number.isFinite(data.precio)) data.precio = 0;
+
     selections[groupId] = data;
 
     // 🔹 Quita cualquier valor nulo o roto antes de guardar (incluimos números para fachada si existen)
