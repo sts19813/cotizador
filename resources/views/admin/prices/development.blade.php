@@ -81,8 +81,8 @@
                     <tr>
                         <td class="d-none">{{ $product->id }}</td>
                         <td class="text-center">
-                            @if ($product->image_url)
-                                <img src="/{{ $product->image_url }}" alt="Imagen" class="img-thumbnail"
+                            @if ($product->public_image_url)
+                                <img src="{{ $product->public_image_url }}" alt="Imagen" class="img-thumbnail"
                                     style="max-width: 100px;">
                             @endif
                         </td>
@@ -132,4 +132,3 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="{{ asset('/assets/js/admin/prices-mass.js') }}"></script>
 @endpush
-

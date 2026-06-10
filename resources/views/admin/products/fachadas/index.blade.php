@@ -98,8 +98,8 @@
                             </td>
 
                             <td>
-                                @if($product->image_url)
-                                    <img src="/{{ $product->image_url }}" width="80" class="rounded">
+                                @if($product->public_image_url)
+                                    <img src="{{ $product->public_image_url }}" width="80" class="rounded">
                                 @else
                                     <span class="text-muted">No image</span>
                                 @endif

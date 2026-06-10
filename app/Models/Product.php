@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -44,6 +46,37 @@ class Product extends Model
         'fachada_6_price' => 'float',
         'fachada_7_price' => 'float',
     ];
+
+    protected $appends = [
+        'public_image_url',
+    ];
+
+    public function getPublicImageUrlAttribute(): ?string
+    {
+        $imageUrl = trim((string) $this->image_url);
+
+        if ($imageUrl === '') {
+            return null;
+        }
+
+        if (Str::startsWith($imageUrl, ['http://', 'https://'])) {
+            return $imageUrl;
+        }
+
+        $path = preg_replace('#^/?public/#', '', $imageUrl) ?? $imageUrl;
+        $path = ltrim($path, '/');
+        $storagePath = preg_replace('#^storage/#', '', $path) ?? $path;
+
+        if (Storage::disk('public')->exists($storagePath)) {
+            return Storage::disk('public')->url($storagePath);
+        }
+
+        if (file_exists(public_path($path))) {
+            return '/'.$path;
+        }
+
+        return '/'.$path;
+    }
 
     // 🔗 Relaciones
     public function category()

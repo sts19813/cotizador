@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Product;
-use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if (!$user || !$user->isAdmin()) {
+        if (! $user || ! $user->isAdmin()) {
             abort(403, 'No tienes permisos para acceder a esta página.');
         }
 
@@ -26,18 +26,15 @@ class ProductController extends Controller
         return view('admin.products', compact('products', 'categories'));
     }
 
-   
-
-
     public function showByStyle($style)
     {
         $validStyles = ['Minimalista', 'Tulum', 'Mexicano'];
 
-        if (!in_array($style, $validStyles)) {
+        if (! in_array($style, $validStyles)) {
             abort(404);
         }
 
-           $products = Product::with('category')
+        $products = Product::with('category')
             ->where('style', $style)
             ->whereDoesntHave('category', function ($q) {
                 $q->where('name', 'LIKE', '%Fachada%');
@@ -62,7 +59,6 @@ class ProductController extends Controller
             ->with('success', 'Precios actualizados correctamente.');
     }
 
-
     /**
      * Show the form for creating a new resource.
      */
@@ -77,7 +73,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
+        $data = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'style' => 'required|in:Minimalista,Tulum,Mexicano',
             'pre_code' => 'required',
@@ -99,21 +95,19 @@ class ProductController extends Controller
             'fachada_7_price' => 'required|numeric',
         ]);
 
-        $data = $request->all();
         $data['is_visible'] = true;
+        $data['brand'] = $data['brand'] ?? '';
 
         // Guardar archivos si existen
         if ($request->hasFile('image_file')) {
-            $filename = time() . '_' . $request->file('image_file')->getClientOriginalName();
-            $request->file('image_file')->storeAs('producto', $filename, 'public');
-            $data['image_url'] = 'producto/' . $filename;
+            $data['image_url'] = $this->storePublicFile($request, 'image_file');
         }
 
         if ($request->hasFile('product_file')) {
-            $filename = time() . '_' . $request->file('product_file')->getClientOriginalName();
-            $request->file('product_file')->storeAs('producto', $filename, 'public');
-            $data['product_url'] = 'producto/' . $filename;
+            $data['product_url'] = $this->storePublicFile($request, 'product_file');
         }
+
+        unset($data['image_file'], $data['product_file']);
 
         Product::create($data);
 
@@ -126,7 +120,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $user = Auth::user();
-        if (!$user || !$user->isAdmin()) {
+        if (! $user || ! $user->isAdmin()) {
             abort(403);
         }
 
@@ -140,7 +134,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $request->validate([
+        $data = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'style' => 'required|in:Minimalista,Tulum,Mexicano',
             'pre_code' => 'required',
@@ -154,22 +148,19 @@ class ProductController extends Controller
             'product_file' => 'nullable|file|max:4096',
         ]);
 
-        $data = $request->all();
-
         $data['is_visible'] = $request->has('is_visible');
+        $data['brand'] = $data['brand'] ?? '';
 
         // Guardar archivos si existen
         if ($request->hasFile('image_file')) {
-            $filename = time() . '_' . $request->file('image_file')->getClientOriginalName();
-            $request->file('image_file')->storeAs('producto', $filename, 'public');
-            $data['image_url'] = 'producto/' . $filename;
+            $data['image_url'] = $this->storePublicFile($request, 'image_file');
         }
 
         if ($request->hasFile('product_file')) {
-            $filename = time() . '_' . $request->file('product_file')->getClientOriginalName();
-            $request->file('product_file')->storeAs('producto', $filename, 'public');
-            $data['product_url'] = 'producto/' . $filename;
+            $data['product_url'] = $this->storePublicFile($request, 'product_file');
         }
+
+        unset($data['image_file'], $data['product_file']);
 
         $product->update($data);
 
@@ -184,5 +175,13 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Producto eliminado correctamente.');
+    }
+
+    private function storePublicFile(Request $request, string $inputName): string
+    {
+        $file = $request->file($inputName);
+        $filename = time().'_'.basename($file->getClientOriginalName());
+
+        return $file->storeAs('producto', $filename, 'public');
     }
 }

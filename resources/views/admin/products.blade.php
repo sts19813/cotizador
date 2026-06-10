@@ -28,7 +28,11 @@
     <tbody>
         @foreach ($products as $product)
         <tr>
-            <td><img src="/{{ $product->image_url }}" width="50" class="rounded"></td>
+            <td>
+                @if($product->public_image_url)
+                    <img src="{{ $product->public_image_url }}" width="50" class="rounded">
+                @endif
+            </td>
             <td>{{ $product->variant_code }}</td>
             <td><span class="badge bg-secondary">{{ $product->category->name }}</span></td>
             <td><span class="badge bg-secondary">{{ $product->style }}</span></td>
@@ -47,7 +51,7 @@
                     data-description="{{ $product->description }}"
                     data-brand="{{ $product->brand }}"
                     data-base_price="{{ $product->base_price }}"
-                    data-image_url="{{ $product->image_url }}"
+                    data-image_url="{{ $product->public_image_url }}"
                     data-product_url="{{ $product->product_url }}"
                     data-is_visible="{{ $product->is_visible ? 1 : 0 }}"
                     data-bs-toggle="modal"

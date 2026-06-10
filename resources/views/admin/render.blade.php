@@ -25,7 +25,11 @@
     <tbody>
         @foreach ($products as $product)
         <tr>
-            <td><img src="/{{ $product->image_url }}" width="50" class="rounded"></td>
+            <td>
+                @if($product->public_image_url)
+                    <img src="{{ $product->public_image_url }}" width="50" class="rounded">
+                @endif
+            </td>
             <td>{{ $product->variant_code }}</td>
             <td><span class="badge bg-secondary">{{ $product->category->name }}</span></td>
             <td><span class="badge bg-secondary">{{ $product->style }}</span></td>

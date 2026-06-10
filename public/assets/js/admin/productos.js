@@ -66,8 +66,12 @@ $(document).on('click', '.btn-edit-product', function() {
     const imageUrl = button.data('image_url');
 
     if (imageUrl) {
+        const previewUrl = imageUrl.startsWith('http://') || imageUrl.startsWith('https://') || imageUrl.startsWith('/')
+            ? imageUrl
+            : '/' + imageUrl;
+
         $('#productImagePreview')
-            .attr('src', '/' + imageUrl)
+            .attr('src', previewUrl)
             .show();
     } else {
         $('#productImagePreview')

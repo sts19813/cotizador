@@ -258,7 +258,7 @@
                                                         data-variant_code="{{ $product->variant_code }}"
                                                         onclick="seleccionarOpcion(this)">
 
-                                                        <img src="/{{ $product->image_url ?? 'https://via.placeholder.com/400x300' }}"
+                                                        <img src="{{ $product->public_image_url ?? 'https://via.placeholder.com/400x300' }}"
                                                             class="img-fluid rounded" alt="" width="350px">
                                                         <div class="option-title">{{ $product->title }}</div>
                                                         <div class="option-description">{{ $product->description }}</div>
