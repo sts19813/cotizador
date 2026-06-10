@@ -48,6 +48,7 @@ $(document).ready(function () {
         // Seleccionar automáticamente la fachada
         if (fachadaA && fachadaA.length) {
             fachadaA.trigger("click");
+            updateMexicanoPlantaAltaVisibility();
             refreshSelectionsAndOverlays();
         }
     });
@@ -186,4 +187,73 @@ function cambiotitle() {
                 false
             );
     }
+
+    updateMexicanoPlantaAltaVisibility();
 }
+
+function isMexicanoStyle() {
+    return slug === 'mexicano' || String(window.currentStyle || '').toLowerCase() === 'mexicano';
+}
+
+function isMexicanoThreeBedroomFacade3B() {
+    const habitaciones = document.querySelector('#opciones-habitaciones .option-card.selected');
+    const fachada = document.querySelector('#opciones-fachada .option-card.selected');
+
+    const habitacionesId = habitaciones?.dataset.id || '';
+    const valorFachada = String(fachada?.dataset.valor || '').toLowerCase();
+
+    return isMexicanoStyle() && habitacionesId === '3Recamaras' && valorFachada.includes('3b');
+}
+
+function clearPlantaAltaSelection(row) {
+    if (!row) return;
+
+    const group = row.closest('.accordion-collapse');
+    const groupId = group?.id;
+    const selectedCards = Array.from(row.querySelectorAll('.option-card.selected'));
+
+    selectedCards.forEach(card => card.classList.remove('selected'));
+
+    if (typeof selections === 'object' && selections) {
+        if (groupId) delete selections[groupId];
+
+        Object.keys(selections).forEach(key => {
+            const item = selections[key];
+            const categoria = item?.categoria || '';
+
+            if (typeof normalizeCategoryName === 'function' && normalizeCategoryName(categoria) === 'planta alta') {
+                delete selections[key];
+            }
+        });
+
+        localStorage.setItem('selections', JSON.stringify(selections));
+    }
+
+    if (typeof activeOverlays === 'object' && activeOverlays) {
+        Object.keys(activeOverlays).forEach(index => {
+            activeOverlays[index] = (activeOverlays[index] || []).filter(overlay => {
+                return overlay.categoria !== 'Planta Alta' && overlay.categoria !== 'Fachada_Planta Alta';
+            });
+            updateThumbnailOverlay(index, { animate: false });
+        });
+
+        updateMainPreview(globalindex, { animate: false });
+    }
+}
+
+function updateMexicanoPlantaAltaVisibility() {
+    const row = document.getElementById('opciones-planta-alta');
+    const item = row?.closest('.accordion-item');
+
+    if (!row || !item) return;
+
+    const shouldHide = isMexicanoThreeBedroomFacade3B();
+
+    item.classList.toggle('d-none', shouldHide);
+
+    if (shouldHide) {
+        clearPlantaAltaSelection(row);
+    }
+}
+
+window.updateMexicanoPlantaAltaVisibility = updateMexicanoPlantaAltaVisibility;

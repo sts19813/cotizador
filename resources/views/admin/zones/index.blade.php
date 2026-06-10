@@ -53,7 +53,7 @@
                             <td class="fw-semibold">{{ $zone->name }}</td>
                             <td>
                                 @if ($zone->image_url)
-                                    <img src="{{ Str::startsWith($zone->image_url, ['http://', 'https://', '/']) ? $zone->image_url : '/' . ltrim($zone->image_url, '/') }}" alt="{{ $zone->name }}" class="rounded" style="width: 90px; height: 60px; object-fit: cover;">
+                                    <img src="{{ $zone->public_image_url }}" alt="{{ $zone->name }}" class="rounded" style="width: 90px; height: 60px; object-fit: cover;">
                                 @else
                                     <span class="text-muted">Sin imagen</span>
                                 @endif
@@ -76,6 +76,7 @@
                                     class="btn btn-sm btn-light-info js-view-zone"
                                     data-zone-name="{{ $zone->name }}"
                                     data-zone-image="{{ $zone->image_url }}"
+                                    data-zone-public-image="{{ $zone->public_image_url }}"
                                     data-zone-order="{{ $zone->order }}"
                                     data-zone-active="{{ $zone->is_active ? 1 : 0 }}"
                                     data-zone-developments='@json($developmentPayload)'
@@ -88,6 +89,7 @@
                                     data-zone-id="{{ $zone->id }}"
                                     data-zone-name="{{ $zone->name }}"
                                     data-zone-image="{{ $zone->image_url }}"
+                                    data-zone-public-image="{{ $zone->public_image_url }}"
                                     data-zone-order="{{ $zone->order }}"
                                     data-zone-active="{{ $zone->is_active ? 1 : 0 }}"
                                     data-zone-developments='@json($developmentPayload)'
@@ -306,13 +308,13 @@
     document.querySelectorAll('.js-view-zone').forEach(button => {
         button.addEventListener('click', () => {
             const zoneName = button.dataset.zoneName || '';
-            const zoneImage = button.dataset.zoneImage || '';
+            const zonePublicImage = button.dataset.zonePublicImage || '';
             const zoneOrder = button.dataset.zoneOrder || '0';
             const zoneActive = Number(button.dataset.zoneActive || 0) === 1;
             const developments = JSON.parse(button.dataset.zoneDevelopments || '[]');
 
             const imageEl = document.getElementById('view_zone_image');
-            imageEl.src = zoneImage ? (zoneImage.startsWith('http') || zoneImage.startsWith('/') ? zoneImage : '/' + zoneImage.replace(/^\/+/, '')) : '/img/tulum.jpg';
+            imageEl.src = zonePublicImage || '/img/tulum.jpg';
 
             document.getElementById('view_zone_name').textContent = zoneName;
             document.getElementById('view_zone_order').textContent = zoneOrder;

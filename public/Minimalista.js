@@ -76,6 +76,10 @@ function isFacadeCardElement(card) {
   return byCategory || byValue || byId;
 }
 
+function isOptionRowHidden(row) {
+  return Boolean(row?.closest('.accordion-item')?.classList.contains('d-none'));
+}
+
 function getSelectedFacadeCard() {
   const cards = Array.from(document.querySelectorAll('.option-card[data-categoria]'));
   return cards.find(card =>
@@ -1203,6 +1207,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
 
     if (row.id === 'opciones-casas') return;
+    if (isOptionRowHidden(row)) return;
 
     // no tocar zona si ya existe
     if (row.id === 'opciones-zonas' && hayZonaGuardada) return;
@@ -1294,6 +1299,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function autoSelectFirstOptions() {
   document.querySelectorAll('.row.g-3[id^="opciones-"]').forEach(row => {
     if (row.id === 'opciones-casas' || row.id === 'opciones-fachada' || row.id === 'opciones-habitaciones' || row.id === 'opciones-zonas') return;
+    if (isOptionRowHidden(row)) return;
     const firstOption = row.querySelector('.option-card');
     if (firstOption && !firstOption.classList.contains('selected')) {
       // Disparar click para mantener coherencia de UI y estado
@@ -1344,6 +1350,7 @@ function refreshSelectionsAndOverlays() {
 
     // Omitir grupos especiales
     if (rowId === 'opciones-casas' || rowId === 'opciones-fachada' || rowId === 'opciones-habitaciones' || rowId === 'opciones-zonas') return;
+    if (isOptionRowHidden(row)) return;
 
     // Ver si ya hay opción seleccionada
     let option = row.querySelector('.option-card.selected');

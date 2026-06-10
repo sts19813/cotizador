@@ -73,18 +73,12 @@
                                     <p class="fw-bold mb-1">Selecciona una zona</p>
                                     <div class="row g-3 opcion-selected" id="opciones-zonas">
                                         @forelse ($zones as $zone)
-                                            @php
-                                                $zoneImage = $zone->image_url ?: '/img/tulum.jpg';
-                                                if (!Str::startsWith($zoneImage, ['http://', 'https://', '/'])) {
-                                                    $zoneImage = '/' . ltrim($zoneImage, '/');
-                                                }
-                                            @endphp
                                             <div class="col-6 col-md-6">
                                                 <div class="option-card estilo-color cursor-pointer"
                                                     data-id="zona-{{ $zone->id }}" data-zone-id="{{ $zone->id }}"
                                                     data-categoria="Zona" data-valor="{{ $zone->name }}" data-precio="0"
                                                     onclick="seleccionarOpcion(this)">
-                                                    <img src="{{ $zoneImage }}" class="img-fluid rounded"
+                                                    <img src="{{ $zone->public_image_url }}" class="img-fluid rounded"
                                                         alt="{{ $zone->name }}">
                                                     <div class="option-title">{{ $zone->name }}</div>
                                                     <div class="option-description d-none">
@@ -583,6 +577,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+    @php
+        $nabooBaseUrl = rtrim(config('services.naboo.url'), '/');
+    @endphp
+
     <script>
         /** Variables globales para compartir datos entre scripts. Por ejemplo, la configuración compartida se inyecta aquí desde Laravel y luego se puede acceder desde cualquier script incluido en esta página a través de window.SHARED_CONFIG. */
         window.SHARED_CONFIG = @json($sharedConfig ?? null);
@@ -591,9 +589,9 @@
         window.ZONE_DEVELOPMENTS_BY_ZONE = @json($zoneDevelopmentsByZone ?? []);
         window.DEFAULT_ZONE_ID = @json($defaultZoneId ?? null);
 
-        window.DESARROLLOS_API_URL = 'https://emedos.beskar.studio/api/desarrollos';
-        window.LOTS_API_URL = '{{ config('services.naboo.url') }}api/lots';
-        window.NABOO_ASSET_BASE_URL = 'https://emedos.beskar.studio';
+        window.DESARROLLOS_API_URL = @json($nabooBaseUrl . '/api/desarrollos');
+        window.LOTS_API_URL = @json($nabooBaseUrl . '/api/lots');
+        window.NABOO_ASSET_BASE_URL = @json($nabooBaseUrl);
         window.lotsCache = [];
 
         const FINANCIAMIENTO = {

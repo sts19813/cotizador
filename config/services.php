@@ -40,7 +40,7 @@ return [
         'redirect' => env('GOOGLE_CALLBACK') ,
     ],
     'naboo' => [
-        'url' => env('URL_NABOO'),
+        'url' => rtrim(env('URL_NABOO', 'https://emedos.beskar.studio/'), '/') . '/',
     ],
 
 ];
