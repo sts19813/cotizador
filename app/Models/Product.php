@@ -68,7 +68,7 @@ class Product extends Model
         $storagePath = preg_replace('#^storage/#', '', $path) ?? $path;
 
         if (Storage::disk('public')->exists($storagePath)) {
-            return Storage::disk('public')->url($storagePath);
+            return '/storage/'.$storagePath;
         }
 
         if (file_exists(public_path($path))) {
