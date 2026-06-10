@@ -591,9 +591,9 @@
         window.ZONE_DEVELOPMENTS_BY_ZONE = @json($zoneDevelopmentsByZone ?? []);
         window.DEFAULT_ZONE_ID = @json($defaultZoneId ?? null);
 
-        window.DESARROLLOS_API_URL = 'https://lotes.beskar.mx/api/desarrollos';
+        window.DESARROLLOS_API_URL = 'https://emedos.beskar.studio/api/desarrollos';
         window.LOTS_API_URL = '{{ config('services.naboo.url') }}api/lots';
-        window.NABOO_ASSET_BASE_URL = 'https://lotes.beskar.mx';
+        window.NABOO_ASSET_BASE_URL = 'https://emedos.beskar.studio';
         window.lotsCache = [];
 
         const FINANCIAMIENTO = {
