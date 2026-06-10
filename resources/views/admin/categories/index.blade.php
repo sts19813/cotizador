@@ -209,5 +209,5 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-<script src="{{ asset('categories.js') }}"></script>
+<script src="{{ asset('assets/js/admin/categories.js') }}"></script>
 @endpush

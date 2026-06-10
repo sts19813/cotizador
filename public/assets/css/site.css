@@ -1,0 +1,335 @@
+:root {
+  --primary-color: #0d6efd;
+  --font-base: 'Inter', sans-serif;
+  --font-alt: 'Geologica', sans-serif;
+}
+
+/* === GENERAL === */
+body {
+  font-family: 'Inter', sans-serif !important;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #0d6efd;
+}
+
+.general-background {
+  background-color: #F5F9FC;
+}
+
+.white-background {
+  background: white !important;
+}
+
+.mt-100 {
+  margin-top: 100px;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.1s ease;
+}
+
+.option-card img.selected {
+  border: 3px solid #007BFF;
+  /* Azul Bootstrap */
+  border-radius: 0.375rem;
+  /* Igual a .rounded si lo deseas */
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #b5b5b5;
+}
+
+.text {
+  color: #1C1F1C !important;
+  font-weight: 100 !important;
+  font-family: 'Geologica', sans-serif;
+  font-size: 20px;
+  line-height: 163%;
+}
+
+/* === NAVBAR === */
+.navbar {
+  padding: 15px 20px !important;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
+  min-height: 80px;
+  z-index: 1000 !important;
+}
+
+/* === IMAGES === */
+.img-principal {
+  margin-top: 90px;
+}
+
+.preview-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 25px;
+  display: block;
+  margin: 0 auto;
+}
+
+.overlayMainContainer img {
+  border-radius: 25px !important;
+}
+
+.active img {
+  border-radius: 10px;
+}
+
+/* Main preview fade effect */
+#mainPreview {
+  transition: opacity 0.1s ease-in-out;
+  opacity: 1;
+}
+
+#mainPreview.fade-out {
+  opacity: 0;
+}
+
+/* === GALLERY CAROUSEL === */
+.gallery-wrapper {
+  position: relative;
+}
+
+.gallery-carousel .item {
+  padding-right: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.gallery-carousel .item img {
+  display: block;
+  width: 100%;
+  height: 85px;
+  object-fit: cover;
+  border-radius: 10px !important;
+}
+
+/* Owl Carousel Navigation */
+.owl-nav button {
+  background: white !important;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  width: 35px;
+  height: 35px;
+}
+
+.owl-nav .owl-next,
+.owl-nav .owl-prev {
+  position: absolute;
+  top: 44%;
+  transform: translateY(-50%);
+  z-index: 3;
+  right: 25px;
+}
+
+.owl-next {
+  right: 10px;
+}
+
+.owl-prev {
+  left: 0;
+  display: none;
+}
+
+
+
+/* === SCROLL COLUMN === */
+.scroll-column {
+  height: 100vh;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  padding-top: 15px;
+}
+
+.scroll-column::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari */
+}
+
+/* === THUMBNAILS === */
+.thumbnail {
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.thumbnail.active {
+  border-color: #0d6efd;
+}
+
+/* === STYLES FOR OPTIONS === */
+.estilo-casa,
+.estilo-fachada {
+  transition: all 0.1s ease;
+  background-color: #f8f9fa;
+}
+
+.estilo-casa.active,
+.estilo-fachada.active {
+  border: 2px solid #0d6efd;
+  box-shadow: 0 0 0.5rem rgba(13, 110, 253, 0.5);
+}
+
+.estilo-casa:hover {
+  background-color: #e0f7fa;
+  border-color: #0d6efd;
+  box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
+}
+
+/* === CAROUSEL === */
+.carousel .carousel-indicators button {
+  width: 200px !important;
+}
+
+#carouselExampleIndicatorsLeft {
+  margin-bottom: 100px;
+}
+
+/* === BOTTOM BAR === */
+.bottom-bar {
+  position: sticky;
+  bottom: 0;
+  background: #386ffad6;
+  color: white;
+  padding: 1rem;
+  z-index: 10;
+}
+
+/* === BUTTONS === */
+.btn-regresar {
+  color: #2B458A !important;
+  border-color: #2B458A !important;
+
+}
+
+.btn-radius {
+  border-radius: 25px;
+  font-size: 15px;
+  padding: 9px 34px !important;
+}
+
+.azulFuerte {
+  color: #0B1234;
+}
+
+.precio-total {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* === LISTS === */
+ol li {
+  margin-bottom: 0.3rem;
+}
+
+/* === UTILS === */
+.position-relative {
+  position: relative !important;
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animar-subida {
+  animation: fadeUp 1s ease-out forwards;
+}
+
+.gallery-carousel .item {
+  width: 166px !important;
+}
+
+.owl-carousel .owl-item {
+  margin-top: 10px;
+  margin-right: 10px;
+  /* se asegura del margen */
+}
+
+#overlayMainContainer {
+  border-radius: 25px !important;
+}
+
+#overlayMainContainer img {
+  border-radius: 25px !important;
+}
+
+
+
+@media only screen and (max-width: 600px) {
+  #mainPreview {
+    margin-top: 70px;
+  }
+
+  .sticky-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    padding: 10px;
+    background: white
+  }
+
+
+  .logo-mobile {
+    width: 120px !important;
+  }
+
+  .btn-radius {
+    border-radius: 25px;
+    font-size: 15px;
+    padding: 6px 25px !important;
+  }
+
+  .long-content {
+    margin-top: 320px;
+  }
+
+  .texto-fondo {
+    font-size: 60px !important;
+  }
+
+  .subtitulo {
+    font-family: 'Geologica', sans-serif;
+    font-weight: 400;
+    font-size: 20px !important;
+    transform: translateX(-50%);
+    z-index: 1;
+    color: #333;
+  }
+
+  .imagen-casa {
+    padding-top: 182px !important;
+  }
+
+  .seccion-casa {
+      padding: 0px !important;
+  }
+
+  .img-resumen-plano{
+    max-width: 100% !important  ;
+  }
+  .navbar{
+    padding: 15px 0px !important;
+  }
+}

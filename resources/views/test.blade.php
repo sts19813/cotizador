@@ -610,9 +610,9 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/constantes.js?v={{ filemtime(public_path('constantes.js')) }}"></script>
-    <script src="/Minimalista.js?v={{ filemtime(public_path('Minimalista.js')) }}"></script>
-    <script src="/cambioBasesFachadas.js?v={{ filemtime(public_path('cambioBasesFachadas.js')) }}"></script>
+    <script src="/assets/js/configurador/constantes.js?v={{ filemtime(public_path('assets/js/configurador/constantes.js')) }}"></script>
+    <script src="/assets/js/configurador/Minimalista.js?v={{ filemtime(public_path('assets/js/configurador/Minimalista.js')) }}"></script>
+    <script src="/assets/js/configurador/cambioBasesFachadas.js?v={{ filemtime(public_path('assets/js/configurador/cambioBasesFachadas.js')) }}"></script>
     <script src="/assets/js/core/globals.js?v={{ filemtime(public_path('assets/js/core/globals.js')) }}"></script>
     <script src="/assets/js/ui/capture.js?v={{ filemtime(public_path('assets/js/ui/capture.js')) }}"></script>
     <script src="/assets/js/ui/reload-modal.js?v={{ filemtime(public_path('assets/js/ui/reload-modal.js')) }}"></script>

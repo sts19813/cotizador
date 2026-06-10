@@ -255,6 +255,6 @@
 
 @push('scripts')
 
-<script src="{{ asset('productos.js') }}"></script>
+<script src="{{ asset('assets/js/admin/productos.js') }}"></script>
 
 @endpush

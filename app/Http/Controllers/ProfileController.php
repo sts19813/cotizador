@@ -43,25 +43,23 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
-        // Carpeta donde se guardará dentro de /public/
-        $destination = public_path('profile_photos');
+        // Eliminar foto anterior si existe en storage o como archivo legacy en public.
+        if ($user->profile_photo) {
+            $previousPath = ltrim($user->profile_photo, '/');
 
-        // Crear carpeta si no existe
-        if (!file_exists($destination)) {
-            mkdir($destination, 0777, true);
-        }
-
-        // Eliminar foto anterior si existe en public
-        if ($user->profile_photo && file_exists(public_path($user->profile_photo))) {
-            unlink(public_path($user->profile_photo));
+            if (Storage::disk('public')->exists($previousPath)) {
+                Storage::disk('public')->delete($previousPath);
+            } elseif (file_exists(public_path($previousPath))) {
+                unlink(public_path($previousPath));
+            }
         }
 
         // Preparar nombre del archivo
         $file = $request->file('profile_photo');
         $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-        // Mover la foto a /public/profile_photos/
-        $file->move($destination, $filename);
+        // Guardar la foto en storage/app/public/profile_photos.
+        $file->storeAs('profile_photos', $filename, 'public');
 
         // Guardar ruta relativa (para usar con asset())
         $relativePath = 'profile_photos/' . $filename;
