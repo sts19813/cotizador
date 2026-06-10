@@ -105,13 +105,13 @@ class ProductController extends Controller
         // Guardar archivos si existen
         if ($request->hasFile('image_file')) {
             $filename = time() . '_' . $request->file('image_file')->getClientOriginalName();
-            $request->file('image_file')->move(public_path('producto'), $filename);
+            $request->file('image_file')->storeAs('producto', $filename, 'public');
             $data['image_url'] = 'producto/' . $filename;
         }
 
         if ($request->hasFile('product_file')) {
             $filename = time() . '_' . $request->file('product_file')->getClientOriginalName();
-            $request->file('product_file')->move(public_path('producto'), $filename);
+            $request->file('product_file')->storeAs('producto', $filename, 'public');
             $data['product_url'] = 'producto/' . $filename;
         }
 
@@ -161,13 +161,13 @@ class ProductController extends Controller
         // Guardar archivos si existen
         if ($request->hasFile('image_file')) {
             $filename = time() . '_' . $request->file('image_file')->getClientOriginalName();
-            $request->file('image_file')->move(public_path('producto'), $filename);
+            $request->file('image_file')->storeAs('producto', $filename, 'public');
             $data['image_url'] = 'producto/' . $filename;
         }
 
         if ($request->hasFile('product_file')) {
             $filename = time() . '_' . $request->file('product_file')->getClientOriginalName();
-            $request->file('product_file')->move(public_path('producto'), $filename);
+            $request->file('product_file')->storeAs('producto', $filename, 'public');
             $data['product_url'] = 'producto/' . $filename;
         }
 

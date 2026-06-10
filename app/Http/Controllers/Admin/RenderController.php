@@ -45,8 +45,6 @@ class RenderController extends Controller
    public function update(Request $request, $id)
 {
     $product = Product::findOrFail($id);
-    $renderPath = public_path('render');
-    if (!file_exists($renderPath)) mkdir($renderPath, 0777, true);
 
     // --- 1. Guardar renders por fachada ---
     $fachadas = $request->file('fachadas', []); // <-- archivos como array
@@ -56,7 +54,7 @@ class RenderController extends Controller
             if(isset($images["base_image_$i"])){
                 $file = $images["base_image_$i"];
                 $filename = "render_{$product->id}_{$fachadaName}_{$i}.".$file->getClientOriginalExtension();
-                $file->move($renderPath, $filename);
+                $file->storeAs('render', $filename, 'public');
                 $fachadaData["base_image_$i"] = '/render/'.$filename;
             }
         }
@@ -75,7 +73,7 @@ class RenderController extends Controller
         if ($request->hasFile($inputName)) {
             $file = $request->file($inputName);
             $filename = "render_{$product->id}_{$i}." . $file->getClientOriginalExtension();
-            $file->move($renderPath, $filename);
+            $file->storeAs('render', $filename, 'public');
 
             $generalData[$inputName] = '/render/' . $filename;
         }
